@@ -1,6 +1,8 @@
 # Firebase configuration
-Projects/Sleipnir/javascript/firebase-config.js
-Projects/PlatformerGame/js/firebase-config.js
+# Note: Firebase web API keys are public by design and protected by Security Rules
+# Uncomment the lines below if you want to exclude them anyway
+# Projects/Sleipnir/javascript/firebase-config.js
+# Projects/PlatformerGame/js/firebase-config.js
 
 # Admin files with sensitive data
 Projects/PlatformerGame/js/admin.js
