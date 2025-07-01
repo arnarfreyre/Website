@@ -1,5 +1,29 @@
 # Firebase configuration
 Projects/Sleipnir/javascript/firebase-config.js
+Projects/PlatformerGame/js/firebase-config.js
+
+# Admin files with sensitive data
+Projects/PlatformerGame/js/admin.js
+
+# Firestore rules (manage these separately)
+Projects/PlatformerGame/firestore.rules
+Projects/PlatformerGame/temporary-firestore.rules
+
+# Any future environment files
+**/.env*
+**/config.local.js
+**/secrets.js
+
+# Service account files (prevention)
+**/serviceAccount*.json
+**/*-service-account*.json
+**/firebase-adminsdk-*.json
+
+# Private keys and certificates
+**/*.pem
+**/*.key
+**/*.crt
+**/*.p12
 
 # OS generated files
 .DS_Store
