@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            color: #000000;
+        }
+
+        .projects-list {
+            list-style: none;
+        }
+
+        .project-item {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .project-item:last-child {
+            border-bottom: none;
+        }
+
+        .project-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: opacity 0.2s ease;
+        }
+
+        .project-link:hover {
+            opacity: 0.7;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #000000;
+        }
+
+        .project-description {
+            color: #666666;
+            font-size: 1rem;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.875rem;
+            color: #999999;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+                margin-bottom: 30px;
+            }
+
+            .project-title {
+                font-size: 1.125rem;
+            }
+
+            .project-description {
+                font-size: 0.9375rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Projects</h1>
+        
+        <ul class="projects-list">
+            <li class="project-item">
+                <a href="projects/PlatformerGame/Index.html" class="project-link">
+                    <h2 class="project-title">Platformer Game</h2>
+                    <p class="project-description">A browser-based platformer game built with JavaScript and HTML5 Canvas.</p>
+                </a>
+            </li>
+            <li class="project-item">
+                <a href="projects/Sleipnir/Index.html" class="project-link">
+                    <h2 class="project-title">Sleipnir MC Reykjavík demo</h2>
+                    <p class="project-description">Sleipnir MC Reykjavíka vefsíða DEMO</p>
+                </a>
+            </li>
+        </ul>
+
+        <footer>
+            <p>© 2025</p>
+        </footer>
+    </div>
+</body>
+</html>
