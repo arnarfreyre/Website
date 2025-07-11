@@ -1,3 +1,19 @@
+// Initialize audio
+const audio = document.getElementById('themeMusic');
+audio.volume = 0.3; // Set volume to 30%
+
+// Handle autoplay restrictions
+document.addEventListener('click', function() {
+    if (audio.paused) {
+        audio.play().catch(e => console.log('Audio play failed:', e));
+    }
+}, { once: true });
+
+// Try to play immediately
+audio.play().catch(e => {
+    console.log('Autoplay prevented, audio will play on first click');
+});
+
 // Scene setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x1a1a2e);
