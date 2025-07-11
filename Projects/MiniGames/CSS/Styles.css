@@ -1,43 +1,234 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Games Hub</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1 class="logo">🎮 GameHub</h1>
-            <p class="subtitle">Your Ultimate Mini Games Collection</p>
-        </header>
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        <div class="games-grid">
-            <a href="chess.html" class="game-card">
-                <span class="game-icon">♛</span>
-                <h3 class="game-title">Chess</h3>
-                <p class="game-description">Classic strategy game. Checkmate your opponent with tactical moves.</p>
-            </a>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
 
-            <a href="tictactoe.html" class="game-card">
-                <span class="game-icon">⭕</span>
-                <h3 class="game-title">Tic Tac Toe</h3>
-                <p class="game-description">Quick and fun! Get three in a row to win.</p>
-            </a>
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-            <a href="snake.html" class="game-card">
-                <span class="game-icon">🐍</span>
-                <h3 class="game-title">Snake</h3>
-                <p class="game-description">Classic arcade game. Eat food, grow longer, don't crash!</p>
-            </a>
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px 0;
+}
 
-            <a href="memory.html" class="game-card">
-                <span class="game-icon">🧠</span>
-                <h3 class="game-title">Memory</h3>
-                <p class="game-description">Test your memory! Match pairs of cards.</p>
-            </a>
-        </div>
-    </div>
-</body>
-</html>
+.logo {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s infinite;
+}
+
+.logo a {
+    text-decoration: none;
+    color: inherit;
+}
+
+@keyframes shimmer {
+    0%, 100% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(180deg); }
+}
+
+.subtitle {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Game Cards Grid (for index page) */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.game-card {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.game-card:hover::before {
+    opacity: 0.1;
+}
+
+.game-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-color: #4ecdc4;
+}
+
+.game-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.game-title {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.game-description {
+    opacity: 0.7;
+    line-height: 1.5;
+}
+
+/* Game Header */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.back-btn {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+}
+
+/* Control Buttons */
+.control-btn {
+    background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.control-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(78,205,196,0.3);
+}
+
+.game-controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.score {
+    font-size: 1.5rem;
+    margin: 20px 0;
+    color: #4ecdc4;
+    font-weight: bold;
+}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+}
+
+.notification.success {
+    background-color: #4caf50;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.warning {
+    background-color: #ff9800;
+}
+
+.notification.info {
+    background-color: #2196f3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .logo { font-size: 2rem; }
+    .games-grid { grid-template-columns: 1fr; }
+    .game-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
