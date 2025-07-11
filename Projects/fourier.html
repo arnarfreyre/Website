@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fourier Transform Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00d4ff, #ff0080, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        .visualizer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100%;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .controls h3 {
+            color: #ff0080;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: linear-gradient(45deg, #00d4ff, #0080ff);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .preset-btn:active {
+            transform: translateY(0);
+        }
+
+        .preset-btn.active {
+            background: linear-gradient(45deg, #ff0080, #ff4040);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00d4ff, #ff0080);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .fourier-components {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+        }
+
+        .component {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .component:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .component-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .component-info {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .frequency {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .amplitude {
+            color: #ffaa00;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .visualizer {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .preset-buttons {
+                justify-content: center;
+            }
+        }
+
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }
+            to { box-shadow: 0 0 30px rgba(0, 212, 255, 0.4); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fourier Transform Visualizer</h1>
+            <p>Watch complex waveforms decompose into their sine wave components in real-time</p>
+        </div>
+
+        <div class="visualizer">
+            <div class="panel">
+                <h3>Original Signal</h3>
+                <canvas id="signalCanvas" width="500" height="300"></canvas>
+            </div>
+
+            <div class="panel">
+                <h3>Frequency Spectrum</h3>
+                <canvas id="spectrumCanvas" width="500" height="300"></canvas>
+            </div>
+        </div>
+
+        <div class="visualizer">
+            <div class="panel">
+                <h3>Fourier Components</h3>
+                <canvas id="componentsCanvas" width="500" height="300"></canvas>
+            </div>
+
+            <div class="panel">
+                <h3>Reconstructed Signal</h3>
+                <canvas id="reconstructedCanvas" width="500" height="300"></canvas>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>Controls</h3>
+
+            <div class="control-group">
+                <label>Preset Waveforms:</label>
+                <div class="preset-buttons">
+                    <button class="preset-btn active" onclick="setPreset('sine')">Sine Wave</button>
+                    <button class="preset-btn" onclick="setPreset('square')">Square Wave</button>
+                    <button class="preset-btn" onclick="setPreset('sawtooth')">Sawtooth</button>
+                    <button class="preset-btn" onclick="setPreset('triangle')">Triangle</button>
+                    <button class="preset-btn" onclick="setPreset('pulse')">Pulse</button>
+                    <button class="preset-btn" onclick="setPreset('complex')">Complex</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Fundamental Frequency: <span id="freqValue">1.0</span> Hz</label>
+                <input type="range" id="frequency" class="slider" min="0.1" max="3" step="0.1" value="1.0">
+            </div>
+
+            <div class="control-group">
+                <label>Animation Speed: <span id="speedValue">1.0</span>x</label>
+                <input type="range" id="speed" class="slider" min="0.1" max="3" step="0.1" value="1.0">
+            </div>
+
+            <div class="control-group">
+                <label>Components to Show: <span id="componentsValue">8</span></label>
+                <input type="range" id="components" class="slider" min="1" max="20" step="1" value="8">
+            </div>
+        </div>
+
+        <div class="panel" style="margin-top: 20px;">
+            <h3>Active Components</h3>
+            <div id="componentsList" class="fourier-components"></div>
+        </div>
+    </div>
+
+    <script>
+        class FourierVisualizer {
+            constructor() {
+                this.setupCanvases();
+                this.setupControls();
+                this.initializeParameters();
+                this.generateWaveform();
+                this.animate();
+            }
+
+            setupCanvases() {
+                this.signalCanvas = document.getElementById('signalCanvas');
+                this.spectrumCanvas = document.getElementById('spectrumCanvas');
+                this.componentsCanvas = document.getElementById('componentsCanvas');
+                this.reconstructedCanvas = document.getElementById('reconstructedCanvas');
+
+                this.signalCtx = this.signalCanvas.getContext('2d');
+                this.spectrumCtx = this.spectrumCanvas.getContext('2d');
+                this.componentsCtx = this.componentsCanvas.getContext('2d');
+                this.reconstructedCtx = this.reconstructedCanvas.getContext('2d');
+
+                // Set actual canvas size
+                [this.signalCanvas, this.spectrumCanvas, this.componentsCanvas, this.reconstructedCanvas].forEach(canvas => {
+                    canvas.width = 500;
+                    canvas.height = 300;
+                });
+            }
+
+            setupControls() {
+                document.getElementById('frequency').addEventListener('input', (e) => {
+                    this.frequency = parseFloat(e.target.value);
+                    document.getElementById('freqValue').textContent = this.frequency.toFixed(1);
+                    this.generateWaveform();
+                });
+
+                document.getElementById('speed').addEventListener('input', (e) => {
+                    this.animationSpeed = parseFloat(e.target.value);
+                    document.getElementById('speedValue').textContent = this.animationSpeed.toFixed(1);
+                });
+
+                document.getElementById('components').addEventListener('input', (e) => {
+                    this.maxComponents = parseInt(e.target.value);
+                    document.getElementById('componentsValue').textContent = this.maxComponents;
+                    this.generateWaveform();
+                });
+            }
+
+            initializeParameters() {
+                this.frequency = 1.0;
+                this.animationSpeed = 1.0;
+                this.maxComponents = 8;
+                this.currentPreset = 'sine';
+                this.time = 0;
+                this.sampleRate = 1000;
+                this.duration = 2;
+                this.samples = this.sampleRate * this.duration;
+
+                this.colors = [
+                    '#00d4ff', '#ff0080', '#ffaa00', '#00ff80', '#8000ff',
+                    '#ff4040', '#40ff40', '#4040ff', '#ff8040', '#40ff80',
+                    '#8040ff', '#ff4080', '#80ff40', '#4080ff', '#ff8080',
+                    '#80ff80', '#8080ff', '#ffff40', '#40ffff', '#ff40ff'
+                ];
+            }
+
+            generateWaveform() {
+                this.signal = new Array(this.samples);
+                this.fourierComponents = [];
+
+                const t = Array.from({length: this.samples}, (_, i) => i / this.sampleRate);
+
+                // Generate signal based on preset
+                switch(this.currentPreset) {
+                    case 'sine':
+                        this.fourierComponents = [{freq: this.frequency, amp: 1, phase: 0}];
+                        break;
+                    case 'square':
+                        // Square wave: fundamental + odd harmonics
+                        for(let n = 1; n <= this.maxComponents; n += 2) {
+                            this.fourierComponents.push({
+                                freq: n * this.frequency,
+                                amp: 4 / (Math.PI * n),
+                                phase: 0
+                            });
+                        }
+                        break;
+                    case 'sawtooth':
+                        // Sawtooth: fundamental + all harmonics
+                        for(let n = 1; n <= this.maxComponents; n++) {
+                            this.fourierComponents.push({
+                                freq: n * this.frequency,
+                                amp: 2 / (Math.PI * n) * (n % 2 === 1 ? 1 : -1),
+                                phase: 0
+                            });
+                        }
+                        break;
+                    case 'triangle':
+                        // Triangle wave: fundamental + odd harmonics with alternating signs
+                        for(let n = 1; n <= this.maxComponents; n += 2) {
+                            const sign = Math.floor(n/2) % 2 === 0 ? 1 : -1;
+                            this.fourierComponents.push({
+                                freq: n * this.frequency,
+                                amp: 8 / (Math.PI * Math.PI * n * n) * sign,
+                                phase: 0
+                            });
+                        }
+                        break;
+                    case 'pulse':
+                        // Pulse wave: fundamental + harmonics
+                        for(let n = 1; n <= this.maxComponents; n++) {
+                            this.fourierComponents.push({
+                                freq: n * this.frequency,
+                                amp: 2 / (Math.PI * n) * Math.sin(n * Math.PI / 4),
+                                phase: 0
+                            });
+                        }
+                        break;
+                    case 'complex':
+                        // Complex waveform with multiple frequencies
+                        this.fourierComponents = [
+                            {freq: this.frequency, amp: 1, phase: 0},
+                            {freq: 2.3 * this.frequency, amp: 0.6, phase: Math.PI/4},
+                            {freq: 3.7 * this.frequency, amp: 0.4, phase: Math.PI/2},
+                            {freq: 5.1 * this.frequency, amp: 0.3, phase: Math.PI},
+                        ];
+                        break;
+                }
+
+                // Generate signal from components
+                for(let i = 0; i < this.samples; i++) {
+                    this.signal[i] = 0;
+                    for(const comp of this.fourierComponents) {
+                        this.signal[i] += comp.amp * Math.sin(2 * Math.PI * comp.freq * t[i] + comp.phase);
+                    }
+                }
+
+                this.updateComponentsList();
+            }
+
+            updateComponentsList() {
+                const listElement = document.getElementById('componentsList');
+                listElement.innerHTML = '';
+
+                this.fourierComponents.forEach((comp, index) => {
+                    const compDiv = document.createElement('div');
+                    compDiv.className = 'component';
+
+                    const colorDiv = document.createElement('div');
+                    colorDiv.className = 'component-color';
+                    colorDiv.style.backgroundColor = this.colors[index % this.colors.length];
+
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'component-info';
+                    infoDiv.innerHTML = `
+                        <span class="frequency">${comp.freq.toFixed(2)} Hz</span>
+                        <span class="amplitude">Amp: ${Math.abs(comp.amp).toFixed(3)}</span>
+                    `;
+
+                    compDiv.appendChild(colorDiv);
+                    compDiv.appendChild(infoDiv);
+                    listElement.appendChild(compDiv);
+                });
+            }
+
+            drawSignal(ctx, signal, color = '#00d4ff', title = '') {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                if(title) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(title, ctx.canvas.width / 2, 20);
+                }
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                const width = ctx.canvas.width - 40;
+                const height = ctx.canvas.height - 60;
+                const offsetX = 20;
+                const offsetY = 30;
+
+                // Find signal range for normalization
+                const maxVal = Math.max(...signal.map(Math.abs));
+                const scale = maxVal > 0 ? height / 2 / maxVal : 1;
+
+                for(let i = 0; i < signal.length; i++) {
+                    const x = offsetX + (i / (signal.length - 1)) * width;
+                    const y = offsetY + height / 2 - signal[i] * scale;
+
+                    if(i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+
+                ctx.stroke();
+
+                // Draw axis
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY + height / 2);
+                ctx.lineTo(offsetX + width, offsetY + height / 2);
+                ctx.stroke();
+            }
+
+            drawSpectrum() {
+                const ctx = this.spectrumCtx;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                const width = ctx.canvas.width - 40;
+                const height = ctx.canvas.height - 60;
+                const offsetX = 20;
+                const offsetY = 30;
+
+                const maxFreq = Math.max(...this.fourierComponents.map(c => c.freq));
+                const maxAmp = Math.max(...this.fourierComponents.map(c => Math.abs(c.amp)));
+
+                this.fourierComponents.forEach((comp, index) => {
+                    const x = offsetX + (comp.freq / maxFreq) * width;
+                    const barHeight = Math.abs(comp.amp) / maxAmp * height;
+                    const y = offsetY + height - barHeight;
+
+                    ctx.fillStyle = this.colors[index % this.colors.length];
+                    ctx.fillRect(x - 3, y, 6, barHeight);
+
+                    // Add glow effect
+                    ctx.shadowColor = this.colors[index % this.colors.length];
+                    ctx.shadowBlur = 10;
+                    ctx.fillRect(x - 2, y, 4, barHeight);
+                    ctx.shadowBlur = 0;
+                });
+
+                // Draw frequency axis
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY + height);
+                ctx.lineTo(offsetX + width, offsetY + height);
+                ctx.stroke();
+            }
+
+            drawComponents() {
+                const ctx = this.componentsCtx;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                const width = ctx.canvas.width - 40;
+                const height = ctx.canvas.height - 60;
+                const offsetX = 20;
+                const offsetY = 30;
+
+                const samples = 500;
+                const t = Array.from({length: samples}, (_, i) => i / samples * this.duration);
+
+                this.fourierComponents.forEach((comp, index) => {
+                    ctx.strokeStyle = this.colors[index % this.colors.length];
+                    ctx.lineWidth = 2;
+                    ctx.globalAlpha = 0.7;
+                    ctx.beginPath();
+
+                    for(let i = 0; i < samples; i++) {
+                        const x = offsetX + (i / (samples - 1)) * width;
+                        const value = comp.amp * Math.sin(2 * Math.PI * comp.freq * (t[i] + this.time));
+                        const y = offsetY + height / 2 - value * height / 4;
+
+                        if(i === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+
+                    ctx.stroke();
+                });
+
+                ctx.globalAlpha = 1;
+
+                // Draw axis
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY + height / 2);
+                ctx.lineTo(offsetX + width, offsetY + height / 2);
+                ctx.stroke();
+            }
+
+            drawReconstructed() {
+                const samples = 500;
+                const reconstructed = new Array(samples);
+                const t = Array.from({length: samples}, (_, i) => i / samples * this.duration);
+
+                for(let i = 0; i < samples; i++) {
+                    reconstructed[i] = 0;
+                    for(const comp of this.fourierComponents) {
+                        reconstructed[i] += comp.amp * Math.sin(2 * Math.PI * comp.freq * (t[i] + this.time));
+                    }
+                }
+
+                this.drawSignal(this.reconstructedCtx, reconstructed, '#ff0080');
+            }
+
+            animate() {
+                this.time += 0.01 * this.animationSpeed;
+
+                // Draw all visualizations
+                this.drawSignal(this.signalCtx, this.signal, '#00d4ff');
+                this.drawSpectrum();
+                this.drawComponents();
+                this.drawReconstructed();
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        function setPreset(preset) {
+            // Update button states
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update visualizer
+            visualizer.currentPreset = preset;
+            visualizer.generateWaveform();
+        }
+
+        // Initialize the visualizer
+        const visualizer = new FourierVisualizer();
+    </script>
+</body>
+</html>
+
