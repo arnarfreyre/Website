@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - GameHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Tic Tac Toe specific styles */
+        .ttt-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .ttt-cell {
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+            border: none;
+            border-radius: 15px;
+            font-size: 3rem;
+            color: #4ecdc4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .ttt-cell:hover {
+            transform: scale(1.05);
+            background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+        }
+
+        .ttt-cell:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .ttt-board { width: 250px; height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-header">
+            <a href="index.html" class="back-btn">← Back to Games</a>
+            <h2>Tic Tac Toe</h2>
+            <div class="score">Player: <span id="ttt-turn">X</span></div>
+        </div>
+        <div class="ttt-board" id="ttt-board"></div>
+        <div class="game-controls">
+            <button class="control-btn" onclick="resetTicTacToe()">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Tic Tac Toe Logic
+        let tttBoard = Array(9).fill('');
+        let tttCurrentPlayer = 'X';
+
+        function initTicTacToe() {
+            tttBoard = Array(9).fill('');
+            tttCurrentPlayer = 'X';
+            document.getElementById('ttt-turn').textContent = 'X';
+            renderTicTacToe();
+        }
+
+        function renderTicTacToe() {
+            const board = document.getElementById('ttt-board');
+            board.innerHTML = '';
+
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('button');
+                cell.className = 'ttt-cell';
+                cell.textContent = tttBoard[i];
+                cell.onclick = () => handleTTTClick(i);
+                cell.disabled = tttBoard[i] !== '';
+                board.appendChild(cell);
+            }
+        }
+
+        function handleTTTClick(index) {
+            if (tttBoard[index] === '') {
+                tttBoard[index] = tttCurrentPlayer;
+
+                if (checkTTTWin()) {
+                    setTimeout(() => showNotification(`${tttCurrentPlayer} wins!`, 'success'), 100);
+                } else if (tttBoard.every(cell => cell !== '')) {
+                    setTimeout(() => showNotification('It\'s a tie!', 'warning'), 100);
+                } else {
+                    tttCurrentPlayer = tttCurrentPlayer === 'X' ? 'O' : 'X';
+                    document.getElementById('ttt-turn').textContent = tttCurrentPlayer;
+                }
+
+                renderTicTacToe();
+            }
+        }
+
+        function checkTTTWin() {
+            const winPatterns = [
+                [0,1,2], [3,4,5], [6,7,8], // rows
+                [0,3,6], [1,4,7], [2,5,8], // columns
+                [0,4,8], [2,4,6] // diagonals
+            ];
+
+            return winPatterns.some(pattern =>
+                pattern.every(index => tttBoard[index] === tttCurrentPlayer)
+            );
+        }
+
+        function resetTicTacToe() {
+            initTicTacToe();
+        }
+
+        // Initialize the game when page loads
+        initTicTacToe();
+    </script>
+</body>
+</html>
