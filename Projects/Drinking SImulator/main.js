@@ -229,6 +229,12 @@ let beerVelocity = new THREE.Vector3();
 let lastMousePos = { x: 0, y: 0 };
 let mouseVelocity = { x: 0, y: 0 };
 
+// Touch state for mobile
+let touchStartPos = { x: 0, y: 0 };
+let lastTouchPos = { x: 0, y: 0 };
+let touchVelocity = { x: 0, y: 0 };
+let isTouchDevice = 'ontouchstart' in window;
+
 // Hand position for smooth grab animation
 let handOffset = new THREE.Vector3();
 let grabStartPos = new THREE.Vector3();
@@ -273,6 +279,12 @@ function checkBeerProximity() {
             currentBeer = closestBeer;
             document.body.classList.add('near-beer');
             document.getElementById('grabIndicator').classList.remove('hidden');
+            
+            // Update grab text based on device
+            const grabText = document.querySelector('.grab-text');
+            if (grabText) {
+                grabText.textContent = isTouchDevice ? 'Tap to grab' : 'Click to grab';
+            }
 
             const outline = currentBeer.children.find(child => child.material && child.material.side === THREE.BackSide);
             if (outline) outline.visible = true;
@@ -373,6 +385,117 @@ document.addEventListener('keydown', (e) => {
     if (e.key === ' ' && isGrabbed && currentBeer) { // Space to throw
         e.preventDefault();
         throwBeer();
+    }
+});
+
+// Touch controls for mobile
+renderer.domElement.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartPos.x = touch.clientX;
+    touchStartPos.y = touch.clientY;
+    lastTouchPos.x = touch.clientX;
+    lastTouchPos.y = touch.clientY;
+    
+    // Convert touch to mouse coordinates
+    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    
+    checkBeerProximity();
+    
+    if (isNearBeer && !isGrabbed && currentBeer) {
+        grabBeer();
+    } else if (isGrabbed && currentBeer && currentBeer.userData.isOpen) {
+        mouseDown = true;
+        mouseY = touch.clientY;
+        document.body.classList.add('grabbing');
+    }
+});
+
+renderer.domElement.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    
+    // Update mouse position for raycasting
+    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    
+    // Track touch velocity
+    touchVelocity.x = touch.clientX - lastTouchPos.x;
+    touchVelocity.y = touch.clientY - lastTouchPos.y;
+    lastTouchPos.x = touch.clientX;
+    lastTouchPos.y = touch.clientY;
+    
+    if (mouseDown && currentBeer && currentBeer.userData.isOpen && currentBeer.userData.beerAmount > 0) {
+        const deltaY = touch.clientY - mouseY;
+        if (deltaY > 5) {
+            isDrinking = true;
+            const tiltAmount = Math.min(deltaY * 0.005, Math.PI / 4);
+            currentBeer.rotation.x = tiltAmount;
+            currentBeer.rotation.z = Math.sin(Date.now() * 0.01) * 0.05;
+        }
+    }
+    
+    if (isGrabbed && currentBeer && !mouseDown) {
+        // Move beer with touch
+        const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+        vector.unproject(camera);
+        const dir = vector.sub(camera.position).normalize();
+        const pos = camera.position.clone().add(dir.multiplyScalar(grabDistance));
+        grabTargetPos.set(pos.x, Math.max(2.5, pos.y), pos.z);
+    }
+});
+
+renderer.domElement.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    
+    if (mouseDown) {
+        mouseDown = false;
+        isDrinking = false;
+        document.body.classList.remove('grabbing');
+    }
+    
+    // Double tap to open beer
+    const now = Date.now();
+    const timeSinceLastTap = now - (renderer.domElement.lastTapTime || 0);
+    renderer.domElement.lastTapTime = now;
+    
+    if (timeSinceLastTap < 300 && isGrabbed && currentBeer && !currentBeer.userData.isOpen) {
+        openBeer();
+    }
+    
+    // Swipe up to throw
+    const swipeDistance = touchStartPos.y - lastTouchPos.y;
+    if (swipeDistance > 50 && isGrabbed && currentBeer) {
+        // Use touch velocity for throwing
+        mouseVelocity.x = touchVelocity.x;
+        mouseVelocity.y = touchVelocity.y;
+        throwBeer();
+    }
+});
+
+// Pinch gesture for grab distance (mobile zoom)
+let lastPinchDistance = 0;
+renderer.domElement.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2 && isGrabbed && currentBeer) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (lastPinchDistance > 0) {
+            const delta = distance - lastPinchDistance;
+            grabDistance += delta * 0.01;
+            grabDistance = Math.max(2, Math.min(8, grabDistance));
+        }
+        
+        lastPinchDistance = distance;
+    }
+});
+
+renderer.domElement.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+        lastPinchDistance = 0;
     }
 });
 
