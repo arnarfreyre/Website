@@ -417,6 +417,47 @@
         font-family: 'Courier New', Courier, monospace;
     }
 
+    /* Browse controls styling */
+    .browse-controls {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .browse-controls select {
+        background: #1a1a1a;
+        color: #e0e0e0;
+        border: 1px solid #333;
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 150px;
+    }
+
+    .browse-controls select:hover {
+        background: #242424;
+        border-color: #4c6baf;
+    }
+
+    .browse-controls select:focus {
+        outline: none;
+        border-color: #6d8ad0;
+        box-shadow: 0 0 0 2px rgba(109, 138, 208, 0.2);
+    }
+
+    .browse-controls select option {
+        background: #1a1a1a;
+        color: #e0e0e0;
+        padding: 5px;
+    }
+
     .online-levels-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

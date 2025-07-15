@@ -280,7 +280,7 @@ class OnlineLevelBrowser {
         }
     }
 
-    displayLevels(levels, containerId) {
+    async displayLevels(levels, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
 
@@ -302,24 +302,27 @@ class OnlineLevelBrowser {
             return;
         }
 
-        levels.forEach(level => {
-            const card = this.createLevelCard(level);
-            container.appendChild(card);
-        });
+        // Create cards asynchronously
+        const cards = await Promise.all(levels.map(level => this.createLevelCard(level)));
+        cards.forEach(card => container.appendChild(card));
     }
 
-    createLevelCard(level) {
+    async createLevelCard(level) {
         const card = document.createElement('div');
         card.className = 'online-level-card';
         card.onclick = () => this.showLevelDetails(level);
 
         const difficultyClass = `difficulty-${level.difficulty || 'medium'}`;
         const rating = level.rating ? '★'.repeat(Math.round(level.rating)) : 'Not rated';
+        
+        // Check if current user is admin
+        const isAdmin = await this.checkUserIsAdmin();
 
         card.innerHTML = `
             <div class="level-card-header">
                 <h3 class="level-card-title">${this.escapeHtml(level.name)}</h3>
                 <span class="difficulty-badge ${difficultyClass}">${level.difficulty || 'Medium'}</span>
+                ${level.isFeatured ? '<span class="featured-badge">⭐ Featured</span>' : ''}
             </div>
             <div class="level-card-stats">
                 <div class="stat-item">
@@ -340,6 +343,13 @@ class OnlineLevelBrowser {
                 </div>
             </div>
             <div class="level-card-author">by ${this.escapeHtml(level.author)}</div>
+            ${isAdmin ? `
+                <div class="admin-controls">
+                    <button class="admin-feature-btn" onclick="event.stopPropagation(); window.onlineLevelBrowser.toggleFeatureLevel('${level.id}', ${!!level.isFeatured})">
+                        ${level.isFeatured ? 'Unfeature' : 'Feature'}
+                    </button>
+                </div>
+            ` : ''}
         `;
 
         return card;
@@ -587,6 +597,57 @@ class OnlineLevelBrowser {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    async checkUserIsAdmin() {
+        try {
+            const user = window.authManager?.getCurrentUser();
+            if (!user) return false;
+            
+            const userDoc = await window.db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                return userDoc.data().isAdmin === true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+            return false;
+        }
+    }
+
+    async toggleFeatureLevel(levelId, isCurrentlyFeatured) {
+        try {
+            const user = window.authManager?.getCurrentUser();
+            if (!user) {
+                alert('You must be signed in to perform this action');
+                return;
+            }
+
+            // Double-check admin status
+            const isAdmin = await this.checkUserIsAdmin();
+            if (!isAdmin) {
+                alert('Only admins can feature levels');
+                return;
+            }
+
+            // Update the level's featured status
+            await window.db.collection('levels').doc(levelId).update({
+                isFeatured: !isCurrentlyFeatured,
+                featuredBy: !isCurrentlyFeatured ? user.uid : null,
+                featuredAt: !isCurrentlyFeatured ? firebase.firestore.FieldValue.serverTimestamp() : null
+            });
+
+            // Refresh the current view
+            const activeTab = document.querySelector('.tab-button.active');
+            if (activeTab) {
+                this.switchTab(activeTab.dataset.tab);
+            }
+
+            console.log(`Level ${levelId} ${!isCurrentlyFeatured ? 'featured' : 'unfeatured'} successfully`);
+        } catch (error) {
+            console.error('Error toggling feature status:', error);
+            alert('Failed to update level feature status');
+        }
     }
 
     formatDate(timestamp) {
