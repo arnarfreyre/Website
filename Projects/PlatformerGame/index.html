@@ -544,6 +544,7 @@
     <script src="js/player.js"></script>
     <script src="js/debug-overlay.js"></script>
     <script src="js/debug-panel.js"></script>
+    <script src="js/debug-help.js"></script>
     <script src="js/renderer.js"></script>
     <script src="js/level-editor.js"></script>
     <script src="js/enhanced-level-editor.js"></script>
@@ -643,7 +644,29 @@
 
         // Setup home screen buttons
         document.addEventListener('DOMContentLoaded', async () => {
-            // Ensure home screen is shown on load
+            // Check if we need to play an online level directly
+            const urlParams = new URLSearchParams(window.location.search);
+            const playOnlineId = urlParams.get('playOnline');
+            
+            if (playOnlineId) {
+                // Skip home screen and start the game directly
+                console.log('Playing online level:', playOnlineId);
+                hideHomeScreen();
+                
+                try {
+                    await waitForGame();
+                    // Wait a bit for game to fully initialize
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    // The game will handle the playOnline parameter
+                    await window.gameManager.startGame();
+                } catch (error) {
+                    console.error('Failed to start online level:', error);
+                    showHomeScreen();
+                }
+                return;
+            }
+            
+            // Otherwise show home screen normally
             showHomeScreen();
             
             // Play Game button - opens level select
