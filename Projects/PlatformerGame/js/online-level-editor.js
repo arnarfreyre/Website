@@ -211,14 +211,15 @@
 
             // Check if we're editing an existing level
             const urlParams = new URLSearchParams(window.location.search);
-            const editLevelId = urlParams.get('edit');
+            const editLevelId = urlParams.get('edit') || localStorage.getItem('editingLevelId');
+            const isEditMode = editLevelId || window.editingLevelId;
             
             // Create online save button
             const onlineSaveBtn = document.createElement('button');
             onlineSaveBtn.id = 'online-save-btn';
-            onlineSaveBtn.textContent = editLevelId ? 'Update Level' : 'Post Online';
-            onlineSaveBtn.style.backgroundColor = editLevelId ? '#4c6baf' : '#41a547';
-            onlineSaveBtn.title = editLevelId ? 'Update this level' : 'Post this level online for everyone to play';
+            onlineSaveBtn.textContent = isEditMode ? 'Update Level' : 'Post Online';
+            onlineSaveBtn.style.backgroundColor = isEditMode ? '#4c6baf' : '#41a547';
+            onlineSaveBtn.title = isEditMode ? 'Update this level' : 'Post this level online for everyone to play';
 
             // Remove any existing save button to avoid duplicates
             const existingSaveBtn = document.getElementById('save-btn');
@@ -335,7 +336,10 @@
             
             // Check for existing level ID from multiple sources
             let existingLevelId = null;
-            if (window.onlineLevelIds && window.onlineLevelIds[window.currentLevel || 0]) {
+            if (window.editingLevelId) {
+                // If we're editing a specific level, use that ID
+                existingLevelId = window.editingLevelId;
+            } else if (window.onlineLevelIds && window.onlineLevelIds[window.currentLevel || 0]) {
                 existingLevelId = window.onlineLevelIds[window.currentLevel || 0];
             } else if (window.currentOnlineLevelId) {
                 existingLevelId = window.currentOnlineLevelId;
@@ -499,20 +503,34 @@
          */
         async function loadLevelForEditing() {
             const urlParams = new URLSearchParams(window.location.search);
-            const editLevelId = urlParams.get('edit');
+            let editLevelId = urlParams.get('edit');
+            
+            // Check localStorage if no URL parameter
+            if (!editLevelId) {
+                editLevelId = localStorage.getItem('editingLevelId');
+                if (editLevelId) {
+                    // Clean up localStorage
+                    localStorage.removeItem('editingLevelId');
+                }
+            }
             
             if (!editLevelId) return;
             
             try {
+                console.log('Loading level for editing:', editLevelId);
+                
                 // Load the level from Firebase
                 const level = await window.levelAPI.getLevel(editLevelId);
                 
                 // Check if user owns this level
                 if (level.authorId !== window.authManager.getUserId()) {
                     alert('You can only edit your own levels!');
-                    window.location.href = 'my-levels.html';
+                    window.location.href = 'accounts.html';
                     return;
                 }
+                
+                // Store the editing level ID for saving
+                window.editingLevelId = editLevelId;
                 
                 // Set up the level data
                 window.levels = [level.grid];
@@ -542,7 +560,7 @@
                     window.updateLevelSelector();
                 }
                 
-                // Update save button text
+                // Update save button to show we're in edit mode
                 const onlineSaveBtn = document.getElementById('online-save-btn');
                 if (onlineSaveBtn) {
                     onlineSaveBtn.textContent = 'Update Level';
