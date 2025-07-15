@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A challenging 2D platformer game with integrated level editor">
+    <meta name="theme-color" content="#4c6baf">
+    <title>Pixel Platformer</title>
+    <link rel="icon" href="favicon.svg" type="image/x-icon">
+    <link rel="preload" href="audio/background_music.mp3" as="audio">
+    <link rel="preload" href="audio/jump.mp3" as="audio">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Additional styles for home screen */
+        body {
+            background: linear-gradient(180deg, #0a0a0a 0%, #0f0f0f 100%);
+            position: relative;
+        }
+
+        /* Subtle grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #homeScreen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .game-title {
+            font-size: 3em;
+            font-weight: normal;
+            color: #ffffff;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+            text-shadow: 0 2px 10px rgba(109, 138, 208, 0.3);
+            position: relative;
+        }
+
+        /* Accent line under title */
+        .game-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #6d8ad0, transparent);
+            border-radius: 2px;
+        }
+
+        .game-subtitle {
+            font-size: 1.1em;
+            color: #999;
+            margin-bottom: 10px;
+            margin-top: 25px;
+            font-style: italic;
+        }
+
+        .user-info {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .user-info span {
+            color: #8fa7e8;
+            font-weight: bold;
+        }
+
+        .user-info a {
+            color: #6d8ad0;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .user-info a:hover {
+            border-bottom-color: #6d8ad0;
+        }
+
+        .home-menu {
+            background: linear-gradient(135deg, #111111 0%, #0f0f0f 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 40px 35px;
+            min-width: 340px;
+            max-width: 400px;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.8),
+                0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            animation: menuFadeIn 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        .menu-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-title {
+            font-size: 0.85em;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .home-menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .home-menu button, .menu-link {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.05em;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #161616 100%);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-menu button::before, .menu-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(109, 138, 208, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .home-menu button:hover::before, .menu-link:hover::before {
+            left: 100%;
+        }
+
+        .home-menu button:hover, .menu-link:hover {
+            background: linear-gradient(135deg, #1e1e1e 0%, #1a1a1a 100%);
+            border-color: rgba(109, 138, 208, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            color: #ffffff;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #5a7cc0 0%, #4c6baf 100%);
+            border: 1px solid #5a7cc0;
+            font-size: 1.25em;
+            padding: 18px 40px;
+            color: #ffffff;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .primary-button:hover {
+            background: linear-gradient(135deg, #6d8ad0 0%, #5a7cc0 100%);
+            border-color: #6d8ad0;
+            transform: translateY(-3px);
+            box-shadow:
+                0 6px 20px rgba(109, 138, 208, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer-links {
+            margin-top: 40px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            font-size: 0.85em;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links:hover {
+            opacity: 1;
+        }
+
+        .footer-links a {
+            color: #777;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .footer-links a:hover {
+            color: #6d8ad0;
+            background: rgba(109, 138, 208, 0.1);
+        }
+
+        /* Hide game container initially */
+        .game-container {
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5em;
+            }
+
+            .game-subtitle {
+                font-size: 1em;
+            }
+
+            .home-menu {
+                padding: 30px 25px;
+                min-width: 300px;
+            }
+
+            .home-menu button, .menu-link {
+                font-size: 1em;
+                padding: 12px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 2em;
+            }
+
+            .home-menu {
+                padding: 25px 20px;
+                min-width: 280px;
+                margin: 0 10px;
+            }
+
+            .home-menu button, .menu-link {
+                font-size: 0.95em;
+                padding: 10px 20px;
+            }
+
+            .primary-button {
+                font-size: 1.1em;
+                padding: 15px 30px;
+            }
+        }
+
+        /* Ensure content fits on smaller screens */
+        @media (max-height: 700px) {
+            #homeScreen {
+                padding: 10px;
+            }
+
+            .game-header {
+                margin-bottom: 25px;
+            }
+
+            .game-title {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+
+            .game-subtitle {
+                margin-top: 15px;
+                margin-bottom: 5px;
+            }
+
+            .user-info {
+                margin-top: 15px;
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+
+            .home-menu {
+                padding: 30px 25px;
+            }
+
+            .menu-section {
+                margin-bottom: 20px;
+            }
+
+            .footer-links {
+                margin-top: 25px;
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div id="homeScreen">
+        <header class="game-header">
+            <h1 class="game-title">Pixel Platformer</h1>
+            <p class="game-subtitle">A challenging platformer with pixel-perfect precision</p>
+            <div class="user-info" id="userInfo">
+                <span class="loading">Loading user data</span>
+            </div>
+        </header>
+
+        <main class="home-menu">
+            <div class="menu-section">
+                <button class="primary-button" id="playGameBtn">
+                    Play Game
+                </button>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Game Options</div>
+                <nav class="home-menu-buttons">
+                    <button id="settingsBtn">Settings</button>
+                    <button id="onlineLevelsBtn">Browse Online Levels</button>
+                </nav>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Create & Manage</div>
+                <nav class="home-menu-buttons">
+                    <a href="level-editor.html" class="menu-link">Level Editor</a>
+                    <a href="my-levels.html" class="menu-link">My Levels</a>
+                    <a href="accounts.html" class="menu-link">My Account</a>
+                </nav>
+            </div>
+        </main>
+
+        <footer class="footer-links">
+            <a href="https://github.com/anthropics/claude-code/issues" target="_blank">Report Issue</a>
+            <a href="#" id="aboutBtn">About</a>
+        </footer>
+    </div>
+
+    <!-- Main game container from original index.html -->
+    <main class="game-container" aria-live="polite">
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas" width="800" height="600" aria-label="Game play area" role="img"></canvas>
+
+        <!-- Game UI -->
+        <div class="ui" id="ui" aria-live="polite">Level: 1 | Deaths: 0</div>
+
+        <!-- Main Menu -->
+        <section class="menu" id="mainMenu" role="dialog" aria-labelledby="gameTitle">
+            <h1 id="gameTitle">Pixel Platformer</h1>
+            <div class="level-info">Complete challenging levels with increasing difficulty</div>
+            <nav class="menu-buttons">
+                <button id="playButton" aria-label="Start the game">Play Game</button>
+                <button id="levelSelectButton" aria-label="Open level select screen">Level Select</button>
+                <button id="settingsButton" aria-label="Open settings menu">Settings</button>
+                <button id="levelEditorButton" aria-label="Open level editor">Level Editor</button>
+                <button id="onlineLevelsButton">Online Levels</button>
+                <button id="myAccountButton" aria-label="View my account">My Account</button>
+            </nav>
+        </section>
+
+        <!-- Level Select Menu -->
+        <section class="menu" id="levelSelectMenu" style="display: none;" role="dialog" aria-labelledby="levelSelectTitle">
+            <h2 id="levelSelectTitle">Level Select</h2>
+            <div id="levelButtons" class="level-buttons" role="menu"></div>
+            <button id="backFromLevelSelect" class="back-button" aria-label="Return to main menu">Back</button>
+        </section>
+
+        <!-- Online Levels Menu -->
+        <section class="menu" id="onlineLevelsMenu" style="display: none;" role="dialog" aria-labelledby="onlineLevelsTitle">
+            <h2 id="onlineLevelsTitle">Online Levels</h2>
+            <div class="level-tabs">
+                <button class="tab-button active" data-tab="browse">Browse All</button>
+                <button class="tab-button" data-tab="featured">Featured</button>
+                <button class="tab-button" data-tab="search">Search</button>
+                <button class="tab-button" data-tab="my-levels">My Levels</button>
+            </div>
+            <div id="browseTab" class="tab-content active">
+                <div id="onlineLevelsList" class="online-levels-list"></div>
+            </div>
+            <button id="backFromOnlineLevels" class="back-button" aria-label="Return to main menu">Back</button>
+        </section>
+
+        <!-- Settings Menu -->
+        <section class="menu" id="settingsMenu" style="display: none;" role="dialog" aria-labelledby="settingsTitle">
+            <h2 id="settingsTitle">Settings</h2>
+            <div class="settings-container">
+                <div class="setting">
+                    <label for="musicVolume">Music Volume:</label>
+                    <input type="range" id="musicVolume" min="0" max="100" value="50">
+                    <span id="musicVolumeValue">50%</span>
+                </div>
+                <div class="setting">
+                    <label for="sfxVolume">SFX Volume:</label>
+                    <input type="range" id="sfxVolume" min="0" max="100" value="70">
+                    <span id="sfxVolumeValue">70%</span>
+                </div>
+                <div class="setting checkbox">
+                    <input type="checkbox" id="showFPS" checked>
+                    <label for="showFPS">Show FPS</label>
+                </div>
+                <div class="setting checkbox">
+                    <input type="checkbox" id="pixelPerfect" checked>
+                    <label for="pixelPerfect">Pixel Perfect Rendering</label>
+                </div>
+            </div>
+            <button id="backFromSettings" class="back-button">Back</button>
+        </section>
+
+        <!-- Game Over Menu -->
+        <section class="menu" id="gameOverMenu" style="display: none;" role="dialog">
+            <h2 id="levelCompleteText">Level Complete!</h2>
+            <div class="level-stats">
+                <p>Deaths: <span id="levelDeaths">0</span></p>
+                <p>Time: <span id="levelTime">00:00</span></p>
+            </div>
+            <nav class="menu-buttons">
+                <button id="nextLevelButton">Next Level</button>
+                <button id="restartButton">Restart Level</button>
+                <button id="menuButton">Main Menu</button>
+            </nav>
+        </section>
+
+        <!-- Pause Menu -->
+        <section class="menu" id="pauseMenu" style="display: none;" role="dialog">
+            <h2>Paused</h2>
+            <nav class="menu-buttons">
+                <button id="resumeButton">Resume</button>
+                <button id="restartFromPause">Restart Level</button>
+                <button id="settingsFromPause">Settings</button>
+                <button id="exitToMenu">Exit to Menu</button>
+            </nav>
+        </section>
+    </main>
+
+    <!-- Firebase and API scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/level-api.js"></script>
+
+    <!-- Game scripts -->
+    <script src="js/constants.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/level-editor.js"></script>
+    <script src="js/enhanced-level-editor.js"></script>
+    <script src="js/online-level-editor.js"></script>
+    <script src="js/online-browser.js"></script>
+    <script src="js/default_levels.js" type="module"></script>
+    <script src="js/audio.js" type="module"></script>
+    <script src="js/levels-firebase.js" type="module"></script>
+    <script src="js/ui.js" type="module"></script>
+    <script src="js/game.js" type="module"></script>
+    <script src="js/app.js" type="module"></script>
+
+    <script>
+        // Home screen specific functionality
+        let homeScreenActive = true;
+
+        // Initialize user info
+        async function initUserInfo() {
+            const userInfoEl = document.getElementById('userInfo');
+
+            try {
+                // Wait for auth manager to be ready
+                let attempts = 0;
+                while (!window.authManager && attempts < 20) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+
+                if (window.authManager) {
+                    await window.authManager.init();
+                    const user = window.authManager.getCurrentUser();
+
+                    if (user && window.db) {
+                        const userDoc = await window.db.collection('users').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            const bestTimes = userData.bestTimes || {};
+
+                            let completedCount = 0;
+                            for (let i = 0; i < 18; i++) {
+                                if (bestTimes[`level_${i}`]) completedCount++;
+                            }
+
+                            userInfoEl.innerHTML = `
+                                Welcome back, <span>${user.displayName || 'Player'}</span> •
+                                Progress: <span>${completedCount}/18</span> levels completed
+                            `;
+                        } else {
+                            userInfoEl.innerHTML = `Welcome, <span>${user.displayName || 'Player'}</span>`;
+                        }
+                    } else {
+                        userInfoEl.innerHTML = 'Not signed in • <a href="accounts.html" style="color: #6d8ad0;">Sign in</a> to track progress';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                userInfoEl.innerHTML = '';
+            }
+        }
+
+        // Show home screen
+        function showHomeScreen() {
+            homeScreenActive = true;
+            document.getElementById('homeScreen').style.display = 'flex';
+            document.querySelector('.game-container').style.display = 'none';
+
+            // Hide all menus
+            document.querySelectorAll('.menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+
+            // Pause game if running
+            if (window.gameManager && window.gameManager.gameState.state === GameStates.PLAYING) {
+                window.gameManager.pauseGame();
+            }
+        }
+
+        // Hide home screen and show game
+        function hideHomeScreen() {
+            homeScreenActive = false;
+            document.getElementById('homeScreen').style.display = 'none';
+            document.querySelector('.game-container').style.display = 'block';
+        }
+
+        // Wait for game to be ready
+        async function waitForGame() {
+            let attempts = 0;
+            while ((!window.gameManager || !window.uiManager) && attempts < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+
+            if (!window.gameManager || !window.uiManager) {
+                throw new Error('Game failed to initialize');
+            }
+        }
+
+        // Setup home screen buttons
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Ensure home screen is shown on load
+            showHomeScreen();
+            
+            // Play Game button - opens level select
+            document.getElementById('playGameBtn').addEventListener('click', async () => {
+                hideHomeScreen();
+
+                try {
+                    await waitForGame();
+                    window.uiManager.showMenu(GameStates.LEVEL_SELECT);
+                } catch (error) {
+                    console.error('Failed to show level select:', error);
+                    showHomeScreen();
+                    alert('Failed to load game. Please refresh the page.');
+                }
+            });
+
+            // Settings button
+            document.getElementById('settingsBtn').addEventListener('click', async () => {
+                hideHomeScreen();
+
+                try {
+                    await waitForGame();
+                    window.uiManager.showMenu(GameStates.SETTINGS);
+                } catch (error) {
+                    console.error('Failed to show settings:', error);
+                    showHomeScreen();
+                }
+            });
+
+            // Online levels button
+            document.getElementById('onlineLevelsBtn').addEventListener('click', async () => {
+                hideHomeScreen();
+
+                try {
+                    await waitForGame();
+                    window.uiManager.showMenu(GameStates.MENU);
+                    window.uiManager.showOnlineLevels();
+                } catch (error) {
+                    console.error('Failed to show online levels:', error);
+                    showHomeScreen();
+                }
+            });
+
+            // About button
+            document.getElementById('aboutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAbout();
+            });
+
+            // Override exit to menu functionality after game loads
+            await waitForGame();
+            
+            // Override the game manager's exit to main menu
+            if (window.gameManager) {
+                const originalExitToMainMenu = window.gameManager.exitToMainMenu;
+                window.gameManager.exitToMainMenu = function() {
+                    showHomeScreen();
+                };
+            }
+            
+            // Override UI manager's showMenu to intercept main menu calls
+            if (window.uiManager) {
+                const originalShowMenu = window.uiManager.showMenu;
+                window.uiManager.showMenu = function(state) {
+                    if (state === GameStates.MENU && !homeScreenActive) {
+                        showHomeScreen();
+                    } else {
+                        originalShowMenu.call(this, state);
+                    }
+                };
+            }
+
+            // Initialize user info
+            await initUserInfo();
+        });
+
+        // Show about dialog
+        function showAbout() {
+            const aboutHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #111111 0%, #0f0f0f 100%);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 12px;
+                    padding: 40px;
+                    color: white;
+                    font-family: 'Courier New', monospace;
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+                    z-index: 10000;
+                    max-width: 400px;
+                    text-align: center;
+                ">
+                    <h2 style="color: #6d8ad0; margin-bottom: 20px; font-size: 1.8em;">Pixel Platformer</h2>
+                    <p style="color: #999; margin-bottom: 20px;">Version 1.0</p>
+                    <p style="color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        A challenging platformer game with pixel-perfect precision.
+                        Create and share your own levels with the built-in editor.
+                    </p>
+                    <p style="color: #777; font-size: 0.9em; margin-bottom: 25px;">
+                        Built with HTML5 Canvas and Firebase
+                    </p>
+                    <button onclick="this.parentElement.remove()" style="
+                        padding: 12px 30px;
+                        background: #4c6baf;
+                        border: none;
+                        border-radius: 6px;
+                        color: white;
+                        font-size: 1em;
+                        cursor: pointer;
+                        font-family: inherit;
+                    ">Close</button>
+                </div>
+                <div onclick="this.remove()" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 9999;
+                "></div>
+            `;
+
+            const aboutDiv = document.createElement('div');
+            aboutDiv.innerHTML = aboutHTML;
+            document.body.appendChild(aboutDiv);
+        }
+    </script>
+</body>
+</html>
