@@ -1,0 +1,28 @@
+{
+  "name": "platformer-game",
+  "version": "1.0.0",
+  "description": "A fun 2D platformer game with level editor and Firebase integration",
+  "scripts": {
+    "start": "python3 server.py",
+    "firebase": "firebase",
+    "deploy-indexes": "firebase deploy --only firestore:indexes",
+    "deploy-rules": "firebase deploy --only firestore:rules",
+    "deploy-firestore": "firebase deploy --only firestore",
+    "deploy-hosting": "firebase deploy --only hosting",
+    "deploy-all": "firebase deploy",
+    "serve": "firebase serve",
+    "login": "firebase login",
+    "init": "firebase init"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.10.1"
+  },
+  "keywords": [
+    "game",
+    "platformer",
+    "firebase",
+    "level-editor"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
