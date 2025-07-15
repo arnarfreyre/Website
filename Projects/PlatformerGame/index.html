@@ -697,16 +697,29 @@
             });
 
             // Online levels button
+            let onlineLevelsLoading = false;
             document.getElementById('onlineLevelsBtn').addEventListener('click', async () => {
+                // Prevent multiple rapid clicks
+                if (onlineLevelsLoading) {
+                    console.log('Online levels already loading, ignoring click');
+                    return;
+                }
+                
+                onlineLevelsLoading = true;
                 hideHomeScreen();
 
                 try {
                     await waitForGame();
-                    window.uiManager.showMenu(GameStates.MENU);
+                    // Don't show main menu first - go directly to online levels
                     window.uiManager.showOnlineLevels();
                 } catch (error) {
                     console.error('Failed to show online levels:', error);
                     showHomeScreen();
+                } finally {
+                    // Reset the flag after a delay to allow navigation
+                    setTimeout(() => {
+                        onlineLevelsLoading = false;
+                    }, 1000);
                 }
             });
 
@@ -798,5 +811,22 @@
             document.body.appendChild(aboutDiv);
         }
     </script>
+
+    <!-- Audio elements -->
+    <audio id="jumpSound" preload="auto" style="display: none;">
+        <source src="audio/jump.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="deathSound" preload="auto" style="display: none;">
+        <source src="audio/death.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="completeSound" preload="auto" style="display: none;">
+        <source src="audio/level_complete.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgMusic" preload="auto" loop style="display: none;">
+        <source src="audio/background_music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="menuMusic" preload="auto" loop style="display: none;">
+        <source src="audio/HomeScreen.mp3" type="audio/mpeg">
+    </audio>
 </body>
 </html>

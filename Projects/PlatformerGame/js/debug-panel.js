@@ -406,20 +406,25 @@ class DebugPanel {
                 this.toggle();
             }
             
-            // Quick toggles
-            if (e.ctrlKey && e.shiftKey) {
-                switch(e.key) {
-                    case 'C':
+            // Use Option/Alt key for debug shortcuts to avoid Mac conflicts
+            if (e.altKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'c':
                         e.preventDefault();
                         this.debugOverlay.showCollisionBoxes = !this.debugOverlay.showCollisionBoxes;
                         document.getElementById('showCollisionBoxes').checked = this.debugOverlay.showCollisionBoxes;
                         break;
-                    case 'G':
+                    case 'i':
                         e.preventDefault();
-                        this.debugOverlay.showTileGrid = !this.debugOverlay.showTileGrid;
-                        document.getElementById('showTileGrid').checked = this.debugOverlay.showTileGrid;
+                        this.debugOverlay.showIcePhysics = !this.debugOverlay.showIcePhysics;
+                        document.getElementById('showIcePhysics').checked = this.debugOverlay.showIcePhysics;
                         break;
-                    case 'P':
+                    case 's':
+                        e.preventDefault();
+                        this.debugOverlay.showPlayerStats = !this.debugOverlay.showPlayerStats;
+                        document.getElementById('showPlayerStats').checked = this.debugOverlay.showPlayerStats;
+                        break;
+                    case 'f':
                         e.preventDefault();
                         this.debugOverlay.showPerformance = !this.debugOverlay.showPerformance;
                         document.getElementById('showPerformance').checked = this.debugOverlay.showPerformance;

@@ -132,26 +132,80 @@ class DebugOverlay {
                     const tileX = x * TILE_SIZE;
                     const tileY = y * TILE_SIZE;
                     
-                    // Draw tile overlays based on type
+                    // Draw tile overlays based on type with enhanced visibility
                     if (tileType.deadly) {
-                        ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+                        // Red stripes for deadly tiles
+                        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
                         ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
                         
-                        // Draw danger symbol
-                        ctx.font = '16px Arial';
-                        ctx.fillStyle = '#ff0000';
+                        // Diagonal stripes
+                        ctx.strokeStyle = '#ff0000';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        for (let i = -TILE_SIZE; i < TILE_SIZE * 2; i += 8) {
+                            ctx.moveTo(tileX + i, tileY);
+                            ctx.lineTo(tileX + i - TILE_SIZE, tileY + TILE_SIZE);
+                        }
+                        ctx.stroke();
+                        
+                        // Draw danger symbol with glow
+                        ctx.shadowColor = '#ff0000';
+                        ctx.shadowBlur = 5;
+                        ctx.font = 'bold 20px Arial';
+                        ctx.fillStyle = '#ffffff';
+                        ctx.strokeStyle = '#ff0000';
+                        ctx.lineWidth = 3;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
+                        ctx.strokeText('⚠', tileX + TILE_SIZE/2, tileY + TILE_SIZE/2);
                         ctx.fillText('⚠', tileX + TILE_SIZE/2, tileY + TILE_SIZE/2);
+                        ctx.shadowBlur = 0;
                     } else if (tileType.ice) {
-                        ctx.fillStyle = 'rgba(0, 255, 255, 0.2)';
+                        // Ice effect with shimmer
+                        ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
                         ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+                        
+                        // Ice crystals pattern
+                        ctx.strokeStyle = '#00ffff';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(tileX + TILE_SIZE/2, tileY + 5);
+                        ctx.lineTo(tileX + TILE_SIZE/2, tileY + TILE_SIZE - 5);
+                        ctx.moveTo(tileX + 5, tileY + TILE_SIZE/2);
+                        ctx.lineTo(tileX + TILE_SIZE - 5, tileY + TILE_SIZE/2);
+                        ctx.stroke();
                     } else if (tileType.bounce) {
-                        ctx.fillStyle = 'rgba(255, 0, 255, 0.2)';
+                        // Spring effect for bounce pads
+                        ctx.fillStyle = 'rgba(255, 0, 255, 0.3)';
                         ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+                        
+                        // Spring symbol
+                        ctx.strokeStyle = '#ff00ff';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        for (let i = 0; i < 3; i++) {
+                            const y = tileY + 10 + i * 8;
+                            ctx.moveTo(tileX + 8, y);
+                            ctx.quadraticCurveTo(tileX + TILE_SIZE/2, y - 3, tileX + TILE_SIZE - 8, y);
+                        }
+                        ctx.stroke();
                     } else if (tileId === 3) { // Goal
-                        ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
+                        // Pulsing goal effect
+                        const pulse = Math.sin(Date.now() * 0.005) * 0.2 + 0.3;
+                        ctx.fillStyle = `rgba(255, 255, 0, ${pulse})`;
                         ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+                        
+                        // Star symbol
+                        ctx.fillStyle = '#ffff00';
+                        ctx.font = 'bold 20px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('★', tileX + TILE_SIZE/2, tileY + TILE_SIZE/2);
+                    } else if (tileType.solid) {
+                        // Outline solid tiles
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(tileX + 0.5, tileY + 0.5, TILE_SIZE - 1, TILE_SIZE - 1);
                     }
                     
                     // Draw tile ID in corner
@@ -196,53 +250,137 @@ class DebugOverlay {
         const player = gameState.player;
         
         if (player) {
-            // Player hitbox
-            ctx.strokeStyle = player.alive ? this.colors.player : this.colors.playerDanger;
-            ctx.lineWidth = 2;
+            // Draw shadow/glow effect for better visibility
+            ctx.shadowColor = player.alive ? '#00ff00' : '#ff0000';
+            ctx.shadowBlur = 10;
+            
+            // Player hitbox with thick border
+            ctx.strokeStyle = player.alive ? '#00ff00' : '#ff0000';
+            ctx.lineWidth = 3;
             ctx.strokeRect(player.x, player.y, player.width, player.height);
             
-            // Player center
-            ctx.fillStyle = this.colors.player;
+            // Inner hitbox for better visibility
+            ctx.strokeStyle = player.alive ? '#ffffff' : '#ffaaaa';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(player.x + 1, player.y + 1, player.width - 2, player.height - 2);
+            ctx.setLineDash([]);
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            
+            // Player center with larger indicator
+            ctx.fillStyle = '#ffff00';
             const centerX = player.x + player.width / 2;
             const centerY = player.y + player.height / 2;
-            ctx.fillRect(centerX - 2, centerY - 2, 4, 4);
             
-            // Ground detection points
+            // Draw crosshair at center
+            ctx.strokeStyle = '#ffff00';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 6, centerY);
+            ctx.lineTo(centerX + 6, centerY);
+            ctx.moveTo(centerX, centerY - 6);
+            ctx.lineTo(centerX, centerY + 6);
+            ctx.stroke();
+            
+            // Ground detection points with better visibility
             const groundPoints = [
-                { x: player.x + 2, y: player.y + player.height },
-                { x: player.x + player.width / 2, y: player.y + player.height },
-                { x: player.x + player.width - 2, y: player.y + player.height }
+                { x: player.x + 2, y: player.y + player.height, label: 'L' },
+                { x: player.x + player.width / 2, y: player.y + player.height, label: 'C' },
+                { x: player.x + player.width - 2, y: player.y + player.height, label: 'R' }
             ];
             
-            ctx.fillStyle = player.grounded ? '#00ff00' : '#ff0000';
             groundPoints.forEach(point => {
-                ctx.fillRect(point.x - 1, point.y - 1, 2, 2);
+                // Outer circle
+                ctx.strokeStyle = player.grounded ? '#00ff00' : '#ff0000';
+                ctx.fillStyle = player.grounded ? '#00ff00' : '#ff0000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Inner dot
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Label
+                ctx.font = 'bold 8px Arial';
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 3;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.strokeText(point.label, point.x, point.y - 6);
+                ctx.fillText(point.label, point.x, point.y - 6);
             });
             
-            // Show player bounds info
-            ctx.font = '10px Arial';
-            ctx.fillStyle = this.colors.text;
-            ctx.strokeStyle = this.colors.textShadow;
-            ctx.lineWidth = 2;
+            // Show player bounds info with better background
+            ctx.font = 'bold 12px Arial';
+            const boundsText = `(${Math.round(player.x)}, ${Math.round(player.y)})`;
+            const textWidth = ctx.measureText(boundsText).width;
+            
+            // Background for text
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(player.x - 2, player.y - 20, textWidth + 8, 16);
+            
+            // Text with shadow
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3;
             ctx.textAlign = 'left';
             ctx.textBaseline = 'bottom';
+            ctx.strokeText(boundsText, player.x + 2, player.y - 5);
+            ctx.fillText(boundsText, player.x + 2, player.y - 5);
             
-            const boundsText = `${Math.round(player.x)},${Math.round(player.y)}`;
-            ctx.strokeText(boundsText, player.x, player.y - 2);
-            ctx.fillText(boundsText, player.x, player.y - 2);
+            // Direction indicator
+            if (Math.abs(player.velX) > 0.1) {
+                ctx.strokeStyle = '#00ffff';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                const arrowX = player.velX > 0 ? player.x + player.width + 5 : player.x - 5;
+                const arrowY = player.y + player.height / 2;
+                
+                if (player.velX > 0) {
+                    ctx.moveTo(arrowX, arrowY);
+                    ctx.lineTo(arrowX + 10, arrowY);
+                    ctx.lineTo(arrowX + 7, arrowY - 3);
+                    ctx.moveTo(arrowX + 10, arrowY);
+                    ctx.lineTo(arrowX + 7, arrowY + 3);
+                } else {
+                    ctx.moveTo(arrowX, arrowY);
+                    ctx.lineTo(arrowX - 10, arrowY);
+                    ctx.lineTo(arrowX - 7, arrowY - 3);
+                    ctx.moveTo(arrowX - 10, arrowY);
+                    ctx.lineTo(arrowX - 7, arrowY + 3);
+                }
+                ctx.stroke();
+            }
         }
         
-        // Particle hitboxes
+        // Particle hitboxes with better visibility
         gameState.particles.forEach(particle => {
             ctx.strokeStyle = particle.color;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.globalAlpha = particle.life / 60;
+            
+            // Outer glow
+            ctx.shadowColor = particle.color;
+            ctx.shadowBlur = 5;
+            
             ctx.strokeRect(
                 particle.x - particle.size/2,
                 particle.y - particle.size/2,
                 particle.size,
                 particle.size
             );
+            
+            // Center dot
+            ctx.fillStyle = particle.color;
+            ctx.fillRect(particle.x - 1, particle.y - 1, 2, 2);
+            
+            ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
         });
     }

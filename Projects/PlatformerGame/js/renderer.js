@@ -63,28 +63,38 @@ class Renderer {
                 console.log(`Debug overlay: ${enabled ? 'ON' : 'OFF'}`);
             }
             
-            // Toggle specific debug settings with Ctrl+Shift combinations
-            if (e.ctrlKey && e.shiftKey && this.debugOverlay) {
-                switch(e.key) {
-                    case 'H':
+            // Use Option/Alt key for debug shortcuts to avoid Mac conflicts
+            if (e.altKey && this.debugOverlay) {
+                switch(e.key.toLowerCase()) {
+                    case 'h':
                         e.preventDefault();
                         this.debugOverlay.settings.showHitboxes = !this.debugOverlay.settings.showHitboxes;
                         console.log(`Hitboxes: ${this.debugOverlay.settings.showHitboxes ? 'ON' : 'OFF'}`);
                         break;
-                    case 'V':
+                    case 'v':
                         e.preventDefault();
                         this.debugOverlay.settings.showVelocityVectors = !this.debugOverlay.settings.showVelocityVectors;
                         console.log(`Velocity vectors: ${this.debugOverlay.settings.showVelocityVectors ? 'ON' : 'OFF'}`);
                         break;
-                    case 'T':
+                    case 't':
                         e.preventDefault();
                         this.debugOverlay.settings.showTileInfo = !this.debugOverlay.settings.showTileInfo;
                         console.log(`Tile info: ${this.debugOverlay.settings.showTileInfo ? 'ON' : 'OFF'}`);
                         break;
-                    case 'P':
+                    case 'p':
                         e.preventDefault();
                         this.debugOverlay.settings.showPathfinding = !this.debugOverlay.settings.showPathfinding;
                         console.log(`Path visualization: ${this.debugOverlay.settings.showPathfinding ? 'ON' : 'OFF'}`);
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        this.debugOverlay.settings.showTileGrid = !this.debugOverlay.settings.showTileGrid;
+                        console.log(`Tile grid: ${this.debugOverlay.settings.showTileGrid ? 'ON' : 'OFF'}`);
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        this.debugOverlay.settings.showDebugText = !this.debugOverlay.settings.showDebugText;
+                        console.log(`Debug text: ${this.debugOverlay.settings.showDebugText ? 'ON' : 'OFF'}`);
                         break;
                 }
             }

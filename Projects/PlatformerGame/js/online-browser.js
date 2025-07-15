@@ -94,8 +94,25 @@ class OnlineLevelBrowser {
         console.log('window.levelAPI available:', !!window.levelAPI);
         console.log('window.db available:', !!window.db);
         
+        // Get the menu element
+        const menu = document.getElementById('onlineLevelsMenu');
+        if (!menu) {
+            console.error('Online levels menu element not found!');
+            return;
+        }
+        
         // Show the online levels menu
-        document.getElementById('onlineLevelsMenu').style.display = 'flex';
+        menu.style.display = 'flex';
+        console.log('Online levels menu display set to flex');
+        
+        // Double-check it's visible
+        setTimeout(() => {
+            const currentDisplay = menu.style.display;
+            console.log('Online levels menu display after 100ms:', currentDisplay);
+            if (currentDisplay === 'none') {
+                console.error('Online levels menu was hidden again!');
+            }
+        }, 100);
 
         // Load initial content
         await this.loadBrowseLevels();
@@ -169,9 +186,14 @@ class OnlineLevelBrowser {
             const result = await window.levelAPI.getLevels(options);
             console.log('Loaded levels:', result);
 
-            this.displayLevels(result.levels, 'onlineLevelsList');
-            this.lastDoc = result.lastDoc;
-            this.hasMore = result.hasMore;
+            if (result && result.levels) {
+                this.displayLevels(result.levels, 'onlineLevelsList');
+                this.lastDoc = result.lastDoc;
+                this.hasMore = result.hasMore;
+            } else {
+                console.error('Invalid result structure:', result);
+                this.showError('Failed to load levels: Invalid response');
+            }
 
             // Update load more button
             const loadMoreBtn = document.getElementById('loadMoreLevels');
@@ -265,6 +287,19 @@ class OnlineLevelBrowser {
         // For featured lists, clear existing content
         if (containerId.includes('Levels') && containerId !== 'onlineLevelsList') {
             container.innerHTML = '';
+        }
+
+        // Check if levels is valid
+        if (!levels || !Array.isArray(levels)) {
+            console.error('Invalid levels data:', levels);
+            container.innerHTML = '<p style="text-align: center; color: #999;">No levels available</p>';
+            return;
+        }
+
+        // If no levels, show a message
+        if (levels.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999;">No levels found</p>';
+            return;
         }
 
         levels.forEach(level => {
