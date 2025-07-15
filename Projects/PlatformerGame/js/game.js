@@ -17,6 +17,12 @@ class GameManager {
         // Will be set by app.js after construction
         this.uiManager = null;
 
+        // Initialize debug panel
+        this.debugPanel = null;
+        if (window.DebugPanel) {
+            this.debugPanel = new window.DebugPanel(this);
+        }
+
         // Game state
         this.gameState = {
             player: null,
@@ -236,7 +242,7 @@ class GameManager {
 
         // Update UI
         if (this.uiManager) {
-            this.uiManager.updateGameUI(levelLoader.currentLevel, this.gameState.deaths);
+            this.uiManager.updateGameUI(levelLoader.currentLevel, this.gameState.deaths, this.gameState.levelTime);
         }
     }
 
@@ -267,7 +273,7 @@ class GameManager {
                 this.uiManager.hideAllMenus();
             }
 
-            audioManager.playGameMusic();
+            audioManager.resumeMusic();
 
             // Reset timing to avoid large jumps
             this.lastUpdateTime = performance.now();
@@ -298,7 +304,8 @@ class GameManager {
             this.uiManager.showMenu(GameStates.MENU);
         }
 
-        audioManager.stopAllMusic();
+        // Switch to menu music when returning to main menu
+        audioManager.playMenuMusic();
         
         // Clear custom level state when returning to menu
         if (levelLoader.isPlayingCustomLevel) {
@@ -354,7 +361,7 @@ class GameManager {
 
         // Update UI
         if (this.uiManager) {
-            this.uiManager.updateGameUI(levelLoader.currentLevel, this.gameState.deaths);
+            this.uiManager.updateGameUI(levelLoader.currentLevel, this.gameState.deaths, this.gameState.levelTime);
         }
 
         // Create death particles
@@ -394,6 +401,9 @@ class GameManager {
 
         // Play completion sound
         audioManager.playSound('levelComplete');
+
+        // Save best time if user is authenticated
+        this.saveBestTime(levelLoader.currentLevel, this.gameState.levelTime);
 
         // Show level complete screen after a delay
         setTimeout(() => {
@@ -435,6 +445,14 @@ class GameManager {
      */
     update(deltaTime) {
         if (this.gameState.state !== GameStates.PLAYING) return;
+
+        // Update level time
+        this.gameState.levelTime = (performance.now() - this.gameState.levelStartTime) / 1000;
+
+        // Update UI with current time
+        if (this.uiManager) {
+            this.uiManager.updateGameUI(levelLoader.currentLevel, this.gameState.deaths, this.gameState.levelTime);
+        }
 
         // Update player
         this.gameState.player.update(
@@ -495,6 +513,9 @@ class GameManager {
             this.accumulatedTime = 0;
         }
 
+        // Add delta time to game state for debug purposes
+        this.gameState.deltaTime = deltaTime;
+        
         // Render current state
         this.renderer.render(this.gameState);
 
@@ -544,12 +565,11 @@ class GameManager {
             
             // Parse player start position if available
             let playerStart = null;
-            if (levelData.startPosition) {
-                playerStart = typeof levelData.startPosition === 'string' ? 
-                    JSON.parse(levelData.startPosition) : levelData.startPosition;
-            } else if (levelData.playerStart) {
-                playerStart = typeof levelData.playerStart === 'string' ? 
-                    JSON.parse(levelData.playerStart) : levelData.playerStart;
+            if (levelData.playerStart) {
+                // playerStart is stored as an object, not a string
+                playerStart = levelData.playerStart;
+            } else if (levelData.startPosition) {
+                playerStart = levelData.startPosition;
             }
             
             // Create a temporary level object
@@ -569,13 +589,15 @@ class GameManager {
             
             // Find player start position
             let startPos;
-            if (playerStart) {
+            if (playerStart && playerStart.x !== undefined && playerStart.y !== undefined) {
+                console.log("Using saved player start position:", playerStart);
                 startPos = {
                     x: playerStart.x * TILE_SIZE,
                     y: playerStart.y * TILE_SIZE
                 };
             } else {
                 // Search for player tile in the grid
+                console.log("No player start position found, using default");
                 startPos = { x: TILE_SIZE, y: TILE_SIZE };
                 for (let y = 0; y < grid.length; y++) {
                     for (let x = 0; x < grid[y].length; x++) {
@@ -667,13 +689,15 @@ class GameManager {
             
             // Find player start position
             let startPos;
-            if (levelData.playerStart) {
+            if (levelData.playerStart && levelData.playerStart.x !== undefined && levelData.playerStart.y !== undefined) {
+                console.log("Using saved player start position:", levelData.playerStart);
                 startPos = {
                     x: levelData.playerStart.x * TILE_SIZE,
                     y: levelData.playerStart.y * TILE_SIZE
                 };
             } else {
                 // Search for player tile in the grid
+                console.log("No player start position found, using default");
                 startPos = { x: TILE_SIZE, y: TILE_SIZE };
                 for (let y = 0; y < grid.length; y++) {
                     for (let x = 0; x < grid[y].length; x++) {
@@ -725,6 +749,174 @@ class GameManager {
             console.error("Error loading temp test level:", error);
             alert("Failed to load test level: " + error.message);
         }
+    }
+
+    /**
+     * Save best time for a level if user is authenticated
+     * @param {number|string} levelIdentifier - The level index for default levels or level ID for online levels
+     * @param {number} time - The completion time in seconds
+     */
+    async saveBestTime(levelIdentifier, time) {
+        try {
+            // Check if user is authenticated
+            if (!window.authManager || !window.authManager.currentUser) {
+                return; // Skip if not authenticated
+            }
+
+            const userId = window.authManager.currentUser.uid;
+            const userRef = window.db.collection('users').doc(userId);
+            
+            // Get current user data
+            const userDoc = await userRef.get();
+            const userData = userDoc.exists ? userDoc.data() : {};
+            
+            // Initialize bestTimes object if it doesn't exist
+            const bestTimes = userData.bestTimes || {};
+            
+            // Determine the level key based on whether it's a custom/online level
+            let levelKey;
+            if (levelLoader.isPlayingCustomLevel && this.playOnlineLevelId) {
+                // Online level - use the level ID
+                levelKey = `online_${this.playOnlineLevelId}`;
+            } else if (typeof levelIdentifier === 'number') {
+                // Default level - use index
+                levelKey = `level_${levelIdentifier}`;
+            } else {
+                // Custom level with ID
+                levelKey = `custom_${levelIdentifier}`;
+            }
+            
+            const currentBest = bestTimes[levelKey];
+            
+            if (!currentBest || time < currentBest) {
+                // Update best time
+                bestTimes[levelKey] = time;
+                
+                // Save to Firestore
+                await userRef.update({
+                    bestTimes: bestTimes,
+                    lastPlayed: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log(`New best time for ${levelKey}: ${time.toFixed(2)}s`);
+                
+                // Show a visual notification to the user
+                if (!currentBest) {
+                    this.showBestTimeNotification('First completion! Time: ' + this.formatTime(time));
+                } else {
+                    const improvement = currentBest - time;
+                    this.showBestTimeNotification(`New best time! Improved by ${improvement.toFixed(2)}s`);
+                }
+            }
+        } catch (error) {
+            console.error('Error saving best time:', error);
+            // Don't interrupt gameplay if saving fails
+        }
+    }
+
+    /**
+     * Get best time for a level
+     * @param {number|string} levelIdentifier - The level index for default levels or level ID for online levels
+     * @returns {Promise<number|null>} The best time or null if none exists
+     */
+    async getBestTime(levelIdentifier) {
+        try {
+            if (!window.authManager || !window.authManager.currentUser) {
+                return null;
+            }
+
+            const userId = window.authManager.currentUser.uid;
+            const userDoc = await window.db.collection('users').doc(userId).get();
+            
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                const bestTimes = userData.bestTimes || {};
+                
+                // Determine the level key based on whether it's a custom/online level
+                let levelKey;
+                if (levelLoader.isPlayingCustomLevel && this.playOnlineLevelId) {
+                    // Online level - use the level ID
+                    levelKey = `online_${this.playOnlineLevelId}`;
+                } else if (typeof levelIdentifier === 'number') {
+                    // Default level - use index
+                    levelKey = `level_${levelIdentifier}`;
+                } else {
+                    // Custom level with ID
+                    levelKey = `custom_${levelIdentifier}`;
+                }
+                
+                return bestTimes[levelKey] || null;
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error getting best time:', error);
+            return null;
+        }
+    }
+    
+    /**
+     * Format time in MM:SS format
+     * @param {number} timeInSeconds - Time in seconds
+     * @returns {string} Formatted time string
+     */
+    formatTime(timeInSeconds) {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = Math.floor(timeInSeconds % 60);
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    /**
+     * Show best time notification
+     * @param {string} message - The notification message
+     */
+    showBestTimeNotification(message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4c6baf;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideDown 0.3s ease-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        `;
+        notification.textContent = message;
+        
+        // Add animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from {
+                    transform: translate(-50%, -100px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translate(-50%, 0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add to document
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideDown 0.3s ease-out reverse';
+            setTimeout(() => {
+                notification.remove();
+                style.remove();
+            }, 300);
+        }, 3000);
     }
 }
 

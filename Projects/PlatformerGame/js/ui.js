@@ -23,6 +23,7 @@ class UIManager {
         this.levelSelectButton = document.getElementById('levelSelectButton');
         this.settingsButton = document.getElementById('settingsButton');
         this.levelEditorButton = document.getElementById('levelEditorButton');
+        this.myAccountButton = document.getElementById('myAccountButton');
         this.backFromLevelSelect = document.getElementById('backFromLevelSelect');
         this.backFromSettings = document.getElementById('backFromSettings');
         this.nextLevelButton = document.getElementById('nextLevelButton');
@@ -77,6 +78,13 @@ class UIManager {
 
         if (this.levelEditorButton) {
             this.levelEditorButton.addEventListener('click', () => this.openLevelEditor());
+        }
+
+        if (this.myAccountButton) {
+            this.myAccountButton.addEventListener('click', () => {
+                // Navigate to accounts page
+                window.location.href = 'accounts.html';
+            });
         }
 
         // Level select menu
@@ -147,8 +155,15 @@ class UIManager {
     }
 
     showOnlineLevels() {
+    // Initialize auth manager if needed
+    if (window.authManager && !window.authManager.initialized) {
+        window.authManager.init();
+    }
+    
     if (!this.onlineBrowser) {
         this.onlineBrowser = new window.OnlineLevelBrowser(this, this.gameManager);
+        // Make it globally accessible for onclick handlers
+        window.onlineLevelBrowser = this.onlineBrowser;
     }
 
     this.hideAllMenus();
@@ -306,6 +321,10 @@ class UIManager {
         window.location.href = 'level-editor.html';
     }
 
+    openMyAccount() {
+        window.location.href = 'accounts.html';
+    }
+
     // Show level complete screen
     showLevelComplete(deaths, timeInSeconds) {
         if (this.levelCompleteText) {
@@ -338,9 +357,14 @@ class UIManager {
     }
 
     // Update in-game UI
-    updateGameUI(levelIndex, deaths) {
+    updateGameUI(levelIndex, deaths, timeInSeconds = 0) {
         if (this.uiElement) {
-            this.uiElement.textContent = `Level: ${levelIndex + 1} | Deaths: ${deaths}`;
+            // Format time as MM:SS
+            const minutes = Math.floor(timeInSeconds / 60);
+            const seconds = Math.floor(timeInSeconds % 60);
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            this.uiElement.textContent = `Level: ${levelIndex + 1} | Deaths: ${deaths} | Time: ${timeString}`;
         }
     }
 }

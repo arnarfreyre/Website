@@ -408,10 +408,17 @@
         </div>
     </div>
 
+    <!-- Audio elements for menu music -->
+    <audio id="menuMusic" preload="auto" loop style="display: none;">
+        <source src="audio/HomeScreen.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Load required constants -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/level-api.js"></script>
     <script src="js/online-level-editor.js"></script>
 
@@ -419,5 +426,20 @@
     <script src="js/constants.js"></script>
     <script src="js/level-editor.js"></script>
     <script src="js/enhanced-level-editor.js"></script>
+    <script src="js/audio.js" type="module"></script>
+    <script src="js/admin-utils.js"></script>
+    
+    <script type="module">
+        // Initialize and play menu music when the level editor loads
+        import { audioManager } from './js/audio.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize audio manager
+            audioManager.initialize();
+            
+            // Play menu music
+            audioManager.playMenuMusic();
+        });
+    </script>
 </body>
 </html>

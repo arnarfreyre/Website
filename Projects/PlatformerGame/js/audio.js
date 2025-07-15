@@ -115,6 +115,11 @@ class AudioManager {
     }
 
     playGameMusic() {
+        // If game music is already playing, don't restart it
+        if (this.currentMusic === 'game' && this.sounds.bgMusic && !this.sounds.bgMusic.paused) {
+            return;
+        }
+        
         this.stopAllMusic();
         if (this.sounds.bgMusic) {
             this.currentMusic = 'game';
@@ -134,6 +139,19 @@ class AudioManager {
             this.sounds.menuMusic.currentTime = 0;
         }
         this.currentMusic = null;
+    }
+    
+    // Resume playing the current music if it was paused
+    resumeMusic() {
+        if (this.currentMusic === 'game' && this.sounds.bgMusic) {
+            this.sounds.bgMusic.play().catch(e => {
+                console.log("Game music resume prevented:", e);
+            });
+        } else if (this.currentMusic === 'menu' && this.sounds.menuMusic) {
+            this.sounds.menuMusic.play().catch(e => {
+                console.log("Menu music resume prevented:", e);
+            });
+        }
     }
 }
 

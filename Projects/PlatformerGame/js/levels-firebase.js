@@ -116,13 +116,15 @@ class LevelLoader {
                 
                 this.levels.push(grid);
                 this.levelNames.push(data.name || `Level ${this.levels.length}`);
-                this.playerStartPositions.push(data.startPosition || { x: 1, y: 12 });
+                // Handle both playerStart and startPosition for backwards compatibility
+                const startPos = data.playerStart || data.startPosition || { x: 1, y: 12 };
+                this.playerStartPositions.push(startPos);
             });
             
             this.defaultLevelCount = this.levels.length;
             
-            // Load custom levels from Firebase
-            await this.loadCustomLevelsFromFirebase();
+            // Don't load custom levels here - they should be accessed through the online browser
+            // await this.loadCustomLevelsFromFirebase();
             
             // Load progress
             this.loadProgress();
@@ -169,9 +171,11 @@ class LevelLoader {
         try {
             console.log('Loading custom levels from Firebase...');
             
-            // Load custom levels from the 'levels' collection
+            // Only load public levels to avoid permission errors
             const customSnapshot = await window.db.collection('levels')
-                .orderBy('order')
+                .where('isPublic', '==', true)
+                .orderBy('createdAt', 'desc')
+                .limit(50)
                 .get();
             
             // Process custom levels
@@ -199,13 +203,8 @@ class LevelLoader {
                     this.levels.push(levelData);
                     this.levelNames.push(data.name || `Custom Level ${this.levels.length - this.defaultLevelCount}`);
                     
-                    // Handle player start position
-                    let startPos = { x: 1, y: 12 }; // Default
-                    if (data.playerStart) {
-                        startPos = data.playerStart;
-                    } else if (data.startPosition) {
-                        startPos = data.startPosition;
-                    }
+                    // Handle player start position (check both field names for compatibility)
+                    const startPos = data.playerStart || data.startPosition || { x: 1, y: 12 };
                     this.playerStartPositions.push(startPos);
                 }
             });
@@ -380,6 +379,7 @@ class LevelLoader {
     findPlayerStartPosition() {
         // Check if we're playing a custom level with a defined start position
         if (this.isPlayingCustomLevel && this.customLevel && this.customLevel.playerStart) {
+            console.log("Using custom level playerStart:", this.customLevel.playerStart);
             return {
                 x: this.customLevel.playerStart.x * TILE_SIZE,
                 y: this.customLevel.playerStart.y * TILE_SIZE
@@ -388,6 +388,13 @@ class LevelLoader {
         
         // First check if we have a stored position
         const storedPos = this.getPlayerStartPosition();
+        if (storedPos && storedPos.x !== undefined && storedPos.y !== undefined) {
+            console.log("Using stored playerStart position:", storedPos);
+            return {
+                x: storedPos.x * TILE_SIZE,
+                y: storedPos.y * TILE_SIZE
+            };
+        }
         
         // Also scan the level for a player start tile (if implemented)
         const level = this.getCurrentLevel();
@@ -396,16 +403,18 @@ class LevelLoader {
                 for (let x = 0; x < level[y].length; x++) {
                     // Check if there's a special player start tile (e.g., tile type 9)
                     if (level[y][x] === 9) {
+                        console.log("Found player tile at:", x, y);
                         return { x: x * TILE_SIZE, y: y * TILE_SIZE };
                     }
                 }
             }
         }
         
-        // Return stored position converted to pixel coordinates
+        // Default position if nothing else found
+        console.log("Using default player position");
         return {
-            x: storedPos.x * TILE_SIZE,
-            y: storedPos.y * TILE_SIZE
+            x: TILE_SIZE,
+            y: TILE_SIZE
         };
     }
 

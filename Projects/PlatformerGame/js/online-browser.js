@@ -113,11 +113,13 @@ class OnlineLevelBrowser {
 
         // Update active tab content
         document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
             content.classList.remove('active');
         });
 
         const activeTab = document.getElementById(tabName + 'Tab');
         if (activeTab) {
+            activeTab.style.display = 'block';
             activeTab.classList.add('active');
         }
 
@@ -139,10 +141,20 @@ class OnlineLevelBrowser {
         if (reset) {
             this.lastDoc = null;
             this.hasMore = true;
-            document.getElementById('onlineLevelsList').innerHTML = '';
+            const levelsList = document.getElementById('onlineLevelsList');
+            if (levelsList) {
+                levelsList.innerHTML = '<p style="text-align: center; color: #999;">Loading levels...</p>';
+            }
         }
 
         try {
+            // Check if levelAPI is available
+            if (!window.levelAPI) {
+                console.error('Level API not available');
+                this.showError('Online features not available. Please check your connection.');
+                return;
+            }
+
             const options = {
                 orderBy: this.currentFilter.orderBy,
                 startAfter: this.lastDoc,
@@ -221,27 +233,23 @@ class OnlineLevelBrowser {
     }
 
     async loadMyLevels() {
-        const authorName = localStorage.getItem('platformerAuthorName');
-
-        if (!authorName) {
+        // Check if user is authenticated
+        if (!window.authManager || !window.authManager.isSignedIn()) {
             document.querySelector('.no-levels-message').style.display = 'block';
-            document.getElementById('myLevelsList').innerHTML = '';
+            document.getElementById('myLevelsList').innerHTML = '<p style="text-align: center; color: #666;">Please sign in to view your levels</p>';
             return;
         }
 
         try {
-            const options = {
-                filters: { author: authorName }
-            };
+            // Get user levels using the auth manager
+            const userLevels = await window.authManager.getUserLevels();
 
-            const result = await window.levelAPI.getLevels(options);
-
-            if (result.levels.length === 0) {
+            if (userLevels.length === 0) {
                 document.querySelector('.no-levels-message').style.display = 'block';
                 document.getElementById('myLevelsList').innerHTML = '';
             } else {
                 document.querySelector('.no-levels-message').style.display = 'none';
-                this.displayLevels(result.levels, 'myLevelsList');
+                this.displayLevels(userLevels, 'myLevelsList');
             }
 
         } catch (error) {
@@ -302,9 +310,72 @@ class OnlineLevelBrowser {
         return card;
     }
 
+    createLevelDetailsModal() {
+        // Check if modal already exists
+        if (document.getElementById('levelDetailsModal')) {
+            return;
+        }
+
+        // Create modal HTML
+        const modal = document.createElement('div');
+        modal.id = 'levelDetailsModal';
+        modal.className = 'modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 600px;">
+                <span class="close" onclick="window.onlineLevelBrowser.closeLevelDetails()">&times;</span>
+                <h2 id="levelDetailsName"></h2>
+                <div class="level-details-info">
+                    <p>Author: <span id="levelDetailsAuthor"></span></p>
+                    <p>Difficulty: <span id="levelDetailsDifficulty"></span></p>
+                    <p>Plays: <span id="levelDetailsPlays"></span></p>
+                    <p>Completions: <span id="levelDetailsCompletions"></span></p>
+                    <p>Rating: <span id="levelDetailsRating" class="rating-display"></span></p>
+                </div>
+                <canvas id="levelPreviewCanvas" width="400" height="300" style="border: 1px solid #555; margin: 20px auto; display: block;"></canvas>
+                <div id="ratingInterface" style="display: none; margin: 20px 0;">
+                    <p>Rate this level:</p>
+                    <div class="rating-stars" id="ratingStars">
+                        <span data-rating="1">☆</span>
+                        <span data-rating="2">☆</span>
+                        <span data-rating="3">☆</span>
+                        <span data-rating="4">☆</span>
+                        <span data-rating="5">☆</span>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button onclick="window.onlineLevelBrowser.playSelectedLevel()" class="primary-button">Play Level</button>
+                    <button onclick="window.onlineLevelBrowser.closeLevelDetails()">Close</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+
+        // Add rating event listeners
+        const stars = modal.querySelectorAll('.rating-stars span');
+        stars.forEach(star => {
+            star.addEventListener('click', (e) => {
+                const rating = parseInt(e.target.dataset.rating);
+                this.rateLevel(rating);
+            });
+            star.addEventListener('mouseover', (e) => {
+                const rating = parseInt(e.target.dataset.rating);
+                this.updateStarDisplay(rating);
+            });
+        });
+
+        modal.querySelector('.rating-stars').addEventListener('mouseleave', () => {
+            this.updateStarDisplay(this.currentViewedLevel?.userRating || 0);
+        });
+    }
+
     async showLevelDetails(level) {
         console.log('Showing level details for:', level);
         this.currentViewedLevel = level;
+
+        // Ensure modal exists
+        this.createLevelDetailsModal();
 
         // Update modal content
         document.getElementById('levelDetailsName').textContent = level.name;
@@ -384,11 +455,16 @@ class OnlineLevelBrowser {
         try {
             const level = this.currentViewedLevel;
             
-            // Update play count
-            await window.db.collection('levels').doc(level.id).update({
-                plays: window.firebase.firestore.FieldValue.increment(1),
-                lastPlayed: window.firebase.firestore.FieldValue.serverTimestamp()
-            });
+            // Try to update play count, but don't fail if it doesn't work
+            try {
+                await window.db.collection('levels').doc(level.id).update({
+                    plays: window.firebase.firestore.FieldValue.increment(1),
+                    lastPlayed: window.firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (updateError) {
+                console.log('Could not update play count:', updateError);
+                // Continue anyway - the level can still be played
+            }
 
             // Close the modal and online levels menu
             this.closeLevelDetails();

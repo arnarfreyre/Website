@@ -30,8 +30,17 @@ class Renderer {
         this.iceAnimationTime = 0;
         this.sawbladeRotation = 0;
 
+        // Initialize debug overlay
+        this.debugOverlay = null;
+        if (window.DebugOverlay) {
+            this.debugOverlay = new window.DebugOverlay();
+        }
+
         // Initialize canvas settings
         this.updateRenderSettings();
+        
+        // Setup debug overlay keyboard shortcut
+        this.setupDebugShortcuts();
     }
 
     /**
@@ -40,6 +49,55 @@ class Renderer {
     updateRenderSettings() {
         // Apply pixel-perfect rendering if enabled
         this.ctx.imageSmoothingEnabled = !this.settings.pixelPerfect;
+    }
+    
+    /**
+     * Setup debug keyboard shortcuts
+     */
+    setupDebugShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Toggle debug overlay with F2
+            if (e.key === 'F2' && this.debugOverlay) {
+                e.preventDefault();
+                const enabled = this.debugOverlay.toggle();
+                console.log(`Debug overlay: ${enabled ? 'ON' : 'OFF'}`);
+            }
+            
+            // Toggle specific debug settings with Ctrl+Shift combinations
+            if (e.ctrlKey && e.shiftKey && this.debugOverlay) {
+                switch(e.key) {
+                    case 'H':
+                        e.preventDefault();
+                        this.debugOverlay.settings.showHitboxes = !this.debugOverlay.settings.showHitboxes;
+                        console.log(`Hitboxes: ${this.debugOverlay.settings.showHitboxes ? 'ON' : 'OFF'}`);
+                        break;
+                    case 'V':
+                        e.preventDefault();
+                        this.debugOverlay.settings.showVelocityVectors = !this.debugOverlay.settings.showVelocityVectors;
+                        console.log(`Velocity vectors: ${this.debugOverlay.settings.showVelocityVectors ? 'ON' : 'OFF'}`);
+                        break;
+                    case 'T':
+                        e.preventDefault();
+                        this.debugOverlay.settings.showTileInfo = !this.debugOverlay.settings.showTileInfo;
+                        console.log(`Tile info: ${this.debugOverlay.settings.showTileInfo ? 'ON' : 'OFF'}`);
+                        break;
+                    case 'P':
+                        e.preventDefault();
+                        this.debugOverlay.settings.showPathfinding = !this.debugOverlay.settings.showPathfinding;
+                        console.log(`Path visualization: ${this.debugOverlay.settings.showPathfinding ? 'ON' : 'OFF'}`);
+                        break;
+                }
+            }
+            
+            // Open debug console with F3
+            if (e.key === 'F3') {
+                e.preventDefault();
+                const debugWindow = window.open('debug-console.html', 'DebugConsole', 'width=1200,height=800');
+                if (debugWindow) {
+                    console.log('Debug console opened');
+                }
+            }
+        });
     }
 
     /**
@@ -84,6 +142,12 @@ class Renderer {
         // Draw UI elements
         if (this.settings.showFPS) {
             this.drawFPS();
+        }
+
+        // Update and render debug overlay if enabled
+        if (this.debugOverlay) {
+            this.debugOverlay.update(gameState);
+            this.debugOverlay.render(this.ctx, gameState);
         }
     }
 }

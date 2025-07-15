@@ -13,10 +13,22 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
-// Make db available globally
+// Make Firebase services available globally
 window.db = db;
+window.auth = auth;
 window.firebase = firebase;
+
+// Enable offline persistence for Firestore
+db.enablePersistence()
+  .catch((err) => {
+    if (err.code == 'failed-precondition') {
+      console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+    } else if (err.code == 'unimplemented') {
+      console.warn('The current browser does not support offline persistence');
+    }
+  });
 
 // Log successful initialization
 console.log('Firebase initialized with project:', firebaseConfig.projectId);

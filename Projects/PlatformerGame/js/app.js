@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Show the main menu
     gameManager.gameState.state = GameStates.MENU;
     uiManager.showMenu(GameStates.MENU);
+    
+    // Play menu music on startup
+    audioManager.playMenuMusic();
 
     console.log("Game initialized with", levelLoader.getLevelCount(), "levels");  // Updated reference
 });

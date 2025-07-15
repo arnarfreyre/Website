@@ -1370,45 +1370,91 @@ class LevelEditor {
                 return;
             }
             
+            // Initialize auth manager if needed
+            if (window.authManager && !window.authManager.initialized) {
+                await window.authManager.init();
+            }
+            
+            // Check if user is authenticated
+            if (!window.authManager || !window.authManager.isSignedIn()) {
+                showNotification('Please sign in to save levels online!', 3000);
+                // Show the sign-in dialog if available
+                if (window.showSignInDialog) {
+                    window.showSignInDialog();
+                }
+                return;
+            }
+            
             // Check if we already have a saved level ID
             let levelId = window.currentOnlineLevelId;
             
             if (!levelId) {
-                // Create new level document
-                levelId = db.collection('levels').doc().id;
+                // Create new level document ID
+                levelId = 'level_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 window.currentOnlineLevelId = levelId;
             }
             
+            // Get the current level grid data
+            let gridData = null;
+            
+            // Since we're in single-level mode for regular users, always use first level
+            if (levels && levels[0]) {
+                gridData = levels[0];
+            } else if (window.levels && window.levels[0]) {
+                gridData = window.levels[0];
+            }
+            
+            if (!gridData) {
+                showNotification('No level data found! Please create a level first.', 3000);
+                console.error('No grid data found. Levels:', levels, 'Window.levels:', window.levels);
+                return;
+            }
+            
+            // Get spike rotation data using similar approach
+            let spikeRotationData = null;
+            if (window.rotationData && window.rotationData[window.currentLevel] !== undefined) {
+                spikeRotationData = window.rotationData[window.currentLevel];
+            } else if (rotationData && rotationData[0] !== undefined) {
+                spikeRotationData = rotationData[0];
+            } else if (window.rotationData && window.rotationData[0] !== undefined) {
+                spikeRotationData = window.rotationData[0];
+            }
+            
             const levelData = {
-                id: levelId,
                 name: levelName,
-                data: JSON.stringify(levels[0]),
-                order: 0,
-                rotationData: rotationData[0] ? JSON.stringify(rotationData[0]) : null,
+                grid: gridData,  // Use the grid data we found
+                spikeRotations: spikeRotationData,  // Use the rotation data we found
                 playerStart: null,
-                author: 'Anonymous User', // You can implement auth later
-                plays: 0,
-                rating: 0,
-                ratings: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                author: window.authManager.getUserDisplayName(),
+                authorId: window.authManager.getUserId()
             };
             
             // Add player start position
             if (playerStartX !== null && playerStartY !== null) {
                 levelData.playerStart = { x: playerStartX, y: playerStartY };
+            } else if (playerStartPositions && playerStartPositions[0]) {
+                levelData.playerStart = playerStartPositions[0];
             }
             
-            // Save to Firebase
-            await db.collection('levels').doc(levelId).set(levelData);
+            // Save to Firebase using the level API
+            if (!window.levelAPI) {
+                showNotification('Level API not loaded. Please refresh the page.', 3000);
+                return;
+            }
+            
+            // Use the level API which handles permissions properly
+            const savedLevel = await window.levelAPI.saveLevel(levelData);
+            
+            // Update the stored ID in case it changed
+            window.currentOnlineLevelId = savedLevel.id;
             
             showNotification(`Level "${levelName}" saved online successfully!`, 3000);
             
             // Store the level ID for test play
-            window.savedOnlineLevelId = levelId;
+            window.savedOnlineLevelId = savedLevel.id;
             
             // Return the level ID for test play
-            return levelId;
+            return savedLevel.id;
             
         } catch (error) {
             console.error('Error saving online level:', error);
@@ -1571,6 +1617,7 @@ class LevelEditor {
     window.currentLevel = currentLevel;
     window.playerStartX = playerStartX;
     window.playerStartY = playerStartY;
+    window.playerStartPositions = playerStartPositions;
     window.rotationData = rotationData;
 
     // Also export other functions that might be needed

@@ -349,16 +349,20 @@
         <!-- Authentication Section -->
         <div class="auth-section" id="authSection">
             <h2>Admin Authentication</h2>
-            <p>Enter admin password to access the panel</p>
-            <input type="password" id="adminPassword" placeholder="Admin Password">
+            <p>Enter your admin credentials to access the panel</p>
+            <input type="text" id="adminUsername" placeholder="Username or Email">
+            <input type="password" id="adminPassword" placeholder="Password">
             <button onclick="authenticate()">Login</button>
             <div id="authError" style="color: #ff6b6b; margin-top: 10px; display: none;">
-                Invalid password. Please try again.
+                Invalid credentials. Please try again.
             </div>
         </div>
 
         <!-- Admin Panel (hidden until authenticated) -->
         <div class="admin-panel" id="adminPanel">
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('default')">Default Levels</button>
                 <button class="tab" onclick="switchTab('online')">Online Levels</button>
@@ -451,6 +455,7 @@
 
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/constants.js"></script>

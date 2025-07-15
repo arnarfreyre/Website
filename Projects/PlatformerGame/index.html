@@ -437,7 +437,44 @@
                 <button class="tab-button" data-tab="my-levels">My Levels</button>
             </div>
             <div id="browseTab" class="tab-content active">
+                <div class="browse-controls" style="margin-bottom: 20px;">
+                    <select id="sortBy" style="margin-right: 10px;">
+                        <option value="createdAt">Newest</option>
+                        <option value="plays">Most Played</option>
+                        <option value="rating">Top Rated</option>
+                    </select>
+                    <select id="difficultyFilter">
+                        <option value="">All Difficulties</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="extreme">Extreme</option>
+                    </select>
+                </div>
                 <div id="onlineLevelsList" class="online-levels-list"></div>
+                <button id="loadMoreLevels" style="margin: 20px auto; display: block;">Load More</button>
+            </div>
+            <div id="featuredTab" class="tab-content" style="display: none;">
+                <h3>Popular Levels</h3>
+                <div id="popularLevels" class="online-levels-list"></div>
+                <h3>Top Rated</h3>
+                <div id="topRatedLevels" class="online-levels-list"></div>
+                <h3>Recent Levels</h3>
+                <div id="recentLevels" class="online-levels-list"></div>
+            </div>
+            <div id="searchTab" class="tab-content" style="display: none;">
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="levelSearchInput" placeholder="Search levels..." style="width: 300px; padding: 10px;">
+                    <button id="searchButton">Search</button>
+                </div>
+                <div id="searchResults" class="online-levels-list"></div>
+            </div>
+            <div id="my-levelsTab" class="tab-content" style="display: none;">
+                <div class="no-levels-message" style="display: none;">
+                    <p>You haven't created any levels yet!</p>
+                    <a href="level-editor.html" class="menu-link">Create Your First Level</a>
+                </div>
+                <div id="myLevelsList" class="online-levels-list"></div>
             </div>
             <button id="backFromOnlineLevels" class="back-button" aria-label="Return to main menu">Back</button>
         </section>
@@ -505,6 +542,8 @@
     <!-- Game scripts -->
     <script src="js/constants.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/debug-overlay.js"></script>
+    <script src="js/debug-panel.js"></script>
     <script src="js/renderer.js"></script>
     <script src="js/level-editor.js"></script>
     <script src="js/enhanced-level-editor.js"></script>

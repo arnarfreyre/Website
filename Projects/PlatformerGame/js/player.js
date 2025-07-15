@@ -569,22 +569,20 @@ class Player {
     /**
      * Check horizontal collisions with tiles
      */
-    /**
- * Check vertical collisions with tiles
- */
-   checkHorizontalCollisions(level) {
+    checkHorizontalCollisions(level) {
         // Only check tiles in the vicinity of the player
         const startX = Math.max(0, Math.floor((this.x - TILE_SIZE) / TILE_SIZE));
         const endX = Math.min(level[0].length - 1, Math.floor((this.x + this.width + TILE_SIZE) / TILE_SIZE));
         const startY = Math.max(0, Math.floor((this.y - TILE_SIZE) / TILE_SIZE));
         const endY = Math.min(level.length - 1, Math.floor((this.y + this.height + TILE_SIZE) / TILE_SIZE));
 
+        // First pass: Check solid collisions and resolve them
         for (let y = startY; y <= endY; y++) {
             for (let x = startX; x <= endX; x++) {
                 if (level[y][x] !== 0) {
                     const tileType = TILE_TYPES[level[y][x]];
 
-                    if (tileType) {
+                    if (tileType && tileType.solid && level[y][x] !== 3) { // Not goal tiles
                         const tileX = x * TILE_SIZE;
                         const tileY = y * TILE_SIZE;
 
@@ -595,22 +593,56 @@ class Player {
                             this.y < tileY + TILE_SIZE &&
                             this.y + this.height > tileY
                         ) {
-                            // Check if deadly (spike or sawblade)
-                            if (tileType.deadly) {
+                            // Colliding horizontally, move player back
+                            if (this.velX > 0) {
+                                this.x = tileX - this.width;
+                            } else if (this.velX < 0) {
+                                this.x = tileX + TILE_SIZE;
+                            }
+                            this.velX = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Second pass: Check deadly tiles after position has been adjusted
+        for (let y = startY; y <= endY; y++) {
+            for (let x = startX; x <= endX; x++) {
+                if (level[y][x] !== 0) {
+                    const tileType = TILE_TYPES[level[y][x]];
+
+                    if (tileType && tileType.deadly) {
+                        const tileX = x * TILE_SIZE;
+                        const tileY = y * TILE_SIZE;
+
+                        // Check collision
+                        if (
+                            this.x < tileX + TILE_SIZE &&
+                            this.x + this.width > tileX &&
+                            this.y < tileY + TILE_SIZE &&
+                            this.y + this.height > tileY
+                        ) {
+                            // For spikes, do more precise collision detection
+                            if (level[y][x] >= 10 && level[y][x] <= 13) {
+                                // It's a directional spike
+                                if (this.checkSpikeCollision(tileX, tileY, level[y][x], level)) {
+                                    this.alive = false;
+                                    gameManager.handlePlayerDeath();
+                                    return;
+                                }
+                            } else if (level[y][x] === 2) {
+                                // Old spike type (always points up)
+                                if (this.checkSpikeCollision(tileX, tileY, 10, level)) {
+                                    this.alive = false;
+                                    gameManager.handlePlayerDeath();
+                                    return;
+                                }
+                            } else {
+                                // Other deadly tiles (sawblade) - use full tile collision
                                 this.alive = false;
                                 gameManager.handlePlayerDeath();
                                 return;
-                            }
-
-                            // Check if solid (but not goal tiles)
-                            if (tileType.solid && level[y][x] !== 3) {
-                                // Colliding horizontally, move player back
-                                if (this.velX > 0) {
-                                    this.x = tileX - this.width;
-                                } else if (this.velX < 0) {
-                                    this.x = tileX + TILE_SIZE;
-                                }
-                                this.velX = 0;
                             }
                         }
                     }
@@ -629,12 +661,13 @@ class Player {
         const startY = Math.max(0, Math.floor((this.y - TILE_SIZE) / TILE_SIZE));
         const endY = Math.min(level.length - 1, Math.floor((this.y + this.height + TILE_SIZE) / TILE_SIZE));
 
+        // First pass: Check solid collisions and resolve them
         for (let y = startY; y <= endY; y++) {
             for (let x = startX; x <= endX; x++) {
                 if (level[y][x] !== 0) {
                     const tileType = TILE_TYPES[level[y][x]];
 
-                    if (tileType) {
+                    if (tileType && tileType.solid && level[y][x] !== 3) { // Not goal tiles
                         const tileX = x * TILE_SIZE;
                         const tileY = y * TILE_SIZE;
 
@@ -645,21 +678,6 @@ class Player {
                             this.y < tileY + TILE_SIZE &&
                             this.y + this.height > tileY
                         ) {
-                            // Check if deadly (spike)
-                            if (tileType.deadly) {
-                                this.alive = false;
-                                gameManager.handlePlayerDeath();
-                                return;
-                            }
-
-                            // IMPORTANT: Don't treat goal tiles as solid for collision purposes
-                            // This allows the player to trigger the goal while standing on it
-                            if (level[y][x] === 3) { // Goal tile
-                                continue;  // Skip collision resolution for goal tiles
-                            }
-
-                            // Solid collision
-                            if (tileType.solid) {
                                 // Calculate penetration depths
                                 const fromLeft = this.x + this.width - tileX;
                                 const fromRight = tileX + TILE_SIZE - this.x;
@@ -690,7 +708,6 @@ class Player {
                                     this.x = tileX + TILE_SIZE;
                                     this.velX = 0;
                                 }
-                            }
                         }
                     }
                 }
@@ -798,6 +815,107 @@ class Player {
         } else {
             this.animationFrame = 0;
             this.animationTimer = 0;
+        }
+    }
+    
+    /**
+     * Check precise collision with a spike based on its direction
+     * @param {number} tileX - X position of the spike tile
+     * @param {number} tileY - Y position of the spike tile
+     * @param {number} spikeType - Type of spike (10=up, 11=right, 12=down, 13=left)
+     * @returns {boolean} True if player is colliding with the spike's dangerous area
+     */
+    checkSpikeCollision(tileX, tileY, spikeType, level) {
+        // Get player bounds and center
+        const playerLeft = this.x;
+        const playerRight = this.x + this.width;
+        const playerTop = this.y;
+        const playerBottom = this.y + this.height;
+        const playerCenterX = this.x + this.width / 2;
+        const playerCenterY = this.y + this.height / 2;
+        
+        // Get tile coordinates
+        const tileGridX = Math.floor(tileX / TILE_SIZE);
+        const tileGridY = Math.floor(tileY / TILE_SIZE);
+        
+        // Define spike collision based on direction
+        switch(spikeType) {
+            case 10: // Spike pointing up
+                // For upward spikes, check if player is approaching from above
+                // and is actually above the spike (not hitting from the side)
+                if (this.velY >= 0 && playerBottom > tileY && playerTop < tileY + TILE_SIZE * 0.4) {
+                    // Check if there's a solid block below this spike
+                    if (tileGridY < level.length - 1) {
+                        const belowTile = level[tileGridY + 1][tileGridX];
+                        const belowTileType = TILE_TYPES[belowTile];
+                        
+                        // If there's a solid block below, only kill if player is mostly above the block
+                        if (belowTileType && belowTileType.solid) {
+                            // Player must be mostly above the solid block to die from spike
+                            return playerBottom <= tileY + TILE_SIZE && 
+                                   playerCenterX > tileX && 
+                                   playerCenterX < tileX + TILE_SIZE;
+                        }
+                    }
+                    // No solid block below, use normal spike collision
+                    return playerRight > tileX + 8 && playerLeft < tileX + TILE_SIZE - 8;
+                }
+                return false;
+                       
+            case 11: // Spike pointing right
+                // Only kill if approaching from the left
+                if (this.velX >= 0 && playerRight > tileX + TILE_SIZE * 0.6 && playerLeft < tileX + TILE_SIZE) {
+                    // Check for solid block to the left
+                    if (tileGridX > 0) {
+                        const leftTile = level[tileGridY][tileGridX - 1];
+                        const leftTileType = TILE_TYPES[leftTile];
+                        if (leftTileType && leftTileType.solid) {
+                            return playerLeft >= tileX && 
+                                   playerCenterY > tileY && 
+                                   playerCenterY < tileY + TILE_SIZE;
+                        }
+                    }
+                    return playerBottom > tileY + 8 && playerTop < tileY + TILE_SIZE - 8;
+                }
+                return false;
+                       
+            case 12: // Spike pointing down
+                // Only kill if approaching from below
+                if (this.velY <= 0 && playerTop < tileY + TILE_SIZE * 0.4 && playerBottom > tileY) {
+                    // Check for solid block above
+                    if (tileGridY > 0) {
+                        const aboveTile = level[tileGridY - 1][tileGridX];
+                        const aboveTileType = TILE_TYPES[aboveTile];
+                        if (aboveTileType && aboveTileType.solid) {
+                            return playerTop >= tileY && 
+                                   playerCenterX > tileX && 
+                                   playerCenterX < tileX + TILE_SIZE;
+                        }
+                    }
+                    return playerRight > tileX + 8 && playerLeft < tileX + TILE_SIZE - 8;
+                }
+                return false;
+                       
+            case 13: // Spike pointing left
+                // Only kill if approaching from the right
+                if (this.velX <= 0 && playerLeft < tileX + TILE_SIZE * 0.4 && playerRight > tileX) {
+                    // Check for solid block to the right
+                    if (tileGridX < level[0].length - 1) {
+                        const rightTile = level[tileGridY][tileGridX + 1];
+                        const rightTileType = TILE_TYPES[rightTile];
+                        if (rightTileType && rightTileType.solid) {
+                            return playerRight <= tileX + TILE_SIZE && 
+                                   playerCenterY > tileY && 
+                                   playerCenterY < tileY + TILE_SIZE;
+                        }
+                    }
+                    return playerBottom > tileY + 8 && playerTop < tileY + TILE_SIZE - 8;
+                }
+                return false;
+                       
+            default:
+                // Unknown spike type, use velocity-based check
+                return true;
         }
     }
 }

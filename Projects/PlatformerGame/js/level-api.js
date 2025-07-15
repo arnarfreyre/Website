@@ -11,13 +11,21 @@ class LevelAPI {
      */
     async saveLevel(levelData) {
         try {
+            // First check if user is authenticated
+            if (!levelData.authorId) {
+                throw new Error('You must be signed in to create levels');
+            }
+
+            // Update user's daily level count
+            await this.updateUserLevelCount(levelData.authorId);
+
             const level = {
                 name: levelData.name,
                 author: levelData.author || 'Anonymous',
                 authorId: levelData.authorId || null,
                 // Convert grid to JSON string to avoid nested array issue
                 grid: JSON.stringify(levelData.grid),
-                startPosition: levelData.startPosition || { x: 1, y: 12 },
+                playerStart: levelData.playerStart || { x: 1, y: 12 },
                 // Also convert spikeRotations if it exists
                 spikeRotations: levelData.spikeRotations ? JSON.stringify(levelData.spikeRotations) : null,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -36,8 +44,85 @@ class LevelAPI {
             return { id: docRef.id, ...level };
         } catch (error) {
             console.error('Error saving level:', error);
+            
+            // Check if it's a permission error (daily limit)
+            if (error.code === 'permission-denied') {
+                throw new Error('You have reached your daily limit of 3 levels. Come back tomorrow to create more!');
+            }
+            
             throw error;
         }
+    }
+
+    /**
+     * Update user's daily level count
+     */
+    async updateUserLevelCount(userId) {
+        const userRef = db.collection('users').doc(userId);
+        let userDoc = await userRef.get();
+        
+        if (!userDoc.exists) {
+            // Create user profile if it doesn't exist
+            console.warn('User profile not found, creating one...');
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser && currentUser.uid === userId) {
+                await window.authManager.createUserProfile(currentUser);
+                // Re-fetch the document
+                userDoc = await userRef.get();
+                if (!userDoc.exists) {
+                    throw new Error('Failed to create user profile');
+                }
+            } else {
+                throw new Error('User profile not found and cannot create it');
+            }
+        }
+        
+        const userData = userDoc.data();
+        console.log('User data for level creation:', { userId, isAdmin: userData.isAdmin, email: userData.email });
+        
+        // Skip daily limit check for admin users
+        if (userData.isAdmin === true) {
+            console.log('Admin user detected - skipping daily limit');
+            // Just increment total level count for admins
+            await userRef.update({
+                levelCount: firebase.firestore.FieldValue.increment(1)
+            });
+            return;
+        }
+        
+        const now = new Date();
+        const lastLevelDate = userData.lastLevelDate ? userData.lastLevelDate.toDate() : null;
+        
+        // Check if it's a new day
+        const isNewDay = !lastLevelDate || 
+                        now.getDate() !== lastLevelDate.getDate() ||
+                        now.getMonth() !== lastLevelDate.getMonth() ||
+                        now.getFullYear() !== lastLevelDate.getFullYear();
+        
+        if (isNewDay) {
+            // Reset counter for new day
+            await userRef.update({
+                levelsCreatedToday: 1,
+                lastLevelDate: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } else {
+            // Check current count
+            const currentCount = userData.levelsCreatedToday || 0;
+            if (currentCount >= 3) {
+                throw new Error('You have reached your daily limit of 3 levels. Come back tomorrow to create more!');
+            }
+            
+            // Increment counter
+            await userRef.update({
+                levelsCreatedToday: currentCount + 1,
+                lastLevelDate: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        // Also increment total level count
+        await userRef.update({
+            levelCount: firebase.firestore.FieldValue.increment(1)
+        });
     }
     /**
      * Get a single level by ID
@@ -190,7 +275,7 @@ class LevelAPI {
      */
     async updateLevel(levelId, updates) {
         try {
-            const allowedUpdates = ['name', 'grid', 'startPosition', 'spikeRotations',
+            const allowedUpdates = ['name', 'grid', 'playerStart', 'spikeRotations',
                                    'difficulty', 'tags', 'isPublic'];
 
             const filteredUpdates = {};
