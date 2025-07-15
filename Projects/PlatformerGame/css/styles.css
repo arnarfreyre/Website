@@ -469,6 +469,7 @@
         background-color: rgba(30, 30, 50, 0.8);
         border: 2px solid #4c6baf;
         border-radius: 8px;
+        position: relative;
         padding: 15px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -654,6 +655,46 @@
     .star-rating-input .star.selected {
         color: #ffd700;
         transform: scale(1.2);
+    }
+
+    /* Featured badge styling */
+    .featured-badge {
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #333;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: bold;
+        margin-left: 8px;
+        box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+        display: inline-block;
+    }
+
+    /* Admin controls styling */
+    .admin-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 5px;
+    }
+
+    .admin-feature-btn {
+        background: #4c6baf;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Courier New', monospace;
+    }
+
+    .admin-feature-btn:hover {
+        background: #5a7cc0;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
     /* Scrollbar styling */

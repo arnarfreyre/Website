@@ -30,3 +30,45 @@ build/
 *.temp
 *.swp
 *~
+
+# Development and testing files
+.pycharm-terminal-init.sh
+server.py
+test-*.html
+ui-test.html
+migrate-usernames.html
+
+# Admin setup files (contain sensitive setup info)
+admin-setup.html
+admin-users.html
+dev-admin-setup.html
+setup-dev-admin.html
+js/admin-utils.js
+
+# Development documentation
+ADMIN_SETUP.md
+ADMIN_SETUP_GUIDE.md
+FIREBASE_AUTH_SETUP.md
+PYCHARM_SETUP.md
+README_DEPLOY.md
+README_SERVER.md
+
+# Development rules and guides
+firestore-rules-dev.txt
+firestore-rules-guide.md
+# Note: firestore-rules.txt is ignored but firestore.rules is tracked
+
+# Deployment scripts (may contain sensitive info)
+deploy-indexes.sh
+
+# Debug files
+js/debug-help.js
+
+# Temporary directories
+js/utils/
+
+# Asset preloader (if temporary)
+js/asset-preloader.js
+
+# Firebase cache
+.firebase/

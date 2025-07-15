@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is an admin
+    function isAdmin() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true;
+    }
+    
+    // Admin collection rules
+    match /admins/{adminId} {
+      // Allow admins to read all admin documents
+      allow read: if request.auth != null && (
+        request.auth.uid == adminId || // Users can read their own admin doc
+        isAdmin() // Active admins can read all admin docs
+      );
+      
+      // Only allow creation during setup or by existing admins
+      allow create: if request.auth != null && (
+        !exists(/databases/$(database)/documents/admins/$(request.auth.uid)) || // First admin setup
+        isAdmin() // Existing admins can create new admins
+      );
+      
+      // Only admins can update admin documents
+      allow update: if request.auth != null && isAdmin();
+      
+      // Only admins can delete admin documents
+      allow delete: if request.auth != null && isAdmin();
+    }
+    
+    // Admin logs collection
+    match /adminLogs/{logId} {
+      // Only admins can read logs
+      allow read: if request.auth != null && isAdmin();
+      
+      // Allow authenticated users to create logs (for login tracking)
+      allow create: if request.auth != null;
+      
+      // No updates or deletes allowed on logs
+      allow update, delete: if false;
+    }
+    
+    // Default levels collection (managed by admins)
+    match /defaultLevels/{levelId} {
+      // Anyone can read default levels
+      allow read: if true;
+      
+      // Only admins can create, update, or delete
+      allow create, update, delete: if request.auth != null && isAdmin();
+    }
+    
+    // Online levels collection
+    match /levels/{levelId} {
+      // Anyone can read levels
+      allow read: if true;
+      
+      // Authenticated users can create levels
+      allow create: if request.auth != null;
+      
+      // Users can update their own levels, admins can update any
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.authorId ||
+        isAdmin()
+      );
+      
+      // Users can delete their own levels, admins can delete any
+      allow delete: if request.auth != null && (
+        request.auth.uid == resource.data.authorId ||
+        isAdmin()
+      );
+    }
+    
+    // Development mode rules (REMOVE IN PRODUCTION)
+    // Temporary rule to allow initial admin setup
+    match /admins/{document=**} {
+      allow read, write: if true; // TEMPORARY - REMOVE AFTER SETUP
+    }
+  }
+}

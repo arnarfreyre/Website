@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if true;  // Public profiles
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false;  // Users cannot delete their profiles
+    }
+    
+    // Levels collection
+    match /levels/{levelId} {
+      allow read: if resource.data.isPublic == true || 
+                     (isAuthenticated() && resource.data.authorId == request.auth.uid);
+      
+      // Allow creation if authenticated and under daily limit
+      allow create: if isAuthenticated() && 
+                      request.auth.uid == request.resource.data.authorId &&
+                      request.resource.data.authorId != null;
+      
+      // Allow update by owner or for incrementing plays
+      allow update: if (isAuthenticated() && resource.data.authorId == request.auth.uid) ||
+                      (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plays', 'lastPlayed']));
+      
+      // Allow delete only by owner
+      allow delete: if isAuthenticated() && 
+                      resource.data.authorId == request.auth.uid;
+    }
+    
+    // Default levels collection (read-only for users)
+    match /defaultLevels/{levelId} {
+      allow read: if true;
+      allow write: if false;  // Only admins can write via Firebase Console
+    }
+    
+    // Ratings collection
+    match /ratings/{ratingId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && 
+                      request.auth.uid == request.resource.data.userId;
+      allow update, delete: if false;  // Ratings are immutable
+    }
+    
+    // Completions collection
+    match /completions/{completionId} {
+      allow read: if true;
+      allow create: if true;  // Anyone can record completions
+      allow update, delete: if false;  // Completions are immutable
+    }
+    
+    // Test levels collection (for development)
+    match /test-levels/{levelId} {
+      allow read, write: if true;  // Open for testing
+    }
+  }
+}

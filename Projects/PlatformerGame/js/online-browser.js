@@ -219,8 +219,22 @@ class OnlineLevelBrowser {
 
     async loadFeaturedLevels() {
         try {
-            const featured = await window.levelAPI.getFeaturedLevels();
+            // Load featured levels (marked with isFeatured flag)
+            const featuredQuery = await window.db.collection('levels')
+                .where('isFeatured', '==', true)
+                .orderBy('featuredAt', 'desc')
+                .limit(10)
+                .get();
+            
+            const featuredLevels = [];
+            featuredQuery.forEach(doc => {
+                featuredLevels.push({ id: doc.id, ...doc.data() });
+            });
+            
+            this.displayLevels(featuredLevels, 'featuredLevels');
 
+            // Also load popular/top rated/recent
+            const featured = await window.levelAPI.getFeaturedLevels();
             this.displayLevels(featured.popular, 'popularLevels');
             this.displayLevels(featured.topRated, 'topRatedLevels');
             this.displayLevels(featured.recent, 'recentLevels');

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Optimized Pixel Platformer - Integration Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Existing styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Remove old preload tags - now handled by AssetPreloader -->
+    <!-- <link rel="preload" href="audio/background_music.mp3" as="audio"> -->
+</head>
+<body>
+    <!-- Your existing HTML content here -->
+    
+    <!-- Utility Modules - Load First -->
+    <script src="js/utils/dom-helpers.js"></script>
+    <script src="js/utils/event-helpers.js"></script>
+    <script src="js/utils/storage-manager.js"></script>
+    <script src="js/utils/firebase-helpers.js"></script>
+    
+    <!-- Asset Preloader -->
+    <script src="js/asset-preloader.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Your Firebase config
+        const firebaseConfig = {
+            // Your config here
+        };
+        firebase.initializeApp(firebaseConfig);
+        window.db = firebase.firestore();
+    </script>
+    
+    <!-- Optimized Systems -->
+    <script src="js/audio-optimized.js"></script>
+    
+    <!-- Game Constants and Core Systems -->
+    <script src="js/constants.js"></script>
+    
+    <!-- Optimized Managers -->
+    <script>
+        // Example of how to create an optimized game manager
+        class OptimizedGame {
+            constructor() {
+                this.canvas = null;
+                this.ctx = null;
+                this.audioManager = null;
+                this.elements = {};
+                this.initialized = false;
+            }
+            
+            async initialize() {
+                // Cache all DOM elements
+                this.elements = DOMHelpers.getElements([
+                    'gameCanvas',
+                    'mainMenu',
+                    'pauseMenu',
+                    'gameOverMenu',
+                    'levelSelectMenu'
+                ]);
+                
+                // Set up canvas
+                this.canvas = this.elements.gameCanvas;
+                if (this.canvas) {
+                    this.ctx = this.canvas.getContext('2d');
+                    this.setupCanvas();
+                }
+                
+                // Initialize audio with preloader
+                this.audioManager = new OptimizedAudioManager();
+                await this.audioManager.initialize();
+                
+                // Set up optimized event handling
+                this.setupEvents();
+                
+                this.initialized = true;
+            }
+            
+            setupCanvas() {
+                // Optimized canvas setup
+                this.canvas.width = 800;
+                this.canvas.height = 600;
+                
+                // Enable image smoothing for pixel art
+                this.ctx.imageSmoothingEnabled = false;
+            }
+            
+            setupEvents() {
+                // Use event delegation for menu buttons
+                EventHelpers.delegate(document.body, '[data-action]', 'click', (e) => {
+                    const action = e.target.dataset.action;
+                    this.handleAction(action);
+                });
+                
+                // Keyboard events with cleanup capability
+                EventHelpers.on(window, 'keydown', (e) => this.handleKeyDown(e));
+                EventHelpers.on(window, 'keyup', (e) => this.handleKeyUp(e));
+                
+                // Debounced resize handler
+                EventHelpers.on(window, 'resize', 
+                    EventHelpers.debounce(() => this.handleResize(), 250)
+                );
+            }
+            
+            handleAction(action) {
+                switch(action) {
+                    case 'play':
+                        this.startGame();
+                        break;
+                    case 'levelSelect':
+                        this.showLevelSelect();
+                        break;
+                    case 'settings':
+                        this.showSettings();
+                        break;
+                    // Add more actions
+                }
+            }
+            
+            startGame() {
+                // Hide menu, show canvas
+                DOMHelpers.hide(this.elements.mainMenu);
+                DOMHelpers.show(this.elements.gameCanvas);
+                
+                // Play game music
+                this.audioManager.playGameMusic();
+                
+                // Start game loop
+                this.gameLoop();
+            }
+            
+            gameLoop() {
+                if (!this.initialized) return;
+                
+                // Game loop logic here
+                
+                requestAnimationFrame(() => this.gameLoop());
+            }
+            
+            // Cleanup when game ends
+            cleanup() {
+                EventHelpers.cleanup();
+                this.audioManager.cleanup();
+                this.initialized = false;
+            }
+        }
+    </script>
+    
+    <!-- Initialize Everything -->
+    <script src="js/app-initializer.js"></script>
+    
+    <!-- Or initialize manually -->
+    <script>
+        // Manual initialization example
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Show custom loading screen
+                const loadingDiv = DOMHelpers.createElement('div', {
+                    id: 'loadingScreen',
+                    style: {
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        background: '#000',
+                        color: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '24px'
+                    }
+                }, 'Loading Game...');
+                
+                document.body.appendChild(loadingDiv);
+                
+                // Initialize game
+                const game = new OptimizedGame();
+                await game.initialize();
+                
+                // Remove loading screen
+                DOMHelpers.remove(loadingDiv);
+                
+                // Show main menu
+                DOMHelpers.show('mainMenu', 'flex');
+                
+                // Play menu music
+                game.audioManager.playMenuMusic();
+                
+                console.log('Game initialized successfully!');
+                
+            } catch (error) {
+                console.error('Failed to initialize game:', error);
+                alert('Failed to load game. Please refresh the page.');
+            }
+        });
+    </script>
+    
+    <!-- Example optimized menu HTML -->
+    <div id="mainMenu" class="menu" style="display: none;">
+        <h1>Pixel Platformer</h1>
+        <div class="menu-buttons">
+            <!-- Use data attributes for actions -->
+            <button data-action="play" class="menu-button">Play</button>
+            <button data-action="levelSelect" class="menu-button">Level Select</button>
+            <button data-action="settings" class="menu-button">Settings</button>
+            <button data-action="online" class="menu-button">Online Levels</button>
+        </div>
+    </div>
+    
+    <!-- Canvas -->
+    <canvas id="gameCanvas" style="display: none;"></canvas>
+    
+    <!-- Remove old audio elements - now handled by AssetPreloader -->
+    <!-- 
+    <audio id="bgMusic" src="audio/background_music.mp3" loop></audio>
+    <audio id="jumpSound" src="audio/jump.mp3"></audio>
+    -->
+    
+</body>
+</html>

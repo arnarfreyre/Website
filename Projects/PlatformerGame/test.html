@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Default Levels</title>
+</head>
+<body>
+    <h1>Testing Default Levels</h1>
+    <p>Open the browser console to see if Player class loads correctly.</p>
+    
+    <script src="js/constants.js"></script>
+    <script src="js/player.js"></script>
+    <script>
+        console.log('Player class loaded:', typeof Player);
+        console.log('Creating test player...');
+        try {
+            const testPlayer = new Player(100, 100);
+            console.log('Success! Player created:', testPlayer);
+        } catch (e) {
+            console.error('Failed to create player:', e);
+        }
+    </script>
+</body>
+</html>
