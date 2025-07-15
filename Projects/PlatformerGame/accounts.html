@@ -296,25 +296,7 @@
             <a href="index.html" class="back-btn">← Back to Game</a>
         </div>
 
-        <div id="auth-section" class="auth-section" style="display: none;">
-            <h2>Sign in to view your account</h2>
-            <p>You need to be signed in to view your account information and track your progress.</p>
-            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
-                <button id="signInButton" style="padding: 15px 30px; background-color: #4c6baf; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em;">
-                    Sign In with Google
-                </button>
-                <button id="signUpButton" style="padding: 15px 30px; background-color: #41a547; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em;">
-                    Create Account
-                </button>
-            </div>
-            <p style="margin-top: 20px; color: #999;">Or go to the <a href="level-editor.html" style="color: #6d8ad0;">Level Editor</a> to sign in</p>
-        </div>
-
-        <div id="loading-section" class="loading">
-            <p>Loading your account information...</p>
-        </div>
-
-        <div id="account-section" style="display: none;">
+        <div id="account-section">
             <!-- Profile Section -->
             <div class="profile-section">
                 <div class="profile-avatar" id="profile-avatar">
@@ -382,48 +364,60 @@
                 if (user) {
                     await loadUserData(user);
                 } else {
-                    showAuthSection();
+                    showGuestView();
                 }
             });
         }
 
-        function showAuthSection() {
-            document.getElementById('auth-section').style.display = 'block';
-            document.getElementById('loading-section').style.display = 'none';
-            document.getElementById('account-section').style.display = 'none';
+        function showGuestView() {
+            // Show the same interface but with guest data
+            document.getElementById('account-section').style.display = 'block';
             
-            // Set up auth button handlers
-            const signInButton = document.getElementById('signInButton');
-            const signUpButton = document.getElementById('signUpButton');
+            // Profile section for guest
+            document.getElementById('profile-name').textContent = 'Guest User';
+            document.getElementById('profile-email').innerHTML = `
+                <button onclick="signInWithGoogle()" style="padding: 10px 20px; background-color: #4c6baf; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Sign In to Track Progress
+                </button>
+            `;
+            document.getElementById('avatar-initial').textContent = 'G';
             
-            if (signInButton) {
-                signInButton.onclick = async () => {
-                    try {
-                        await authManager.signInWithGoogle();
-                    } catch (error) {
-                        console.error('Sign in error:', error);
-                        alert('Failed to sign in. Please try again.');
-                    }
-                };
-            }
+            // Stats for guest
+            document.getElementById('completed-count').textContent = '0';
+            document.getElementById('created-count').textContent = '0';
+            document.getElementById('total-plays').textContent = '0';
             
-            if (signUpButton) {
-                signUpButton.onclick = async () => {
-                    try {
-                        await authManager.signInWithGoogle();
-                    } catch (error) {
-                        console.error('Sign up error:', error);
-                        alert('Failed to create account. Please try again.');
-                    }
-                };
+            // Show message in levels sections
+            document.getElementById('completed-levels').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <p>Sign in to track your progress on default levels</p>
+                </div>
+            `;
+            
+            document.getElementById('levels-grid').innerHTML = '';
+            document.getElementById('empty-state').style.display = 'block';
+            document.getElementById('empty-state').innerHTML = `
+                <h2>Sign in to create levels</h2>
+                <p>Create an account to build, save, and share your own levels!</p>
+                <button onclick="signInWithGoogle()" style="padding: 15px 30px; background-color: #41a547; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; margin-top: 20px;">
+                    Sign In with Google
+                </button>
+            `;
+            
+            // Hide sign out button
+            document.getElementById('sign-out-btn').style.display = 'none';
+        }
+
+        async function signInWithGoogle() {
+            try {
+                await authManager.signInWithGoogle();
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Failed to sign in. Please try again.');
             }
         }
 
         async function loadUserData(user) {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('loading-section').style.display = 'block';
-            document.getElementById('account-section').style.display = 'none';
-
             try {
                 // Load user profile from Firestore
                 const userDoc = await db.collection('users').doc(user.uid).get();
@@ -440,7 +434,6 @@
                 displayUserLevels();
 
                 // Show account section
-                document.getElementById('loading-section').style.display = 'none';
                 document.getElementById('account-section').style.display = 'block';
 
                 // Set up sign out button
