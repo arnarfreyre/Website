@@ -17,7 +17,7 @@
   - refactorer - Code quality, technical debt, clean code
   - devops - Infrastructure, deployment, automation
 
-  Knowledge & Communication
+  Knowledge & Communication--
 
   - mentor - Educational guidance, knowledge transfer
   - scribe - Documentation, professional writing, localization

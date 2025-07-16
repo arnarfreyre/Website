@@ -59,3 +59,11 @@ node_modules/
 # Build output
 dist/
 build/
+
+# Development and test files
+index[0-9].html
+test.html
+
+# Cleanup and archive directories
+_cleanup_archive/
+**/cleanup-*.sh

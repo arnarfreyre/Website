@@ -185,8 +185,7 @@
     <div class="header">
         <h1>My Levels</h1>
         <div id="auth-container" style="display: flex; align-items: center; gap: 10px;">
-            <span id="user-info" style="color: #6d8ad0; margin-right: 10px;">Loading...</span>
-            <button id="sign-out-btn" style="display: none; background-color: #666; padding: 5px 15px; color: white; border: none; border-radius: 5px; cursor: pointer;">Sign Out</button>
+            <!-- Auth UI will be dynamically inserted here by auth-ui.js -->
         </div>
     </div>
 
@@ -225,6 +224,7 @@
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/level-api.js"></script>
+    <script src="js/utils/auth-ui.js"></script>
 
     <script>
         // Initialize
@@ -236,7 +236,6 @@
 
             // Listen for auth changes
             authManager.onAuthStateChanged(async (user) => {
-                updateAuthUI(user);
                 if (user) {
                     await loadUserLevels();
                 } else {
@@ -245,19 +244,6 @@
             });
         }
 
-        function updateAuthUI(user) {
-            const userInfo = document.getElementById('user-info');
-            const signOutBtn = document.getElementById('sign-out-btn');
-
-            if (user) {
-                userInfo.textContent = `Signed in as: ${user.displayName || user.email || 'Anonymous'}`;
-                signOutBtn.style.display = 'block';
-                signOutBtn.onclick = () => authManager.signOut();
-            } else {
-                userInfo.textContent = 'Not signed in';
-                signOutBtn.style.display = 'none';
-            }
-        }
 
         function showAuthSection() {
             document.getElementById('auth-section').style.display = 'block';

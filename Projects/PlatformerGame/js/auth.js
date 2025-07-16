@@ -17,6 +17,21 @@ class AuthManager {
         // Wait for Firebase to be ready
         await this.waitForFirebase();
 
+        // Check for redirect result (in case of redirect sign-in)
+        try {
+            const result = await firebase.auth().getRedirectResult();
+            if (result.user) {
+                console.log('Redirect sign-in completed for user:', result.user.email);
+                // Handle new user setup if needed
+                const userDoc = await db.collection('users').doc(result.user.uid).get();
+                if (!userDoc.exists) {
+                    await this.createUserProfile(result.user);
+                }
+            }
+        } catch (error) {
+            console.error('Error getting redirect result:', error);
+        }
+
         // Set up auth state listener
         firebase.auth().onAuthStateChanged((user) => {
             this.currentUser = user;
@@ -60,7 +75,37 @@ class AuthManager {
     async signInWithGoogle() {
         try {
             const provider = new firebase.auth.GoogleAuthProvider();
-            const result = await firebase.auth().signInWithPopup(provider);
+            
+            // Force account selection
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
+            
+            let result;
+            
+            try {
+                // Try popup first
+                result = await firebase.auth().signInWithPopup(provider);
+            } catch (popupError) {
+                console.warn('Popup blocked or failed, trying redirect method:', popupError);
+                
+                // Check for specific popup blocked error
+                if (popupError.code === 'auth/popup-blocked' || 
+                    popupError.code === 'auth/popup-closed-by-user' ||
+                    popupError.code === 'auth/cancelled-popup-request') {
+                    
+                    // Use redirect as fallback
+                    await firebase.auth().signInWithRedirect(provider);
+                    // Throw a specific error that can be caught and handled differently
+                    throw new Error('Redirecting to Google sign-in page. The page will redirect.');
+                } else if (popupError.code === 'auth/unauthorized-domain') {
+                    throw new Error('This domain is not authorized for Google sign-in. Please contact the administrator.');
+                } else if (popupError.code === 'auth/operation-not-allowed') {
+                    throw new Error('Google sign-in is not enabled. Please contact the administrator.');
+                } else {
+                    throw popupError;
+                }
+            }
             
             // Check if this is a new user
             const userDoc = await db.collection('users').doc(result.user.uid).get();
@@ -99,7 +144,17 @@ class AuthManager {
             return result.user;
         } catch (error) {
             console.error('Google sign-in error:', error);
-            throw error;
+            
+            // Provide user-friendly error messages
+            if (error.code === 'auth/network-request-failed') {
+                throw new Error('Network error. Please check your internet connection and try again.');
+            } else if (error.code === 'auth/user-cancelled') {
+                throw new Error('Sign-in cancelled.');
+            } else if (error.message) {
+                throw error;
+            } else {
+                throw new Error('Failed to sign in with Google. Please try again.');
+            }
         }
     }
 
@@ -233,13 +288,60 @@ class AuthManager {
     }
 
     /**
-     * Sign out
+     * Sign out with cleanup and optional redirect
      */
-    async signOut() {
+    async signOut(options = {}) {
+        const {
+            showConfirmation = true,
+            redirectTo = null,
+            clearLocalStorage = true,
+            message = 'Are you sure you want to sign out?'
+        } = options;
+
         try {
+            // Show confirmation if requested
+            if (showConfirmation && !confirm(message)) {
+                return false;
+            }
+
+            // Notify listeners that sign-out is starting
+            this.notifyAuthStateChanged(null);
+
+            // Clear local storage if requested
+            if (clearLocalStorage) {
+                // Preserve important non-auth data
+                const settingsToKeep = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+                const levelEditorData = localStorage.getItem('currentLevel');
+                
+                // Clear auth-related data
+                localStorage.removeItem('lastSignedInUser');
+                localStorage.removeItem('authToken');
+                
+                // Restore preserved data
+                if (settingsToKeep) localStorage.setItem(STORAGE_KEYS.SETTINGS, settingsToKeep);
+                if (levelEditorData) localStorage.setItem('currentLevel', levelEditorData);
+            }
+
+            // Sign out from Firebase
             await firebase.auth().signOut();
+
+            // Handle redirect
+            if (redirectTo) {
+                window.location.href = redirectTo;
+            } else if (window.location.pathname.includes('admin')) {
+                // Redirect admin pages to login
+                window.location.href = '/login.html';
+            } else if (window.location.pathname !== '/index.html' && 
+                       window.location.pathname !== '/' &&
+                       !window.location.pathname.includes('level-editor')) {
+                // Redirect other authenticated pages to home
+                window.location.href = '/index.html';
+            }
+
+            return true;
         } catch (error) {
             console.error('Sign out error:', error);
+            alert('Failed to sign out. Please try again.');
             throw error;
         }
     }

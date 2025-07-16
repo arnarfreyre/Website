@@ -70,7 +70,11 @@
             signOutBtn.style.cssText = 'background-color: #666; padding: 5px 15px; display: none;';
             signOutBtn.addEventListener('click', () => {
                 if (window.authManager) {
-                    window.authManager.signOut();
+                    window.authManager.signOut({
+                        showConfirmation: true,
+                        redirectTo: window.location.href,
+                        message: 'Are you sure you want to sign out? Any unsaved changes will be lost.'
+                    });
                 }
             });
 
@@ -153,6 +157,10 @@
                     await window.authManager.signInWithGoogle();
                     modal.remove();
                 } catch (error) {
+                    // Don't show error for redirect cases - the page will redirect
+                    if (error.message && error.message.includes('page will redirect')) {
+                        return;
+                    }
                     alert('Sign in failed: ' + error.message);
                 }
             });

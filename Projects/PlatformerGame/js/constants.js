@@ -187,6 +187,72 @@ const DEFAULT_SETTINGS = {
 };
 
 //-----------------------------------------------------------------------------
+// TIMING CONSTANTS
+//-----------------------------------------------------------------------------
+
+/** Target frames per second for game loop */
+const TARGET_FPS = 60;
+
+/** Frame duration in milliseconds for 60 FPS */
+const FRAME_DURATION = 1000 / TARGET_FPS;
+
+/** Default notification display duration in milliseconds */
+const NOTIFICATION_DURATION = 3000;
+
+/** Extended notification display duration in milliseconds */
+const NOTIFICATION_DURATION_LONG = 5000;
+
+/** Maximum wait time for Firebase initialization in milliseconds */
+const FIREBASE_INIT_TIMEOUT = 5000;
+
+/** Delay before retrying operations in milliseconds */
+const RETRY_DELAY = 500;
+
+/** Standard animation delay in milliseconds */
+const ANIMATION_DELAY = 1000;
+
+/** Cache timeout duration in milliseconds (5 minutes) */
+const CACHE_TIMEOUT = 5 * 60 * 1000;
+
+/** Preview update rate (30 FPS) */
+const PREVIEW_FPS = 30;
+
+/** Logger flush interval in milliseconds */
+const LOGGER_FLUSH_INTERVAL = 5000;
+
+//-----------------------------------------------------------------------------
+// UI CONSTANTS
+//-----------------------------------------------------------------------------
+
+/** Maximum z-index for modal overlays */
+const Z_INDEX_MODAL = 10000;
+
+/** Z-index for notifications */
+const Z_INDEX_NOTIFICATION = 1000;
+
+/** Loading screen fade out duration in milliseconds */
+const LOADING_FADE_DURATION = 500;
+
+/** Level complete delay before transition in milliseconds */
+const LEVEL_COMPLETE_DELAY = 1000;
+
+/** Death screen delay before respawn in milliseconds */
+const DEATH_SCREEN_DELAY = 1000;
+
+//-----------------------------------------------------------------------------
+// NETWORK & API CONSTANTS
+//-----------------------------------------------------------------------------
+
+/** Maximum size for logger entries */
+const LOGGER_MAX_SIZE = 1000;
+
+/** Logger buffer size for remote logging */
+const LOGGER_BUFFER_SIZE = 100;
+
+/** Time conversion constant - milliseconds in a day */
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+//-----------------------------------------------------------------------------
 // PARTICLE EFFECTS
 //-----------------------------------------------------------------------------
 

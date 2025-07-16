@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/x-icon">
+    <title>Platformer Level Editor Pro</title>
+    
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Enhanced Styles -->
+    <link rel="stylesheet" href="css/level-editor-enhanced.css">
+</head>
+<body class="level-editor-enhanced">
+    <!-- Enhanced Header -->
+    <header class="header-enhanced">
+        <div class="editor-logo">
+            <h1>Level Editor</h1>
+        </div>
+        
+        <div class="level-selector-enhanced" id="levelSelectorContainer">
+            <label for="level-select">Level:</label>
+            <select id="level-select"></select>
+            <div class="level-order-controls">
+                <button class="tool-button" title="Move Level Up">↑</button>
+                <button class="tool-button" title="Move Level Down">↓</button>
+            </div>
+            <button class="btn-enhanced btn-primary" id="new-level-btn">+ New Level</button>
+        </div>
+        
+        <div id="auth-container" style="display: flex; align-items: center; gap: 10px;">
+            <!-- Auth UI will be injected here -->
+        </div>
+    </header>
+
+    <!-- Enhanced Editor Container -->
+    <div class="editor-container-enhanced">
+        <!-- Enhanced Tile Palette -->
+        <aside class="tile-palette-enhanced">
+            <div class="tile-palette-header">
+                <h3 class="tile-palette-title">Tile Palette</h3>
+                <button class="tool-button" title="Collapse">
+                    <span>◀</span>
+                </button>
+            </div>
+            
+            <!-- Tile Search -->
+            <div class="tile-search">
+                <input type="text" placeholder="Search tiles..." id="tile-search-input">
+            </div>
+            
+            <!-- Tile Categories -->
+            <div class="tile-categories">
+                <button class="tile-category-btn active" data-category="all">All</button>
+                <button class="tile-category-btn" data-category="platforms">Platforms</button>
+                <button class="tile-category-btn" data-category="hazards">Hazards</button>
+                <button class="tile-category-btn" data-category="interactive">Interactive</button>
+                <button class="tile-category-btn" data-category="decorative">Decorative</button>
+            </div>
+            
+            <!-- Tile Grid -->
+            <div class="tile-grid-enhanced" id="tile-grid">
+                <!-- Tiles will be generated here -->
+            </div>
+            
+            <!-- Tile Info -->
+            <div class="tile-info" id="tile-info">
+                <div class="property-label">Selected Tile</div>
+                <div id="selected-tile-name">Empty (0)</div>
+            </div>
+            
+            <!-- Rotation Controls for Spikes -->
+            <div class="rotation-controls" id="rotation-controls" style="display: none;">
+                <h4>Spike Rotation</h4>
+                <div class="rotation-buttons">
+                    <button class="rotate-button" data-rotation="0" title="Up">↑</button>
+                    <button class="rotate-button" data-rotation="90" title="Right">→</button>
+                    <button class="rotate-button" data-rotation="180" title="Down">↓</button>
+                    <button class="rotate-button" data-rotation="270" title="Left">←</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Enhanced Grid Container -->
+        <main class="grid-container-enhanced">
+            <!-- Grid Toolbar -->
+            <div class="grid-toolbar">
+                <div class="grid-tools">
+                    <button class="tool-button active" id="draw-tool" title="Draw (D)">
+                        <span>✏️</span> Draw
+                    </button>
+                    <button class="tool-button" id="erase-tool" title="Erase (E)">
+                        <span>🧹</span> Erase
+                    </button>
+                    <button class="tool-button" id="fill-tool" title="Fill (F)">
+                        <span>🪣</span> Fill
+                    </button>
+                    <button class="tool-button" id="select-tool" title="Select (S)">
+                        <span>⬚</span> Select
+                    </button>
+                    <button class="tool-button" id="player-tool" title="Set Player Start (P)">
+                        <span>🎮</span> Player
+                    </button>
+                </div>
+                
+                <!-- Zoom Controls -->
+                <div class="zoom-controls">
+                    <button class="zoom-button" id="zoom-out" title="Zoom Out">−</button>
+                    <span class="zoom-level" id="zoom-level">100%</span>
+                    <button class="zoom-button" id="zoom-in" title="Zoom In">+</button>
+                    <button class="zoom-button" id="zoom-fit" title="Fit to Screen">⊡</button>
+                </div>
+            </div>
+            
+            <!-- Level Grid Wrapper -->
+            <div class="level-grid-wrapper">
+                <div class="level-grid-enhanced" id="level-grid">
+                    <!-- Grid cells will be generated here -->
+                </div>
+                
+                <!-- Minimap -->
+                <div class="minimap" id="minimap">
+                    <canvas id="minimap-canvas"></canvas>
+                    <div class="minimap-viewport"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Enhanced Preview Window -->
+        <aside class="preview-window-enhanced">
+            <div class="preview-header">
+                <h3 class="preview-title">Live Preview</h3>
+                <button class="tool-button" title="Refresh Preview">
+                    <span>🔄</span>
+                </button>
+            </div>
+            
+            <div class="preview-canvas-wrapper">
+                <canvas id="previewCanvas" width="280" height="224"></canvas>
+            </div>
+            
+            <div class="preview-controls">
+                <button class="btn-enhanced btn-success" id="play-btn">
+                    <span>▶</span> Test Play
+                </button>
+            </div>
+            
+            <!-- Level Properties -->
+            <div class="level-properties">
+                <div class="property-group">
+                    <div class="property-label">Level Name</div>
+                    <input type="text" class="property-input" id="level-name" placeholder="Enter level name">
+                </div>
+                
+                <div class="property-group">
+                    <div class="property-label">Difficulty</div>
+                    <select class="property-input" id="level-difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="extreme">Extreme</option>
+                    </select>
+                </div>
+                
+                <div class="property-group">
+                    <div class="property-label">Tags</div>
+                    <input type="text" class="property-input" id="level-tags" placeholder="platforming, puzzle, speedrun">
+                </div>
+                
+                <div class="property-group">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="publish-level" checked>
+                        <span class="property-label" style="margin: 0;">Make level public</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Enhanced Controls -->
+    <footer class="controls-enhanced">
+        <div class="controls-group">
+            <button class="btn-enhanced btn-success" id="online-save-btn">
+                <span>💾</span> Save Online
+            </button>
+            <button class="btn-enhanced btn-secondary" id="save-local-btn">
+                <span>📁</span> Save Local
+            </button>
+            <button class="btn-enhanced btn-danger" id="clear-btn">
+                <span>🗑️</span> Clear Level
+            </button>
+        </div>
+        
+        <div class="controls-group">
+            <button class="btn-enhanced btn-secondary" id="import-btn">
+                <span>📥</span> Import
+            </button>
+            <button class="btn-enhanced btn-secondary" id="export-btn">
+                <span>📤</span> Export
+            </button>
+            <button class="btn-enhanced btn-secondary" id="help-btn">
+                <span>❓</span> Help
+            </button>
+            <button class="btn-enhanced btn-primary" id="back-to-game-btn">
+                <span>🎮</span> Back to Game
+            </button>
+        </div>
+    </footer>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+        <span id="theme-icon">🌙</span>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="help-modal" id="help-modal" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Keyboard Shortcuts</h2>
+            <button class="tool-button" onclick="document.getElementById('help-modal').style.display='none'">✕</button>
+        </div>
+        
+        <div class="shortcuts-grid">
+            <div class="shortcut-key">D</div>
+            <div class="shortcut-description">Draw tool</div>
+            
+            <div class="shortcut-key">E</div>
+            <div class="shortcut-description">Erase tool</div>
+            
+            <div class="shortcut-key">F</div>
+            <div class="shortcut-description">Fill tool</div>
+            
+            <div class="shortcut-key">S</div>
+            <div class="shortcut-description">Select tool</div>
+            
+            <div class="shortcut-key">P</div>
+            <div class="shortcut-description">Set player start position</div>
+            
+            <div class="shortcut-key">Ctrl+S</div>
+            <div class="shortcut-description">Save level</div>
+            
+            <div class="shortcut-key">Ctrl+Z</div>
+            <div class="shortcut-description">Undo</div>
+            
+            <div class="shortcut-key">Ctrl+Y</div>
+            <div class="shortcut-description">Redo</div>
+            
+            <div class="shortcut-key">+/-</div>
+            <div class="shortcut-description">Zoom in/out</div>
+            
+            <div class="shortcut-key">Space</div>
+            <div class="shortcut-description">Pan view (hold)</div>
+            
+            <div class="shortcut-key">G</div>
+            <div class="shortcut-description">Toggle grid</div>
+            
+            <div class="shortcut-key">Tab</div>
+            <div class="shortcut-description">Next tile</div>
+            
+            <div class="shortcut-key">Shift+Tab</div>
+            <div class="shortcut-description">Previous tile</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Modal Backdrop -->
+    <div class="modal-backdrop" id="modal-backdrop" style="display: none;"></div>
+
+    <!-- Audio elements -->
+    <audio id="menuMusic" preload="auto" loop style="display: none;">
+        <source src="audio/HomeScreen.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/level-api.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/level-editor-enhanced-ui.js"></script>
+    <script src="js/online-level-editor.js"></script>
+    <script src="js/level-editor.js"></script>
+    <script src="js/audio.js" type="module"></script>
+    
+    <script type="module">
+        // Initialize audio
+        import { audioManager } from './js/audio.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            audioManager.initialize();
+            audioManager.playMenuMusic();
+        });
+    </script>
+</body>
+</html>

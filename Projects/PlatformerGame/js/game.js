@@ -67,12 +67,18 @@ class GameManager {
     }
 
     /**
-     * Load game settings from localStorage
+     * Load game settings from storage
      */
     loadSettings() {
         try {
-            const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-            const settings = savedSettings ? JSON.parse(savedSettings) : DEFAULT_SETTINGS;
+            let settings;
+            if (window.gameStorage) {
+                settings = window.gameStorage.loadSettings();
+            } else {
+                // Fallback to localStorage if GameStorage not available
+                const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+                settings = savedSettings ? JSON.parse(savedSettings) : DEFAULT_SETTINGS;
+            }
             this.updateSettings(settings);
         } catch (error) {
             console.error("Error loading settings:", error);
@@ -655,8 +661,10 @@ class GameManager {
         try {
             console.log("Loading temporary test level");
             
-            // Get the level from localStorage
-            const tempLevelData = localStorage.getItem('tempTestLevel');
+            // Get the level from storage
+            const tempLevelData = window.gameStorage ? 
+                window.gameStorage.getTempTestLevel() : 
+                JSON.parse(localStorage.getItem('tempTestLevel') || 'null');
             
             if (!tempLevelData) {
                 console.error("No temporary test level found");
@@ -742,8 +750,12 @@ class GameManager {
             audioManager.initialize();
             audioManager.playGameMusic();
             
-            // Clear the temp level from localStorage after loading
-            localStorage.removeItem('tempTestLevel');
+            // Clear the temp level from storage after loading
+            if (window.gameStorage) {
+                window.gameStorage.removeTempTestLevel();
+            } else {
+                localStorage.removeItem('tempTestLevel');
+            }
             
         } catch (error) {
             console.error("Error loading temp test level:", error);

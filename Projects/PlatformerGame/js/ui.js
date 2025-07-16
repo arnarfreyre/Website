@@ -262,8 +262,13 @@ class UIManager {
         // Update game manager settings
         this.gameManager.updateSettings(newSettings);
 
-        // Save to localStorage
-        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
+        // Save to storage using GameStorage
+        if (window.gameStorage) {
+            window.gameStorage.saveSettings(newSettings);
+        } else {
+            // Fallback to localStorage if GameStorage not available
+            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
+        }
     }
 
     // Show specific menu

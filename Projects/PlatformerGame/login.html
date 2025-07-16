@@ -537,6 +537,10 @@
                 await authManager.signInWithGoogle();
                 showSuccess('Signed in successfully!');
             } catch (error) {
+                // Don't show error for redirect cases - the page will redirect
+                if (error.message && error.message.includes('page will redirect')) {
+                    return;
+                }
                 showError(error.message);
             }
         }
@@ -596,9 +600,10 @@
         }
 
         async function signOut() {
-            if (confirm('Are you sure you want to sign out?')) {
-                await authManager.signOut();
-            }
+            await authManager.signOut({
+                showConfirmation: true,
+                redirectTo: '/index.html'
+            });
         }
 
         // Load user data

@@ -54,28 +54,40 @@ class LevelLoader {
     }
 
     /**
-     * Load levels from localStorage
+     * Load levels from storage
      */
     loadSavedLevels() {
         try {
-            const savedLevels = localStorage.getItem(STORAGE_KEYS.LEVELS);
-            const savedNames = localStorage.getItem(STORAGE_KEYS.LEVEL_NAMES);
+            if (window.gameStorage) {
+                // Use GameStorage for centralized storage
+                this.levels = window.gameStorage.loadLevels();
+                this.levelNames = window.gameStorage.loadLevelNames();
+                
+                if (!this.levels.length || !this.levelNames.length) return false;
+                
+                this.playerStartPositions = window.gameStorage.loadStartPositions();
+                this.spikeRotations = window.gameStorage.loadSpikeRotations();
+            } else {
+                // Fallback to localStorage
+                const savedLevels = localStorage.getItem(STORAGE_KEYS.LEVELS);
+                const savedNames = localStorage.getItem(STORAGE_KEYS.LEVEL_NAMES);
 
-            if (!savedLevels || !savedNames) return false;
+                if (!savedLevels || !savedNames) return false;
 
-            this.levels = JSON.parse(savedLevels);
-            this.levelNames = JSON.parse(savedNames);
+                this.levels = JSON.parse(savedLevels);
+                this.levelNames = JSON.parse(savedNames);
 
-            // Load start positions if available
-            const savedStartPositions = localStorage.getItem(STORAGE_KEYS.START_POSITIONS);
-            if (savedStartPositions) {
-                this.playerStartPositions = JSON.parse(savedStartPositions);
-            }
+                // Load start positions if available
+                const savedStartPositions = localStorage.getItem(STORAGE_KEYS.START_POSITIONS);
+                if (savedStartPositions) {
+                    this.playerStartPositions = JSON.parse(savedStartPositions);
+                }
 
-            // Load spike rotations if available
-            const savedRotations = localStorage.getItem('platformerSpikeRotations');
-            if (savedRotations) {
-                this.spikeRotations = JSON.parse(savedRotations);
+                // Load spike rotations if available
+                const savedRotations = localStorage.getItem('platformerSpikeRotations');
+                if (savedRotations) {
+                    this.spikeRotations = JSON.parse(savedRotations);
+                }
             }
 
             return true;
@@ -86,15 +98,27 @@ class LevelLoader {
     }
 
     /**
-     * Save current levels to localStorage
+     * Save current levels to storage
      */
     saveToStorage() {
-        localStorage.setItem(STORAGE_KEYS.LEVELS, JSON.stringify(this.levels));
-        localStorage.setItem(STORAGE_KEYS.LEVEL_NAMES, JSON.stringify(this.levelNames));
-        localStorage.setItem(STORAGE_KEYS.START_POSITIONS, JSON.stringify(this.playerStartPositions));
+        if (window.gameStorage) {
+            // Use GameStorage for centralized storage
+            window.gameStorage.saveLevels(this.levels);
+            window.gameStorage.saveLevelNames(this.levelNames);
+            window.gameStorage.saveStartPositions(this.playerStartPositions);
+            
+            if (this.spikeRotations.length > 0) {
+                window.gameStorage.saveSpikeRotations(this.spikeRotations);
+            }
+        } else {
+            // Fallback to localStorage
+            localStorage.setItem(STORAGE_KEYS.LEVELS, JSON.stringify(this.levels));
+            localStorage.setItem(STORAGE_KEYS.LEVEL_NAMES, JSON.stringify(this.levelNames));
+            localStorage.setItem(STORAGE_KEYS.START_POSITIONS, JSON.stringify(this.playerStartPositions));
 
-        if (this.spikeRotations.length > 0) {
-            localStorage.setItem('platformerSpikeRotations', JSON.stringify(this.spikeRotations));
+            if (this.spikeRotations.length > 0) {
+                localStorage.setItem('platformerSpikeRotations', JSON.stringify(this.spikeRotations));
+            }
         }
     }
 
@@ -110,17 +134,28 @@ class LevelLoader {
     }
 
     /**
-     * Check if a test level is specified in localStorage
+     * Check if a test level is specified in storage
      */
     checkTestLevelFromStorage() {
-        const testLevelIndex = localStorage.getItem('testPlayLevel');
+        let testLevelIndex;
+        
+        if (window.gameStorage) {
+            testLevelIndex = window.gameStorage.getTestPlayLevel();
+        } else {
+            testLevelIndex = localStorage.getItem('testPlayLevel');
+        }
+        
         if (testLevelIndex === null) return false;
 
         const levelIndex = parseInt(testLevelIndex);
         if (this.isValidLevelIndex(levelIndex)) {
             this.unlockAndSetLevel(levelIndex);
-            // Remove the test level from localStorage
-            localStorage.removeItem('testPlayLevel');
+            // Remove the test level from storage
+            if (window.gameStorage) {
+                window.gameStorage.removeTestPlayLevel();
+            } else {
+                localStorage.removeItem('testPlayLevel');
+            }
             return true;
         }
         return false;
@@ -143,14 +178,22 @@ class LevelLoader {
     }
 
     /**
-     * Load game progress from localStorage
+     * Load game progress from storage
      */
     loadProgress() {
         try {
-            const savedProgress = localStorage.getItem(STORAGE_KEYS.PROGRESS);
-            if (savedProgress) {
-                const progress = JSON.parse(savedProgress);
+            let progress;
+            
+            if (window.gameStorage) {
+                progress = window.gameStorage.loadProgress();
                 this.unlockedLevels = progress.unlockedLevels || 1;
+            } else {
+                // Fallback to localStorage
+                const savedProgress = localStorage.getItem(STORAGE_KEYS.PROGRESS);
+                if (savedProgress) {
+                    progress = JSON.parse(savedProgress);
+                    this.unlockedLevels = progress.unlockedLevels || 1;
+                }
             }
         } catch (error) {
             console.error("Error loading progress:", error);
@@ -178,11 +221,18 @@ class LevelLoader {
     }
 
     /**
-     * Save progress to localStorage
+     * Save progress to storage
      */
     saveProgress() {
-        localStorage.setItem(STORAGE_KEYS.PROGRESS,
-            JSON.stringify({ unlockedLevels: this.unlockedLevels }));
+        const progressData = { unlockedLevels: this.unlockedLevels };
+        
+        if (window.gameStorage) {
+            window.gameStorage.saveProgress(progressData);
+        } else {
+            // Fallback to localStorage
+            localStorage.setItem(STORAGE_KEYS.PROGRESS,
+                JSON.stringify(progressData));
+        }
     }
 
     // ===== ACCESSOR METHODS =====
