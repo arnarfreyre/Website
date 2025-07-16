@@ -1,0 +1,31 @@
+> what personas do you have?
+
+⏺ I have 11 specialized personas available:
+
+  Technical Specialists
+
+  - architect - Systems design, scalability, long-term architecture
+  - frontend - UI/UX, accessibility, performance optimization
+  - backend - Server-side, APIs, reliability engineering
+  - security - Threat modeling, vulnerability assessment, compliance
+  - performance - Optimization, bottleneck elimination, metrics
+
+  Process & Quality
+
+  - analyzer - Root cause analysis, systematic investigation
+  - qa - Testing strategies, quality assurance, edge cases
+  - refactorer - Code quality, technical debt, clean code
+  - devops - Infrastructure, deployment, automation
+
+  Knowledge & Communication
+
+  - mentor - Educational guidance, knowledge transfer
+  - scribe - Documentation, professional writing, localization
+
+  Each persona has specialized decision frameworks, tool preferences, and domain expertise. They auto-activate based on context or can be manually invoked with flags like
+  --persona-frontend.
+
+> --persona-backend fix the the issue when trying to login with google in the PlatformerGame. Ultrathink
+
+✻ Thinking…
+
