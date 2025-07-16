@@ -645,7 +645,7 @@
                     <h2 class="project-title">Tree Research Database</h2>
                     <p class="project-description">A professional academic website for global tree research, focusing on warm climate species. Features comprehensive species database, climate data visualization, and research publications.</p>
                     <div class="card-footer">
-                        <a href="Projects/Tree Website/example-page.html" class="project-link" aria-label="View Tree Research Database">
+                        <a href="Projects/Tree Website/index.html" class="project-link" aria-label="View Tree Research Database">
                             Explore Trees
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -698,7 +698,6 @@
                 const title = card.querySelector('.project-title').textContent.toLowerCase();
                 const description = card.querySelector('.project-description').textContent.toLowerCase();
                 const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
-
                 // Check category filter
                 const matchesCategory = currentFilter === 'all' || category.includes(currentFilter);
 
