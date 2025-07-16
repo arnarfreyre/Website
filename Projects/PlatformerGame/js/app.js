@@ -13,7 +13,6 @@ window.levelLoader = levelLoader;  // Updated reference
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("Initializing game...");
     
     // Wait for Firebase to be ready
     let firebaseReady = false;
@@ -25,10 +24,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     if (window.db) {
-        console.log("Firebase is ready");
         firebaseReady = true;
     } else {
-        console.warn("Firebase initialization timed out - proceeding with fallback");
     }
 
     // Initialize audio manager first
@@ -54,5 +51,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Play menu music on startup
     audioManager.playMenuMusic();
 
-    console.log("Game initialized with", levelLoader.getLevelCount(), "levels");  // Updated reference
 });
