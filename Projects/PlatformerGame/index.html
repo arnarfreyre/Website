@@ -102,13 +102,15 @@
         }
 
         .user-info a {
-            color: #6d8ad0;
+            color: #8fa7e8;
             text-decoration: none;
             border-bottom: 1px solid transparent;
-            transition: border-color 0.2s ease;
+            transition: all 0.2s ease;
+            font-weight: bold;
         }
 
         .user-info a:hover {
+            color: #6d8ad0;
             border-bottom-color: #6d8ad0;
         }
 
@@ -538,6 +540,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="js/firebase-config.js"></script>
+    
+    <!-- Core utilities - load first -->
+    <script src="js/utils/logger.js"></script>
+    <script src="js/utils/storage-manager.js"></script>
+    <script src="js/utils/game-storage.js"></script>
+    
     <script src="js/auth.js"></script>
     <script src="js/level-api.js"></script>
 
@@ -549,6 +557,7 @@
     <script src="js/enhanced-level-editor.js"></script>
     <script src="js/online-level-editor.js"></script>
     <script src="js/online-browser.js"></script>
+    <!-- Auth UI not needed on home page -->
     <script src="js/default_levels.js" type="module"></script>
     <script src="js/audio.js" type="module"></script>
     <script src="js/levels-firebase.js" type="module"></script>
@@ -588,14 +597,14 @@
                             }
 
                             userInfoEl.innerHTML = `
-                                Welcome back, <span>${user.displayName || 'Player'}</span> •
+                                Welcome back, <a href="accounts.html" style="color: #8fa7e8; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;">${user.displayName || 'Player'}</a> •
                                 Progress: <span>${completedCount}/18</span> levels completed
                             `;
                         } else {
-                            userInfoEl.innerHTML = `Welcome, <span>${user.displayName || 'Player'}</span>`;
+                            userInfoEl.innerHTML = `Welcome, <a href="accounts.html" style="color: #8fa7e8; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;">${user.displayName || 'Player'}</a>`;
                         }
                     } else {
-                        userInfoEl.innerHTML = 'Not signed in • <a href="accounts.html" style="color: #6d8ad0;">Sign in</a> to track progress';
+                        userInfoEl.innerHTML = 'Not signed in • <a href="accounts.html" style="color: #6d8ad0; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;">Sign in</a> to track progress';
                     }
                 }
             } catch (error) {
