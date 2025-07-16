@@ -87,6 +87,80 @@
             align-items: center;
             gap: 2rem;
             flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        /* Search Bar */
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            background: var(--bg-secondary);
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px rgba(92, 124, 250, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+            pointer-events: none;
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .search-clear:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .search-clear svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-secondary);
+        }
+
+        .search-clear.visible {
+            display: flex;
         }
 
         .filter-group {
@@ -385,6 +459,16 @@
 
             .filter-content {
                 gap: 1rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .filter-group {
+                width: 100%;
             }
 
             .page-title {
@@ -416,6 +500,24 @@
 
     <div class="filter-bar" role="region" aria-label="Project filters">
         <div class="filter-content">
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input 
+                    type="search" 
+                    class="search-input" 
+                    placeholder="Search projects..." 
+                    aria-label="Search projects"
+                    id="project-search"
+                >
+                <button class="search-clear" aria-label="Clear search" type="button">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
             <div class="filter-group">
                 <span class="filter-label">Category:</span>
                 <div class="filter-buttons" role="group">
@@ -534,10 +636,71 @@
     </footer>
 
     <script>
-        // Simple filter functionality
+        // Filter and Search functionality
         const filterBtns = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
+        const searchInput = document.getElementById('project-search');
+        const searchClear = document.querySelector('.search-clear');
+        
+        let currentFilter = 'all';
+        let searchQuery = '';
 
+        // Search functionality
+        function performSearch() {
+            searchQuery = searchInput.value.toLowerCase().trim();
+            filterProjects();
+            
+            // Show/hide clear button
+            if (searchQuery) {
+                searchClear.classList.add('visible');
+            } else {
+                searchClear.classList.remove('visible');
+            }
+        }
+
+        // Combined filter function
+        function filterProjects() {
+            let visibleIndex = 0;
+            
+            projectCards.forEach(card => {
+                const category = card.dataset.category;
+                const title = card.querySelector('.project-title').textContent.toLowerCase();
+                const description = card.querySelector('.project-description').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                
+                // Check category filter
+                const matchesCategory = currentFilter === 'all' || category.includes(currentFilter);
+                
+                // Check search query
+                const matchesSearch = !searchQuery || 
+                    title.includes(searchQuery) || 
+                    description.includes(searchQuery) ||
+                    tags.some(tag => tag.includes(searchQuery));
+                
+                // Show/hide based on both filters
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'flex';
+                    card.style.setProperty('--i', visibleIndex++);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Search input events
+        searchInput.addEventListener('input', performSearch);
+        searchInput.addEventListener('search', performSearch);
+
+        // Clear search
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            searchQuery = '';
+            searchClear.classList.remove('visible');
+            filterProjects();
+            searchInput.focus();
+        });
+
+        // Category filter functionality
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 // Update active state
@@ -548,17 +711,20 @@
                 btn.classList.add('active');
                 btn.setAttribute('aria-pressed', 'true');
 
-                // Filter projects
-                const filter = btn.dataset.filter;
-                projectCards.forEach((card, index) => {
-                    if (filter === 'all' || card.dataset.category.includes(filter)) {
-                        card.style.display = 'flex';
-                        card.style.setProperty('--i', index);
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+                // Update filter and apply
+                currentFilter = btn.dataset.filter;
+                filterProjects();
             });
+        });
+
+        // Keyboard navigation for search
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchQuery) {
+                searchInput.value = '';
+                searchQuery = '';
+                searchClear.classList.remove('visible');
+                filterProjects();
+            }
         });
     </script>
 </body>
