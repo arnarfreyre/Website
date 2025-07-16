@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Arbor Academy - Professional academic resource for tree science, research, and conservation. Explore the fascinating world of Earth's oldest living organisms.">
+    <meta name="keywords" content="tree science, dendrology, forest research, tree biology, conservation, academic research">
+    <meta name="author" content="Arbor Academy">
+    
+    <title>Arbor Academy - The Science of Trees</title>
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Critical CSS (inline for performance) -->
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-forest-green: #0D4F3C;
+            --color-earth-brown: #8B4513;
+            --color-sky-blue: #87CEEB;
+            --color-bark-dark: #2C2C2C;
+            --color-bark-medium: #4A4A4A;
+            --color-bark-light: #6B6B6B;
+            --color-leaf-light: #E8F5E9;
+            --color-white: #FFFFFF;
+            --color-gray-light: #F5F5F5;
+            
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --spacing-unit: 8px;
+            --container-max: 1440px;
+            
+            --z-nav: 1000;
+            --z-modal: 2000;
+        }
+        
+        /* Base typography */
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--color-bark-dark);
+            background-color: var(--color-white);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            line-height: 1.2;
+            font-weight: 700;
+            color: var(--color-forest-green);
+        }
+        
+        /* Skip to main content link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-forest-green);
+            color: var(--color-white);
+            padding: 8px;
+            text-decoration: none;
+            z-index: calc(var(--z-nav) + 100);
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Loading screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .tree-ring-loader {
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--color-gray-light);
+            border-top-color: var(--color-forest-green);
+            border-radius: 50%;
+            animation: tree-ring-spin 1s linear infinite;
+        }
+        
+        @keyframes tree-ring-spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Hero section critical styles */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(13, 79, 60, 0.7), rgba(13, 79, 60, 0.5)), var(--color-forest-green);
+            color: var(--color-white);
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: calc(var(--spacing-unit) * 4);
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--color-white);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            font-weight: 900;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            font-weight: 300;
+        }
+        
+        /* Responsive utilities */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Arbor Academy",
+        "description": "Professional academic resource for tree science and research",
+        "url": "https://arboracademy.edu"
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+    
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="tree-ring-loader" role="status" aria-label="Loading"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" aria-label="Arbor Academy Home">
+                <svg class="logo-icon" width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+                    <circle cx="20" cy="20" r="18" fill="var(--color-forest-green)"/>
+                    <path d="M20 10 L15 20 L20 30 L25 20 Z" fill="var(--color-white)"/>
+                    <path d="M20 20 L10 25 L20 30 L30 25 Z" fill="var(--color-white)" opacity="0.7"/>
+                </svg>
+                <span class="logo-text">Arbor Academy</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#research" class="nav-link">Research</a></li>
+                <li><a href="#species" class="nav-link">Species Database</a></li>
+                <li><a href="#conservation" class="nav-link">Conservation</a></li>
+                <li><a href="#resources" class="nav-link">Resources</a></li>
+                <li><a href="#reports" class="nav-link">Reports</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <header class="hero" id="home">
+        <div class="hero-background">
+            <div class="parallax-layer" data-speed="0.5"></div>
+            <div class="floating-leaves" aria-hidden="true">
+                <svg class="leaf leaf-1" viewBox="0 0 50 50">
+                    <path d="M25 5 Q15 15 25 35 Q35 15 25 5" fill="var(--color-leaf-light)" opacity="0.3"/>
+                </svg>
+                <svg class="leaf leaf-2" viewBox="0 0 50 50">
+                    <path d="M25 5 Q15 15 25 35 Q35 15 25 5" fill="var(--color-leaf-light)" opacity="0.3"/>
+                </svg>
+                <svg class="leaf leaf-3" viewBox="0 0 50 50">
+                    <path d="M25 5 Q15 15 25 35 Q35 15 25 5" fill="var(--color-leaf-light)" opacity="0.3"/>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <h1>Arbor Academy: The Science of Trees</h1>
+            <p class="hero-subtitle">Exploring Earth's oldest living organisms through research and data</p>
+            <a href="#research" class="cta-button primary" aria-label="Explore our tree research">
+                Explore Our Research
+                <svg class="arrow-icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M5 10 L15 10 M10 5 L15 10 L10 15" stroke="currentColor" fill="none" stroke-width="2"/>
+                </svg>
+            </a>
+        </div>
+        
+        <div class="scroll-indicator" aria-hidden="true">
+            <span class="scroll-text">Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main id="main">
+        <!-- Introduction Section -->
+        <section class="intro-section" aria-labelledby="intro-heading">
+            <div class="container">
+                <h2 id="intro-heading" class="section-title">Understanding Our Forest Giants</h2>
+                <div class="intro-grid">
+                    <div class="intro-text">
+                        <p class="lead-text">
+                            Trees are among the most remarkable organisms on our planet. From the towering redwoods 
+                            of California to the ancient bristlecone pines, these living monuments have shaped our 
+                            world for millions of years.
+                        </p>
+                        <p>
+                            At Arbor Academy, we combine cutting-edge research with time-honored forestry knowledge 
+                            to unlock the secrets of these magnificent beings. Our work spans from molecular biology 
+                            to ecosystem dynamics, contributing to a deeper understanding of how trees communicate, 
+                            adapt, and thrive.
+                        </p>
+                    </div>
+                    <div class="intro-stats">
+                        <div class="stat-card">
+                            <span class="stat-number" data-count="3.04">0</span>
+                            <span class="stat-unit">trillion</span>
+                            <span class="stat-label">Trees on Earth</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" data-count="60000">0</span>
+                            <span class="stat-unit">+</span>
+                            <span class="stat-label">Known tree species</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" data-count="4800">0</span>
+                            <span class="stat-unit">years</span>
+                            <span class="stat-label">Oldest living tree</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Featured Research Section -->
+        <section class="research-section" id="research" aria-labelledby="research-heading">
+            <div class="container">
+                <h2 id="research-heading" class="section-title">Featured Research</h2>
+                <p class="section-subtitle">Advancing our understanding of forest ecosystems</p>
+                
+                <div class="research-grid">
+                    <article class="research-card">
+                        <div class="research-image">
+                            <div class="placeholder-image carbon-seq"></div>
+                        </div>
+                        <div class="research-content">
+                            <h3>Carbon Sequestration Studies</h3>
+                            <p>
+                                Investigating how different tree species capture and store atmospheric carbon, 
+                                with implications for climate change mitigation strategies.
+                            </p>
+                            <a href="#" class="research-link" aria-label="Read more about carbon sequestration studies">
+                                Learn More 
+                                <svg class="arrow-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M4 8 L12 8 M8 4 L12 8 L8 12" stroke="currentColor" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </article>
+                    
+                    <article class="research-card">
+                        <div class="research-image">
+                            <div class="placeholder-image biodiversity"></div>
+                        </div>
+                        <div class="research-content">
+                            <h3>Biodiversity in Forest Canopies</h3>
+                            <p>
+                                Exploring the rich ecosystems that exist in tree crowns, home to countless 
+                                species found nowhere else on Earth.
+                            </p>
+                            <a href="#" class="research-link" aria-label="Read more about forest canopy biodiversity">
+                                Learn More 
+                                <svg class="arrow-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M4 8 L12 8 M8 4 L12 8 L8 12" stroke="currentColor" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </article>
+                    
+                    <article class="research-card">
+                        <div class="research-image">
+                            <div class="placeholder-image communication"></div>
+                        </div>
+                        <div class="research-content">
+                            <h3>Tree Communication Networks</h3>
+                            <p>
+                                Uncovering the "Wood Wide Web" - how trees share resources and information 
+                                through underground fungal networks.
+                            </p>
+                            <a href="#" class="research-link" aria-label="Read more about tree communication networks">
+                                Learn More 
+                                <svg class="arrow-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M4 8 L12 8 M8 4 L12 8 L8 12" stroke="currentColor" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Interactive Tree Anatomy -->
+        <section class="anatomy-section" aria-labelledby="anatomy-heading">
+            <div class="container">
+                <h2 id="anatomy-heading" class="section-title">Interactive Tree Anatomy</h2>
+                <div class="anatomy-container">
+                    <div class="tree-diagram" role="img" aria-label="Interactive tree anatomy diagram">
+                        <svg viewBox="0 0 400 600" class="tree-svg">
+                            <!-- Tree trunk -->
+                            <rect x="175" y="300" width="50" height="250" fill="var(--color-earth-brown)" class="trunk"/>
+                            
+                            <!-- Roots -->
+                            <path d="M200 550 L150 600 M200 550 L200 600 M200 550 L250 600" 
+                                  stroke="var(--color-earth-brown)" stroke-width="8" fill="none" class="roots"/>
+                            
+                            <!-- Canopy -->
+                            <circle cx="200" cy="200" r="150" fill="var(--color-forest-green)" opacity="0.8" class="canopy"/>
+                            
+                            <!-- Interactive hotspots -->
+                            <g class="hotspot" data-info="Leaves: Photosynthesis powerhouses">
+                                <circle cx="200" cy="150" r="30" fill="transparent" stroke="var(--color-sky-blue)" stroke-width="2"/>
+                                <text x="200" y="155" text-anchor="middle" fill="var(--color-white)">Leaves</text>
+                            </g>
+                            
+                            <g class="hotspot" data-info="Trunk: Transport highway for water and nutrients">
+                                <circle cx="200" cy="400" r="30" fill="transparent" stroke="var(--color-sky-blue)" stroke-width="2"/>
+                                <text x="200" y="405" text-anchor="middle" fill="var(--color-white)">Trunk</text>
+                            </g>
+                            
+                            <g class="hotspot" data-info="Roots: Anchor and nutrient absorption system">
+                                <circle cx="200" cy="575" r="30" fill="transparent" stroke="var(--color-sky-blue)" stroke-width="2"/>
+                                <text x="200" y="580" text-anchor="middle" fill="var(--color-bark-dark)">Roots</text>
+                            </g>
+                        </svg>
+                    </div>
+                    
+                    <div class="anatomy-info">
+                        <h3>Explore Tree Components</h3>
+                        <p>Click on different parts of the tree to learn about their functions.</p>
+                        <div class="info-display" id="anatomyInfo">
+                            <p class="info-placeholder">Select a tree component to learn more...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Species Spotlight -->
+        <section class="species-section" id="species" aria-labelledby="species-heading">
+            <div class="container">
+                <h2 id="species-heading" class="section-title">Species Spotlight</h2>
+                <div class="species-carousel" role="region" aria-label="Featured tree species">
+                    <div class="species-track">
+                        <article class="species-card">
+                            <div class="species-image giant-sequoia"></div>
+                            <h3>Giant Sequoia</h3>
+                            <p class="species-latin">Sequoiadendron giganteum</p>
+                            <p>The largest trees on Earth by volume, these giants can live over 3,000 years.</p>
+                        </article>
+                        
+                        <article class="species-card">
+                            <div class="species-image bristlecone"></div>
+                            <h3>Bristlecone Pine</h3>
+                            <p class="species-latin">Pinus longaeva</p>
+                            <p>The oldest known living trees, with some individuals exceeding 4,800 years.</p>
+                        </article>
+                        
+                        <article class="species-card">
+                            <div class="species-image baobab"></div>
+                            <h3>Baobab</h3>
+                            <p class="species-latin">Adansonia</p>
+                            <p>Known as the "upside-down tree," these African giants store water in their massive trunks.</p>
+                        </article>
+                    </div>
+                    
+                    <button class="carousel-control prev" aria-label="Previous species">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M15 18 L9 12 L15 6" stroke="currentColor" fill="none" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="carousel-control next" aria-label="Next species">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M9 18 L15 12 L9 6" stroke="currentColor" fill="none" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tree Reports Section (Future Integration) -->
+        <section class="reports-section" id="reports" aria-labelledby="reports-heading">
+            <div class="container">
+                <h2 id="reports-heading" class="section-title">Tree Reports Dashboard</h2>
+                <div class="coming-soon-container">
+                    <div class="dashboard-preview">
+                        <div class="preview-header">
+                            <div class="preview-dots">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                            <span class="preview-title">Tree Data Visualization</span>
+                        </div>
+                        <div class="preview-content">
+                            <div class="chart-placeholder">
+                                <svg viewBox="0 0 400 200" class="placeholder-chart">
+                                    <rect x="50" y="150" width="40" height="40" fill="var(--color-forest-green)" opacity="0.7"/>
+                                    <rect x="120" y="100" width="40" height="90" fill="var(--color-forest-green)" opacity="0.7"/>
+                                    <rect x="190" y="80" width="40" height="110" fill="var(--color-forest-green)" opacity="0.7"/>
+                                    <rect x="260" y="60" width="40" height="130" fill="var(--color-forest-green)" opacity="0.7"/>
+                                    <rect x="330" y="40" width="40" height="150" fill="var(--color-forest-green)" opacity="0.7"/>
+                                </svg>
+                            </div>
+                            <div class="data-grid-placeholder">
+                                <div class="data-card-placeholder"></div>
+                                <div class="data-card-placeholder"></div>
+                                <div class="data-card-placeholder"></div>
+                                <div class="data-card-placeholder"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coming-soon-info">
+                        <h3>Coming Soon: Interactive Tree Reports</h3>
+                        <p>
+                            Our upcoming dashboard will feature comprehensive tree data visualization, 
+                            growth analysis, health monitoring, and species distribution maps.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Real-time growth tracking</li>
+                            <li>Species distribution maps</li>
+                            <li>Health assessment tools</li>
+                            <li>Climate impact analysis</li>
+                            <li>Downloadable research data</li>
+                        </ul>
+                        <button class="cta-button secondary" aria-label="Get notified when reports are available">
+                            Notify Me When Available
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Call to Action -->
+        <section class="cta-section" aria-labelledby="cta-heading">
+            <div class="container">
+                <h2 id="cta-heading" class="section-title">Join Our Research Community</h2>
+                <p class="cta-text">
+                    Be part of the global effort to understand and protect our forests. 
+                    Whether you're a researcher, student, or tree enthusiast, there's a place for you.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button primary">Contribute Research</a>
+                    <a href="#" class="cta-button secondary">Access Resources</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="main-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>About Arbor Academy</h4>
+                    <p>
+                        A leading institution dedicated to advancing tree science through 
+                        research, education, and conservation efforts worldwide.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Research Publications</a></li>
+                        <li><a href="#">Educational Programs</a></li>
+                        <li><a href="#">Conservation Projects</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Academic Partners</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Forest Research Institute</a></li>
+                        <li><a href="#">Global Tree Foundation</a></li>
+                        <li><a href="#">International Dendrology Society</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Stay Connected</h4>
+                    <p>Subscribe to our newsletter for the latest research and updates.</p>
+                    <form class="newsletter-form" aria-label="Newsletter subscription">
+                        <label for="email" class="sr-only">Email address</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                        <button type="submit" aria-label="Subscribe to newsletter">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Arbor Academy. All rights reserved.</p>
+                <p>Website crafted with <3 for tree science enthusiasts</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script>
+        // Remove loading screen after content loads
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        });
+        
+        // Basic interactivity setup
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navigation toggle
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            navToggle?.addEventListener('click', () => {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                navMenu.classList.toggle('active');
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Main JavaScript file -->
+    <script src="script.js" defer></script>
+</body>
+</html>
