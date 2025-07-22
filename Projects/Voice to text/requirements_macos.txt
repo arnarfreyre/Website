@@ -1,0 +1,14 @@
+# macOS-specific dependencies for Voice to Text application
+# Python 3.12+ compatibility
+setuptools>=68.0.0
+
+# Text-to-Speech on macOS requires pyobjc
+pyobjc-core>=9.0
+pyobjc-framework-Cocoa>=9.0
+pyobjc-framework-ApplicationServices>=9.0
+
+# Core voice recording dependencies
+-r requirements.txt
+
+# Optional: PyAudio for better microphone support
+# Note: On macOS, install via: brew install portaudio && pip install pyaudio

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Virtual environments
+bin/
+lib/
+include/
+pip-selfcheck.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+temp_audio/
+*.wav
+*.mp3
+*.log
+
+# Output files (optional - uncomment if you don't want to track)
+# user_message.txt
+# transcript_*.json
