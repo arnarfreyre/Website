@@ -72,6 +72,43 @@
             fill: currentColor;
         }
 
+        /* New Look Button */
+        .new-look-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .new-look-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(92, 124, 250, 0.3);
+        }
+
+        .new-look-btn:active {
+            transform: translateY(0);
+        }
+
+        .new-look-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .new-look-btn:hover svg {
+            transform: rotate(180deg);
+        }
+
         /* Filter Bar */
         .filter-bar {
             background: var(--bg-primary);
@@ -449,6 +486,14 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+            }
+            
+            .new-look-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
             .projects-grid {
                 grid-template-columns: 1fr;
             }
@@ -486,15 +531,21 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
-
+    
     <header>
         <div class="header-content">
-            <a href="#" class="logo" aria-label="Portfolio home">
+            <a href="Index.html?main=true" class="logo" aria-label="Portfolio home">
                 <svg viewBox="0 0 24 24">
                     <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
                 </svg>
                 Portfolio
             </a>
+            <button class="new-look-btn" onclick="randomNewLook()" aria-label="Try a new look">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2v2c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7c0-1.07.24-2.08.67-3H3.09c-.5 1.39-.79 2.88-.79 4.42 0 5.52 4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86l2.03-2.03C6.98 10.15 7 11.08 7 12c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5c-.92 0-1.76.26-2.5.67L7.91 6.08C9.08 5.37 10.5 5 12 5c3.86 0 7 3.14 7 7s-3.14 7-7 7z"/>
+                </svg>
+                New Look
+            </button>
         </div>
     </header>
 
@@ -505,10 +556,10 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
-                <input
-                    type="search"
-                    class="search-input"
-                    placeholder="Search projects..."
+                <input 
+                    type="search" 
+                    class="search-input" 
+                    placeholder="Search projects..." 
                     aria-label="Search projects"
                     id="project-search"
                 >
@@ -533,13 +584,6 @@
     <main id="main" class="main-content">
         <h1 class="page-title">Creative Projects</h1>
         <p class="page-subtitle">Explore a collection of interactive web experiences and experiments</p>
-        
-        <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #4caf50;">
-            <p style="margin: 0; color: #2e7d32;">
-                <strong>Note:</strong> This is the main projects page. Normally, you'll be redirected to a random portfolio variation. 
-                To always access this page directly, bookmark: <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">Index.html?main=true</code>
-            </p>
-        </div>
 
         <div class="projects-grid" role="list">
             <!-- Featured Project -->
@@ -559,7 +603,7 @@
                     <h2 class="project-title">Pixel Platformer</h2>
                     <p class="project-description">A browser-based platformer game built with JavaScript and HTML5 Canvas. Experience classic gaming mechanics with smooth animations, multiple levels, and responsive controls. Perfect for both casual players and retro gaming enthusiasts.</p>
                     <div class="card-footer">
-                        <a href="Projects/PlatformerGame/index.html" class="project-link" aria-label="Play Pixel Platformer">
+                        <a href="../Projects/PlatformerGame/index.html" class="project-link" aria-label="Play Pixel Platformer">
                             Play Now
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -590,7 +634,7 @@
                     <h2 class="project-title">Fourier Transform Visualizer</h2>
                     <p class="project-description">Claude vs Gemini artifact competition, Claude 1-0 Gemini. An interactive visualization tool for understanding Fourier transforms through animated graphics.</p>
                     <div class="card-footer">
-                        <a href="Projects/fourier.html" class="project-link" aria-label="View Fourier Transform Visualizer">
+                        <a href="../Projects/fourier.html" class="project-link" aria-label="View Fourier Transform Visualizer">
                             Explore
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -621,7 +665,7 @@
                     <h2 class="project-title">Mini Games Collection</h2>
                     <p class="project-description">All kinds of games like Snake, Tic-Tac-Toe, Chess, and many more games to come. A growing collection of web-based entertainment.</p>
                     <div class="card-footer">
-                        <a href="Projects/MiniGames/index.html" class="project-link" aria-label="Play Mini Games">
+                        <a href="../Projects/MiniGames/index.html" class="project-link" aria-label="Play Mini Games">
                             Play Games
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -635,37 +679,6 @@
                     </div>
                 </div>
             </article>
-
-            <article class="project-card" style="--i: 3" role="listitem" data-category="visualization interactive">
-                <div class="card-header" style="background: linear-gradient(135deg, #1B4332, #52796F);">
-                    <div class="card-pattern"></div>
-                    <svg class="card-icon" viewBox="0 0 24 24">
-                        <path d="M12 2C9.62 2 7.35 2.69 5.42 3.93L6.85 5.35C8.31 4.58 10.11 4 12 4C17.52 4 22 8.48 22 14C22 19.52 17.52 24 12 24C6.48 24 2 19.52 2 14C2 11.84 2.61 9.84 3.68 8.15L5.1 9.58C4.36 10.74 4 12.3 4 14C4 18.42 7.58 22 12 22C16.42 22 20 18.42 20 14C20 9.58 16.42 6 12 6C10.63 6 9.35 6.36 8.24 6.96L9.66 8.38C10.38 8.09 11.17 7.9 12 7.9C15.31 7.9 18.1 10.69 18.1 14C18.1 17.31 15.31 20.1 12 20.1C8.69 20.1 5.9 17.31 5.9 14C5.9 13.11 6.11 12.27 6.45 11.52L7.87 12.94C7.74 13.27 7.66 13.63 7.66 14C7.66 16.21 9.45 18 11.66 18C13.87 18 15.66 16.21 15.66 14C15.66 11.79 13.87 10 11.66 10C11.29 10 10.93 10.08 10.6 10.21L12 11.61V14L9 11L12 8V10.61L8.65 7.26C9.95 6.47 11.47 6 13.06 6C16.87 6 20 9.13 20 12.94C20 14.53 19.53 16.05 18.74 17.35L17.32 15.93C17.88 15.04 18.24 14.03 18.24 12.94C18.24 10.11 15.89 7.76 13.06 7.76C12 7.76 10.99 8.11 10.11 8.67L8.69 7.25C9.98 6.46 11.49 6 13.06 6C17.98 6 22 10.02 22 14.94C22 16.51 21.54 18.02 20.75 19.31L19.32 17.89C19.89 17 20.24 15.99 20.24 14.94C20.24 11 16.06 7.76 11.06 7.76C9.99 7.76 8.98 8.01 8.09 8.44L6.67 7.02C8.06 6.23 9.67 5.76 11.38 5.76C16.86 5.76 21.38 10.28 21.38 15.76C21.38 17.48 20.91 19.09 20.12 20.48L12 12.36V8L9 11L12 14V12.36L20.12 20.48C18.42 22.42 15.89 23.62 13.06 23.62C8.14 23.62 4.14 19.62 4.14 14.7C4.14 11.87 5.34 9.34 7.28 7.64L5.86 6.22C3.53 8.31 2 11.35 2 14.7C2 20.72 7.04 25.62 13.06 25.62C16.41 25.62 19.45 24.09 21.54 21.76L22.96 23.18C20.53 26.11 16.96 28 13.06 28C5.93 28 0 22.07 0 14.94C0 10.54 1.89 6.57 4.82 3.64L3.4 2.22C0.09 5.55 -2 10.08 -2 14.94C-2 23.18 4.82 30 13.06 30"/>
-                    </svg>
-                </div>
-                <div class="card-body">
-                    <div class="project-tags">
-                        <span class="tag tag-visualization">Research</span>
-                        <span class="tag tag-interactive">Interactive</span>
-                        <span class="tag">Academic</span>
-                    </div>
-                    <h2 class="project-title">Tree Research Database</h2>
-                    <p class="project-description">A professional academic website for global tree research, focusing on warm climate species. Features comprehensive species database, climate data visualization, and research publications.</p>
-                    <div class="card-footer">
-                        <a href="Projects/Tree Website/index.html" class="project-link" aria-label="View Tree Research Database">
-                            Explore Trees
-                            <svg viewBox="0 0 24 24">
-                                <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </a>
-                        <div class="project-stats">
-                            <span>Research</span>
-                            <span>•</span>
-                            <span>Database</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
         </div>
     </main>
 
@@ -674,37 +687,12 @@
     </footer>
 
     <script>
-        // Randomizer functionality - redirect to a random index page
-        (function() {
-            // Check if user wants to stay on main page
-            const urlParams = new URLSearchParams(window.location.search);
-            const stayOnMain = urlParams.get('main') === 'true';
-            
-            // Only use randomizer if running locally (not on a web server)
-            const isLocal = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1' || 
-                           window.location.protocol === 'file:';
-            
-            if (!stayOnMain && isLocal) {
-                // Array of available index pages
-                const indexPages = ['Landing-Page/index1.html', 'Landing-Page/index2.html', 'Landing-Page/index3.html', 'Landing-Page/index4.html', 'Landing-Page/index5.html', 'Landing-Page/index6.html'];
-                
-                // Select a random page
-                const randomIndex = Math.floor(Math.random() * indexPages.length);
-                const selectedPage = indexPages[randomIndex];
-                
-                // Redirect to the selected page
-                window.location.href = selectedPage;
-                return; // Stop executing the rest of the script
-            }
-        })();
-
         // Filter and Search functionality
         const filterBtns = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
         const searchInput = document.getElementById('project-search');
         const searchClear = document.querySelector('.search-clear');
-
+        
         let currentFilter = 'all';
         let searchQuery = '';
 
@@ -712,7 +700,7 @@
         function performSearch() {
             searchQuery = searchInput.value.toLowerCase().trim();
             filterProjects();
-
+            
             // Show/hide clear button
             if (searchQuery) {
                 searchClear.classList.add('visible');
@@ -724,21 +712,22 @@
         // Combined filter function
         function filterProjects() {
             let visibleIndex = 0;
-
+            
             projectCards.forEach(card => {
                 const category = card.dataset.category;
                 const title = card.querySelector('.project-title').textContent.toLowerCase();
                 const description = card.querySelector('.project-description').textContent.toLowerCase();
                 const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                
                 // Check category filter
                 const matchesCategory = currentFilter === 'all' || category.includes(currentFilter);
-
+                
                 // Check search query
-                const matchesSearch = !searchQuery ||
-                    title.includes(searchQuery) ||
+                const matchesSearch = !searchQuery || 
+                    title.includes(searchQuery) || 
                     description.includes(searchQuery) ||
                     tags.some(tag => tag.includes(searchQuery));
-
+                
                 // Show/hide based on both filters
                 if (matchesCategory && matchesSearch) {
                     card.style.display = 'flex';
@@ -788,6 +777,22 @@
                 filterProjects();
             }
         });
+
+        // New Look functionality
+        function randomNewLook() {
+            // Get current index number from filename
+            const currentPath = window.location.pathname;
+            const currentIndex = parseInt(currentPath.match(/index(\d)\.html/)?.[1] || '2');
+            
+            // Array of available indices (excluding current)
+            const indices = [1, 2, 3, 4, 5, 6].filter(i => i !== currentIndex);
+            
+            // Select a random index
+            const randomIndex = indices[Math.floor(Math.random() * indices.length)];
+            
+            // Navigate to the new index
+            window.location.href = `index${randomIndex}.html`;
+        }
     </script>
 </body>
 </html>

@@ -72,6 +72,43 @@
             fill: currentColor;
         }
 
+        /* New Look Button */
+        .new-look-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .new-look-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(92, 124, 250, 0.3);
+        }
+
+        .new-look-btn:active {
+            transform: translateY(0);
+        }
+
+        .new-look-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .new-look-btn:hover svg {
+            transform: rotate(180deg);
+        }
+
         /* Filter Bar */
         .filter-bar {
             background: var(--bg-primary);
@@ -449,6 +486,14 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+            }
+            
+            .new-look-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
             .projects-grid {
                 grid-template-columns: 1fr;
             }
@@ -489,12 +534,18 @@
 
     <header>
         <div class="header-content">
-            <a href="#" class="logo" aria-label="Portfolio home">
+            <a href="Index.html?main=true" class="logo" aria-label="Portfolio home">
                 <svg viewBox="0 0 24 24">
                     <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
                 </svg>
                 Portfolio
             </a>
+            <button class="new-look-btn" onclick="randomNewLook()" aria-label="Try a new look">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2v2c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7c0-1.07.24-2.08.67-3H3.09c-.5 1.39-.79 2.88-.79 4.42 0 5.52 4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86l2.03-2.03C6.98 10.15 7 11.08 7 12c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5c-.92 0-1.76.26-2.5.67L7.91 6.08C9.08 5.37 10.5 5 12 5c3.86 0 7 3.14 7 7s-3.14 7-7 7z"/>
+                </svg>
+                New Look
+            </button>
         </div>
     </header>
 
@@ -533,13 +584,6 @@
     <main id="main" class="main-content">
         <h1 class="page-title">Creative Projects</h1>
         <p class="page-subtitle">Explore a collection of interactive web experiences and experiments</p>
-        
-        <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #4caf50;">
-            <p style="margin: 0; color: #2e7d32;">
-                <strong>Note:</strong> This is the main projects page. Normally, you'll be redirected to a random portfolio variation. 
-                To always access this page directly, bookmark: <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">Index.html?main=true</code>
-            </p>
-        </div>
 
         <div class="projects-grid" role="list">
             <!-- Featured Project -->
@@ -559,7 +603,7 @@
                     <h2 class="project-title">Pixel Platformer</h2>
                     <p class="project-description">A browser-based platformer game built with JavaScript and HTML5 Canvas. Experience classic gaming mechanics with smooth animations, multiple levels, and responsive controls. Perfect for both casual players and retro gaming enthusiasts.</p>
                     <div class="card-footer">
-                        <a href="Projects/PlatformerGame/index.html" class="project-link" aria-label="Play Pixel Platformer">
+                        <a href="../Projects/PlatformerGame/index.html" class="project-link" aria-label="Play Pixel Platformer">
                             Play Now
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -590,7 +634,7 @@
                     <h2 class="project-title">Fourier Transform Visualizer</h2>
                     <p class="project-description">Claude vs Gemini artifact competition, Claude 1-0 Gemini. An interactive visualization tool for understanding Fourier transforms through animated graphics.</p>
                     <div class="card-footer">
-                        <a href="Projects/fourier.html" class="project-link" aria-label="View Fourier Transform Visualizer">
+                        <a href="../Projects/fourier.html" class="project-link" aria-label="View Fourier Transform Visualizer">
                             Explore
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -621,7 +665,7 @@
                     <h2 class="project-title">Mini Games Collection</h2>
                     <p class="project-description">All kinds of games like Snake, Tic-Tac-Toe, Chess, and many more games to come. A growing collection of web-based entertainment.</p>
                     <div class="card-footer">
-                        <a href="Projects/MiniGames/index.html" class="project-link" aria-label="Play Mini Games">
+                        <a href="../Projects/MiniGames/index.html" class="project-link" aria-label="Play Mini Games">
                             Play Games
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -652,7 +696,7 @@
                     <h2 class="project-title">Tree Research Database</h2>
                     <p class="project-description">A professional academic website for global tree research, focusing on warm climate species. Features comprehensive species database, climate data visualization, and research publications.</p>
                     <div class="card-footer">
-                        <a href="Projects/Tree Website/index.html" class="project-link" aria-label="View Tree Research Database">
+                        <a href="../Projects/Tree Website/index.html" class="project-link" aria-label="View Tree Research Database">
                             Explore Trees
                             <svg viewBox="0 0 24 24">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -674,31 +718,6 @@
     </footer>
 
     <script>
-        // Randomizer functionality - redirect to a random index page
-        (function() {
-            // Check if user wants to stay on main page
-            const urlParams = new URLSearchParams(window.location.search);
-            const stayOnMain = urlParams.get('main') === 'true';
-            
-            // Only use randomizer if running locally (not on a web server)
-            const isLocal = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1' || 
-                           window.location.protocol === 'file:';
-            
-            if (!stayOnMain && isLocal) {
-                // Array of available index pages
-                const indexPages = ['Landing-Page/index1.html', 'Landing-Page/index2.html', 'Landing-Page/index3.html', 'Landing-Page/index4.html', 'Landing-Page/index5.html', 'Landing-Page/index6.html'];
-                
-                // Select a random page
-                const randomIndex = Math.floor(Math.random() * indexPages.length);
-                const selectedPage = indexPages[randomIndex];
-                
-                // Redirect to the selected page
-                window.location.href = selectedPage;
-                return; // Stop executing the rest of the script
-            }
-        })();
-
         // Filter and Search functionality
         const filterBtns = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
@@ -788,6 +807,22 @@
                 filterProjects();
             }
         });
+
+        // New Look functionality
+        function randomNewLook() {
+            // Get current index number from filename
+            const currentPath = window.location.pathname;
+            const currentIndex = parseInt(currentPath.match(/index(\d)\.html/)?.[1] || '4');
+            
+            // Array of available indices (excluding current)
+            const indices = [1, 2, 3, 4, 5, 6].filter(i => i !== currentIndex);
+            
+            // Select a random index
+            const randomIndex = indices[Math.floor(Math.random() * indices.length)];
+            
+            // Navigate to the new index
+            window.location.href = `index${randomIndex}.html`;
+        }
     </script>
 </body>
 </html>

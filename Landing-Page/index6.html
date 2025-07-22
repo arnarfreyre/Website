@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Portfolio - Immersive Experience</title>
+    <style>
+        :root {
+            --primary: #00d9ff;
+            --secondary: #7c3aed;
+            --accent: #ff006e;
+            --glow: #00ffff;
+            --dark: #0a0a0f;
+            --darker: #050507;
+            --light: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #00d9ff 0%, #ff006e 100%);
+            --gradient-3: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --neon-shadow: 0 0 30px rgba(0, 217, 255, 0.8);
+            --sidebar-width: 320px;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--darker);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at top, #1a1a2e 0%, transparent 70%),
+                radial-gradient(ellipse at bottom, #16213e 0%, transparent 70%),
+                var(--darker);
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-particle 15s infinite;
+            box-shadow: 0 0 6px var(--primary);
+        }
+
+        @keyframes float-particle {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(1.5);
+            }
+        }
+
+        /* Glassmorphism Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Logo with Glow Effect */
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transform: rotateZ(45deg);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .logo-icon:hover {
+            transform: rotateZ(405deg) scale(1.1);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+            transform: rotateZ(-45deg);
+        }
+
+        .logo-text {
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Navigation with Hover Effects */
+        .nav-section {
+            margin-bottom: 3rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            background: var(--glass);
+            border: 1px solid transparent;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            transition: width 0.5s, height 0.5s;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateX(8px);
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.3);
+        }
+
+        .nav-item:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nav-item.active {
+            background: var(--gradient-2);
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.5);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            z-index: 1;
+        }
+
+        /* Holographic Stats Cards */
+        .stats-grid {
+            display: grid;
+            gap: 1.25rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                var(--primary),
+                transparent,
+                var(--accent),
+                transparent
+            );
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover::after {
+            opacity: 0.1;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Floating Action Button */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-2);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .theme-toggle svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 3rem 4rem;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            margin-bottom: 5rem;
+            position: relative;
+        }
+
+        .page-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow-text 2s ease-in-out infinite alternate;
+            line-height: 1.1;
+        }
+
+        @keyframes glow-text {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2) drop-shadow(0 0 20px var(--primary)); }
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        /* 3D Project Cards */
+        .projects-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 5rem;
+        }
+
+        .project-card {
+            height: 400px;
+            position: relative;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .project-card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 24px;
+            overflow: hidden;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .card-front {
+            background: 
+                var(--glass),
+                radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 110, 0.1) 0%, transparent 50%);
+        }
+
+        .card-back {
+            background: var(--gradient-1);
+            transform: rotateY(180deg);
+            color: white;
+        }
+
+        .card-icon {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .card-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--primary);
+            filter: drop-shadow(0 0 20px var(--primary));
+            animation: pulse-icon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-icon {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .card-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .card-back .card-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Activity Timeline */
+        .timeline-section {
+            position: relative;
+            padding: 3rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .timeline-header {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pulse-dot {
+            width: 16px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+            opacity: 0;
+            animation: slide-in 0.6s ease-out forwards;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(10px);
+            border-color: var(--primary);
+        }
+
+        .timeline-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .timeline-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timeline-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-time {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 200;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-2);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.4);
+        }
+
+        .menu-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem;
+            }
+
+            .page-title {
+                font-size: 3rem;
+            }
+
+            .projects-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .new-look-btn {
+                bottom: 5rem;
+                right: 1rem;
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--gradient-2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 0 0 1rem 0;
+            transition: top 0.3s;
+            font-weight: 600;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 3px;
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loader-ring {
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg"></div>
+    <div class="particles" id="particles"></div>
+    
+    <a href="#main" class="skip-link">Skip to content</a>
+    
+    <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleSidebar()">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
+
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Stellar</span>
+            </div>
+
+            <nav class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <a href="#overview" class="nav-item active">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>Overview</span>
+                </a>
+                <a href="#projects" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <span>Projects</span>
+                </a>
+                <a href="#skills" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Skills</span>
+                </a>
+                <a href="#timeline" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                    <span>Timeline</span>
+                </a>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-title">Portfolio Styles</div>
+                <a href="Index.html?main=true" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    <span>All Projects</span>
+                </a>
+                <a href="index1.html" class="nav-item">
+                    <span>Style 1</span>
+                </a>
+                <a href="index2.html" class="nav-item">
+                    <span>Style 2</span>
+                </a>
+                <a href="index3.html" class="nav-item">
+                    <span>Style 3</span>
+                </a>
+                <a href="index4.html" class="nav-item">
+                    <span>Style 4</span>
+                </a>
+                <a href="index5.html" class="nav-item">
+                    <span>Style 5</span>
+                </a>
+                <a href="index6.html" class="nav-item active">
+                    <span>Style 6</span>
+                </a>
+            </nav>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">50+</div>
+                    <div class="stat-label">Skills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">∞</div>
+                    <div class="stat-label">Creativity</div>
+                </div>
+            </div>
+        </aside>
+
+        <main id="main" class="main-content">
+            <section class="hero-section">
+                <h1 class="page-title">Welcome to the Future</h1>
+                <p class="page-subtitle">Experience a portfolio that pushes the boundaries of web design with immersive interactions and stunning visuals.</p>
+            </section>
+
+            <section id="projects" class="projects-showcase">
+                <div class="project-card" tabindex="0" role="button" aria-label="Neural Networks - Click to explore">
+                    <div class="card-inner">
+                        <div class="card-face card-front">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                                </svg>
+                            </div>
+                            <h2 class="card-title">Neural Gaming</h2>
+                            <p class="card-description">AI-powered gaming experiences</p>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2 class="card-title">Neural Gaming Platform</h2>
+                            <p class="card-description">Experience next-generation gaming with AI-driven mechanics, procedural generation, and adaptive difficulty that learns from your playstyle.</p>
+                            <a href="Projects/PlatformerGame/index.html" class="card-link">
+                                Launch Game
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" tabindex="0" role="button" aria-label="Quantum Visualizer - Click to explore">
+                    <div class="card-inner">
+                        <div class="card-face card-front">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM4 12c0-4.4 3.6-8 8-8v8l5.7 5.7c-1.5 1.5-3.5 2.3-5.7 2.3-4.4 0-8-3.6-8-8z"/>
+                                </svg>
+                            </div>
+                            <h2 class="card-title">Quantum Lab</h2>
+                            <p class="card-description">Mathematical visualization engine</p>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2 class="card-title">Quantum Visualization Lab</h2>
+                            <p class="card-description">Explore complex mathematical concepts through interactive 3D visualizations. From Fourier transforms to quantum mechanics simulations.</p>
+                            <a href="Projects/fourier" class="card-link">
+                                Enter Lab
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" tabindex="0" role="button" aria-label="Game Universe - Click to explore">
+                    <div class="card-inner">
+                        <div class="card-face card-front">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"/>
+                                </svg>
+                            </div>
+                            <h2 class="card-title">Game Universe</h2>
+                            <p class="card-description">Infinite gaming possibilities</p>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2 class="card-title">Game Universe Collection</h2>
+                            <p class="card-description">A vast collection of mini-games from classic arcade to modern puzzlers. New games added regularly to keep the fun going!</p>
+                            <a href="Projects/MiniGames/index.html" class="card-link">
+                                Explore Games
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="timeline" class="timeline-section">
+                <h2 class="timeline-header">
+                    <span class="pulse-dot"></span>
+                    Live Activity Stream
+                </h2>
+                
+                <div class="timeline-item" style="--i: 0">
+                    <div class="timeline-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                        </svg>
+                    </div>
+                    <div class="timeline-content">
+                        <div>
+                            <div class="timeline-title">Neural Network Integration Complete</div>
+                            <div class="timeline-time">2 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" style="--i: 1">
+                    <div class="timeline-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="timeline-content">
+                        <div>
+                            <div class="timeline-title">New Quantum Visualization Added</div>
+                            <div class="timeline-time">1 day ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" style="--i: 2">
+                    <div class="timeline-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                    </div>
+                    <div class="timeline-content">
+                        <div>
+                            <div class="timeline-title">Performance Optimization Complete</div>
+                            <div class="timeline-time">3 days ago</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleEffects()" aria-label="Toggle visual effects">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+    </button>
+
+    <div class="loader" id="loader">
+        <div class="loader-ring"></div>
+    </div>
+
+    <script>
+        // Particle system
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize particles
+        createParticles();
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Toggle visual effects
+        let effectsEnabled = true;
+        function toggleEffects() {
+            effectsEnabled = !effectsEnabled;
+            const particles = document.getElementById('particles');
+            particles.style.display = effectsEnabled ? 'block' : 'none';
+            
+            // Toggle animations
+            document.body.style.setProperty('--transition', effectsEnabled ? 'all 0.4s cubic-bezier(0.23, 1, 0.320, 1)' : 'none');
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = item.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Update active state
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                item.classList.add('active');
+            });
+        });
+
+        // Keyboard navigation for cards
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const cardInner = card.querySelector('.card-inner');
+                    cardInner.style.transform = 
+                        cardInner.style.transform === 'rotateY(180deg)' ? '' : 'rotateY(180deg)';
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe timeline items
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            observer.observe(item);
+        });
+
+        // Mouse parallax effect
+        document.addEventListener('mousemove', (e) => {
+            if (!effectsEnabled) return;
+
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            document.querySelectorAll('.card-icon').forEach(icon => {
+                const speed = 20;
+                const xOffset = (x - 0.5) * speed;
+                const yOffset = (y - 0.5) * speed;
+                icon.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+
+        // Loading animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.remove('active');
+            }, 1000);
+        });
+
+        // Save preference for reduced motion
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (prefersReducedMotion.matches) {
+            toggleEffects();
+        }
+    </script>
+</body>
+</html>
