@@ -248,12 +248,43 @@ body {
 
 .interim-text {
     margin-top: 1rem;
-    padding-top: 1rem;
+    padding: 1rem;
     border-top: 1px dashed var(--medium-grey);
+    background: rgba(33, 150, 243, 0.05);
+    border-radius: 8px;
+    color: var(--primary-blue);
+    font-style: normal;
+    font-weight: 500;
+    min-height: 50px;
+    opacity: 1;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.interim-text:empty {
+    display: none;
+}
+
+.interim-text:not(:empty)::before {
+    content: "🎤 Listening: ";
     color: var(--dark-grey);
+    font-size: 0.9rem;
     font-style: italic;
-    min-height: 30px;
-    opacity: 0.8;
+}
+
+.interim-text:not(:empty) {
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Controls */

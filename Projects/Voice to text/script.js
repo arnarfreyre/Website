@@ -24,7 +24,7 @@ class VoiceToText {
         this.analyser = null;
         this.microphone = null;
         this.animationId = null;
-        this.voiceCommandMode = false;
+        this.voiceCommandMode = true;  // Changed to true for default ON
         this.lastCommand = '';
         this.commandTimeout = null;
 
@@ -39,6 +39,10 @@ class VoiceToText {
         
         // Initialize audio visualizer
         this.initializeAudioVisualizer();
+        
+        // Enable voice commands by default
+        this.voiceCommandToggle.checked = true;
+        this.toggleVoiceCommands(true);
     }
 
     checkBrowserSupport() {
@@ -73,10 +77,7 @@ class VoiceToText {
                         if (commandResult.isCommand && this.voiceCommandMode) {
                             // Process the command but don't add it to the transcript
                             this.processVoiceCommand(commandResult.command);
-                            // If it was a stop command, we'll stop recording after processing
-                            if (commandResult.shouldStop) {
-                                return;
-                            }
+                            // Don't add command text to transcript
                         } else {
                             // Only add non-command text to the transcript
                             finalTranscript += transcript + ' ';
@@ -193,6 +194,11 @@ class VoiceToText {
             // Request microphone permission
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             
+            // Stop command recognition during recording (main recognition handles commands)
+            if (this.voiceCommandMode && this.commandRecognition) {
+                this.commandRecognition.stop();
+            }
+            
             // Start audio context for visualization
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.analyser = this.audioContext.createAnalyser();
@@ -263,6 +269,15 @@ class VoiceToText {
         
         // Clear interim text
         this.interimText.textContent = '';
+        
+        // Restart command recognition if voice commands are enabled
+        if (this.voiceCommandMode && this.commandRecognition) {
+            setTimeout(() => {
+                if (this.voiceCommandMode && !this.isRecording) {
+                    this.commandRecognition.start();
+                }
+            }, 500);
+        }
     }
 
     drawAudioVisualizer() {
@@ -496,14 +511,16 @@ class VoiceToText {
         
         // Define command patterns based on language
         if (lang === 'is-IS') {
-            // Icelandic commands
+            // Icelandic commands - expanded to include ALL commands
             const icelandicCommands = {
-                'stöðva upptöku': true,
-                'hætta upptöku': true,
-                'vista texta': true,
-                'vista ritun': true,
-                'hreinsa texta': true,
-                'eyða texta': true
+                'byrja upptöku': 'start',
+                'byrja að taka upp': 'start',
+                'stöðva upptöku': 'stop',
+                'hætta upptöku': 'stop',
+                'vista texta': 'save',
+                'vista ritun': 'save',
+                'hreinsa texta': 'clear',
+                'eyða texta': 'clear'
             };
             
             // Check if transcript contains any command
@@ -511,21 +528,23 @@ class VoiceToText {
                 if (lowerTranscript.includes(cmd)) {
                     isCommand = true;
                     command = lowerTranscript;
-                    shouldStop = cmd.includes('stöðva') || cmd.includes('hætta');
+                    shouldStop = icelandicCommands[cmd] === 'stop';
                     break;
                 }
             }
         } else {
-            // English commands
+            // English commands - expanded to include ALL commands
             const englishCommands = {
-                'stop recording': true,
-                'end recording': true,
-                'finish recording': true,
-                'save transcript': true,
-                'save text': true,
-                'clear transcript': true,
-                'clear text': true,
-                'remove transcript': true
+                'start recording': 'start',
+                'begin recording': 'start',
+                'stop recording': 'stop',
+                'end recording': 'stop',
+                'finish recording': 'stop',
+                'save transcript': 'save',
+                'save text': 'save',
+                'clear transcript': 'clear',
+                'clear text': 'clear',
+                'remove transcript': 'clear'
             };
             
             // Check if transcript contains any command
@@ -533,7 +552,7 @@ class VoiceToText {
                 if (lowerTranscript.includes(cmd)) {
                     isCommand = true;
                     command = lowerTranscript;
-                    shouldStop = cmd.includes('stop') || cmd.includes('end') || cmd.includes('finish');
+                    shouldStop = englishCommands[cmd] === 'stop';
                     break;
                 }
             }

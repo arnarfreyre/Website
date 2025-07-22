@@ -1,0 +1,634 @@
+/* ===================================
+   Warm Biome Sections - Additional Styles
+   Enhanced Visual Effects & Animations
+   =================================== */
+
+/* Warm biome styles - standalone stylesheet */
+
+/* Extended Color Palette for Warm Biomes */
+:root {
+    /* Tropical Rainforest Colors */
+    --tropical-deep-green: #0A3D2E;
+    --tropical-canopy: #1B5E3F;
+    --tropical-understory: #2E8B57;
+    --tropical-mist: rgba(46, 139, 87, 0.15);
+    
+    /* Savanna & Dry Forest Colors */
+    --savanna-gold: #D4A76A;
+    --savanna-amber: #DEB887;
+    --savanna-earth: #A0522D;
+    
+    /* Mediterranean Colors */
+    --mediterranean-sage: #9CAF88;
+    --mediterranean-olive: #6B8E23;
+    --mediterranean-terra: #CC6633;
+    
+    /* Special Effects */
+    --glow-green: rgba(46, 204, 113, 0.4);
+    --glow-amber: rgba(244, 164, 96, 0.4);
+    --shadow-canopy: 0 20px 60px rgba(27, 67, 50, 0.15);
+}
+
+/* Enhanced Hero Section with Parallax */
+.hero {
+    position: relative;
+    overflow: hidden;
+    background: 
+        linear-gradient(180deg, 
+            rgba(27, 67, 50, 0.95) 0%, 
+            rgba(82, 121, 111, 0.85) 50%, 
+            rgba(198, 93, 0, 0.75) 100%),
+        radial-gradient(circle at 20% 50%, var(--tropical-mist) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--savanna-amber) 0%, transparent 40%);
+}
+
+/* Animated forest canopy overlay */
+.hero::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><defs><pattern id="canopy" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse"><circle cx="100" cy="100" r="80" fill="%231B5E3F" opacity="0.05"/><path d="M50 50 Q25 75 50 100 Q75 75 50 50" fill="%232E8B57" opacity="0.08"/><circle cx="150" cy="50" r="40" fill="%23D4A76A" opacity="0.06"/></pattern></defs><rect width="100%" height="100%" fill="url(%23canopy)"/></svg>');
+    animation: canopy-sway 30s ease-in-out infinite;
+}
+
+@keyframes canopy-sway {
+    0%, 100% { transform: translateX(-10%) translateY(-10%) rotate(0deg); }
+    33% { transform: translateX(0%) translateY(-15%) rotate(2deg); }
+    66% { transform: translateX(-15%) translateY(-5%) rotate(-2deg); }
+}
+
+/* Hero Statistics with Glass Effect */
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin: var(--space-6) 0;
+    flex-wrap: wrap;
+}
+
+.hero-stat {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: var(--space-4);
+    min-width: 200px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: rise-and-glow 1s ease forwards;
+}
+
+.hero-stat:nth-child(1) { animation-delay: 0.2s; }
+.hero-stat:nth-child(2) { animation-delay: 0.4s; }
+.hero-stat:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes rise-and-glow {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.hero-stat::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 70%
+    );
+    animation: shimmer 3s ease infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: rotate(45deg) translateY(-200%); }
+    100% { transform: rotate(45deg) translateY(200%); }
+}
+
+.stat-value {
+    font-size: var(--text-4xl);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--color-accent-1), var(--color-accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px var(--glow-amber);
+}
+
+/* Warm Biome Ecosystems Section */
+.biomes-section {
+    background: 
+        linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%),
+        radial-gradient(circle at 30% 20%, var(--tropical-mist) 0%, transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(212, 167, 106, 0.1) 0%, transparent 40%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Floating leaf particles */
+.biomes-section::before,
+.biomes-section::after {
+    content: '🍃';
+    position: absolute;
+    font-size: 30px;
+    opacity: 0.1;
+    animation: float-leaf 20s linear infinite;
+}
+
+.biomes-section::before {
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.biomes-section::after {
+    top: 60%;
+    right: 10%;
+    animation-delay: 10s;
+    animation-direction: reverse;
+}
+
+@keyframes float-leaf {
+    0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateX(100px) translateY(50px) rotate(90deg);
+    }
+    50% {
+        transform: translateX(-50px) translateY(100px) rotate(180deg);
+    }
+    75% {
+        transform: translateX(150px) translateY(150px) rotate(270deg);
+    }
+    100% {
+        transform: translateX(0) translateY(300px) rotate(360deg);
+    }
+}
+
+.biome-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: calc(var(--spacing-unit) * 3);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+}
+
+.biome-card {
+    background: var(--color-white);
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 20px;
+    box-shadow: var(--shadow-canopy);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(27, 67, 50, 0.1);
+}
+
+.biome-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, 
+        var(--tropical-canopy) 0%, 
+        var(--tropical-understory) 50%, 
+        var(--savanna-gold) 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.biome-card:hover::before {
+    transform: scaleX(1);
+}
+
+.biome-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 
+        0 20px 40px rgba(27, 67, 50, 0.15),
+        0 0 20px var(--glow-green);
+    border-color: var(--tropical-canopy);
+}
+
+/* Biome card backgrounds */
+.biome-card:nth-child(1) { 
+    background: linear-gradient(to bottom right, var(--color-white), rgba(27, 67, 50, 0.03)); 
+}
+.biome-card:nth-child(2) { 
+    background: linear-gradient(to bottom right, var(--color-white), rgba(212, 167, 106, 0.03)); 
+}
+.biome-card:nth-child(3) { 
+    background: linear-gradient(to bottom right, var(--color-white), rgba(107, 142, 35, 0.03)); 
+}
+
+.biome-card h3 {
+    color: var(--color-forest-green);
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.biome-stats {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 3);
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.mini-stat {
+    text-align: center;
+}
+
+.mini-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-forest-green);
+}
+
+.mini-label {
+    font-size: 0.75rem;
+    color: var(--color-bark-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.biome-fact {
+    background: var(--color-white);
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--spacing-unit) * 3);
+    border: 2px solid var(--color-forest-green);
+}
+
+.fact-icon {
+    flex-shrink: 0;
+}
+
+/* Economic and Cultural Impact Section */
+.impact-section {
+    background: 
+        linear-gradient(135deg, var(--color-white) 0%, var(--color-bg-secondary) 100%),
+        radial-gradient(circle at 10% 50%, var(--glow-amber) 0%, transparent 30%);
+    position: relative;
+}
+
+.impact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing-unit) * 4);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+}
+
+.impact-card {
+    background: var(--color-white);
+    padding: calc(var(--spacing-unit) * 5);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-canopy);
+    transition: all 0.4s ease;
+    border: 2px solid transparent;
+}
+
+.impact-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-accent-1), var(--tropical-canopy));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+}
+
+.impact-card.cultural::before {
+    background: linear-gradient(90deg, var(--mediterranean-terra), var(--savanna-gold));
+}
+
+.impact-card:hover::before {
+    transform: scaleX(1);
+}
+
+.impact-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 0 30px var(--glow-amber);
+    border-color: var(--color-accent-1);
+}
+
+/* Large decorative icons */
+.impact-card.economic::after {
+    content: '💰';
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    font-size: 80px;
+    opacity: 0.05;
+    transform: rotate(-15deg);
+}
+
+.impact-card.cultural::after {
+    content: '🌿';
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    font-size: 80px;
+    opacity: 0.05;
+    transform: rotate(15deg);
+}
+
+.value-display {
+    text-align: center;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+}
+
+.value-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--color-forest-green);
+    font-family: var(--font-heading);
+}
+
+.value-label {
+    font-size: 0.875rem;
+    color: var(--color-bark-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.impact-list {
+    list-style: none;
+    padding: 0;
+}
+
+.impact-list li {
+    padding: calc(var(--spacing-unit) * 1.5) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.impact-list li:last-child {
+    border-bottom: none;
+}
+
+.restoration-callout {
+    background: 
+        linear-gradient(135deg, 
+            rgba(27, 67, 50, 0.95), 
+            rgba(82, 121, 111, 0.9), 
+            rgba(135, 206, 235, 0.85)),
+        radial-gradient(circle at 20% 50%, var(--glow-green) 0%, transparent 40%);
+    color: var(--color-white);
+    padding: calc(var(--spacing-unit) * 6);
+    border-radius: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 60px rgba(27, 67, 50, 0.3),
+        inset 0 0 100px rgba(255, 255, 255, 0.1);
+}
+
+/* Animated restoration background */
+.restoration-callout::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 20px,
+            rgba(255, 255, 255, 0.03) 20px,
+            rgba(255, 255, 255, 0.03) 40px
+        );
+    animation: restoration-flow 20s linear infinite;
+}
+
+@keyframes restoration-flow {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+}
+
+.restoration-callout h3 {
+    color: var(--color-white);
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-3);
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.restoration-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: calc(var(--spacing-unit) * 4);
+}
+
+.resto-stat {
+    text-align: center;
+}
+
+.resto-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+
+.resto-unit {
+    font-size: 0.875rem;
+    opacity: 0.8;
+}
+
+.resto-label {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: calc(var(--spacing-unit) * 0.5);
+}
+
+/* Conservation Challenges Section */
+.conservation-section {
+    background: var(--color-gray-light);
+}
+
+.challenges-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing-unit) * 4);
+    margin-bottom: calc(var(--spacing-unit) * 4);
+}
+
+.challenge-card {
+    background: var(--color-white);
+    padding: calc(var(--spacing-unit) * 5);
+    border-radius: 16px;
+    position: relative;
+}
+
+.challenge-card.urgent {
+    border: 2px solid rgba(220, 38, 38, 0.2);
+}
+
+.challenge-card.solutions {
+    border: 2px solid rgba(34, 197, 94, 0.2);
+}
+
+.threat-stat {
+    background: rgba(220, 38, 38, 0.1);
+    padding: calc(var(--spacing-unit) * 3);
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.threat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgb(220, 38, 38);
+}
+
+.threat-unit {
+    font-size: 0.875rem;
+    color: var(--color-bark-medium);
+}
+
+.threat-label {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: calc(var(--spacing-unit) * 0.5);
+}
+
+.threat-list,
+.solution-list {
+    list-style: none;
+    padding: 0;
+}
+
+.threat-list li,
+.solution-list li {
+    padding: calc(var(--spacing-unit) * 1) 0;
+    padding-left: calc(var(--spacing-unit) * 3);
+    position: relative;
+}
+
+.threat-list li::before {
+    content: "⚠";
+    position: absolute;
+    left: 0;
+    color: rgb(220, 38, 38);
+}
+
+.solution-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: rgb(34, 197, 94);
+}
+
+.success-highlight {
+    background: rgba(34, 197, 94, 0.1);
+    padding: calc(var(--spacing-unit) * 3);
+    border-radius: 12px;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.climate-warning {
+    background: var(--color-white);
+    border-left: 4px solid rgb(220, 38, 38);
+    padding: calc(var(--spacing-unit) * 4);
+    border-radius: 8px;
+}
+
+.climate-warning h3 {
+    color: rgb(220, 38, 38);
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+/* Anatomy Section Enhancements */
+.anatomy-facts {
+    margin-top: calc(var(--spacing-unit) * 4);
+    padding: calc(var(--spacing-unit) * 3);
+    background: var(--color-leaf-light);
+    border-radius: 12px;
+}
+
+.anatomy-facts h4 {
+    color: var(--color-forest-green);
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.adaptation-list {
+    list-style: none;
+    padding: 0;
+}
+
+.adaptation-list li {
+    padding: calc(var(--spacing-unit) * 1.5) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.adaptation-list li:last-child {
+    border-bottom: none;
+}
+
+/* Enhanced Species Cards */
+.species-card {
+    min-height: 350px;
+}
+
+.species-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.species-latin {
+    font-style: italic;
+    color: var(--color-bark-medium);
+    font-size: 0.875rem;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+/* Responsive Updates */
+@media (max-width: 768px) {
+    .impact-grid,
+    .challenges-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .biome-stats {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 1.5);
+    }
+    
+    .restoration-stats {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 3);
+    }
+    
+    .value-number {
+        font-size: 2rem;
+    }
+    
+    .biome-fact {
+        flex-direction: column;
+        text-align: center;
+    }
+}

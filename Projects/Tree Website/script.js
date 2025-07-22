@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallaxEffect();
     initSmoothScrolling();
     initLazyLoading();
+    initWarmBiomeEffects();
+    initProgressBars();
+    initHeroAnimations();
 });
 
 // Animated number counters
@@ -44,10 +47,22 @@ function animateCounter(element, target) {
     const updateCounter = () => {
         current += increment;
         if (current < target) {
-            element.textContent = target > 100 ? Math.floor(current).toLocaleString() : current.toFixed(2);
+            // Handle different number formats
+            if (target >= 1000) {
+                element.textContent = Math.floor(current).toLocaleString();
+            } else if (target < 100 && target > 1) {
+                element.textContent = Math.floor(current);
+            } else {
+                element.textContent = current.toFixed(0);
+            }
             requestAnimationFrame(updateCounter);
         } else {
-            element.textContent = target > 100 ? Math.floor(target).toLocaleString() : target.toFixed(2);
+            // Final value
+            if (target >= 1000) {
+                element.textContent = Math.floor(target).toLocaleString();
+            } else {
+                element.textContent = Math.floor(target);
+            }
         }
     };
 
@@ -56,7 +71,7 @@ function animateCounter(element, target) {
 
 // Intersection Observer for fade-in animations
 function initIntersectionObserver() {
-    const elements = document.querySelectorAll('.research-card, .species-card, .stat-card, .anatomy-container');
+    const elements = document.querySelectorAll('.research-card, .species-card, .stat-card, .anatomy-container, .biome-card, .impact-card, .challenge-card, .restoration-callout, .climate-warning');
     
     elements.forEach(el => {
         el.classList.add('fade-in');
@@ -258,7 +273,8 @@ initCarousel();
 if (window.performance && performance.mark) {
     performance.mark('interactive-features-loaded');
     
-    // Log performance metrics
+    // Performance metrics tracking (commented out for production)
+    /*
     window.addEventListener('load', () => {
         const perfData = performance.getEntriesByType('navigation')[0];
         console.log('Page Load Metrics:', {
@@ -267,6 +283,7 @@ if (window.performance && performance.mark) {
             'Total Load Time': perfData.loadEventEnd - perfData.fetchStart
         });
     });
+    */
 }
 
 // Newsletter form handling
@@ -277,7 +294,7 @@ if (newsletterForm) {
         const email = e.target.querySelector('input[type="email"]').value;
         
         // Here you would normally send this to your backend
-        console.log('Newsletter subscription:', email);
+        // console.log('Newsletter subscription:', email);
         
         // Show success message
         const button = e.target.querySelector('button');
@@ -292,3 +309,191 @@ if (newsletterForm) {
         }, 3000);
     });
 }
+
+// Warm Biome Special Effects
+function initWarmBiomeEffects() {
+    // Add hover effects to biome cards
+    const biomeCards = document.querySelectorAll('.biome-card');
+    biomeCards.forEach((card, index) => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px) scale(1.02)';
+            this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            // Add glow effect based on biome type
+            const glowColors = ['rgba(27, 67, 50, 0.3)', 'rgba(212, 167, 106, 0.3)', 'rgba(107, 142, 35, 0.3)'];
+            this.style.boxShadow = `0 20px 40px ${glowColors[index % 3]}`;
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+
+    // Create floating particles effect
+    createFloatingParticles();
+}
+
+// Progress bar animations
+function initProgressBars() {
+    const progressBars = document.querySelectorAll('.progress-fill');
+    
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+    
+    const progressObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const bar = entry.target;
+                const width = bar.style.width || bar.getAttribute('data-width') || '100%';
+                
+                // Start from 0 and animate to target width
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                    bar.style.transition = 'width 2s ease-out';
+                }, 100);
+                
+                progressObserver.unobserve(bar);
+            }
+        });
+    }, observerOptions);
+    
+    progressBars.forEach(bar => {
+        progressObserver.observe(bar);
+    });
+}
+
+// Hero section animations
+function initHeroAnimations() {
+    const heroStats = document.querySelectorAll('.hero-stat');
+    
+    // Add staggered entrance animations
+    heroStats.forEach((stat, index) => {
+        stat.style.animationDelay = `${index * 0.2}s`;
+        stat.classList.add('animate-in');
+    });
+    
+    // Add interactive hover effects
+    heroStats.forEach(stat => {
+        stat.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.05)';
+            this.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.2)';
+        });
+        
+        stat.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+}
+
+// Create floating particles for visual effect
+function createFloatingParticles() {
+    const particleContainer = document.createElement('div');
+    particleContainer.className = 'particle-container';
+    particleContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+    `;
+    
+    // Only add particles on larger screens
+    if (window.innerWidth > 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.body.appendChild(particleContainer);
+        
+        // Create particles
+        for (let i = 0; i < 15; i++) {
+            createParticle(particleContainer);
+        }
+    }
+}
+
+function createParticle(container) {
+    const particle = document.createElement('div');
+    const symbols = ['🍃', '🌿', '🌱'];
+    const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    
+    particle.textContent = symbol;
+    particle.style.cssText = `
+        position: absolute;
+        font-size: ${Math.random() * 20 + 10}px;
+        opacity: ${Math.random() * 0.3 + 0.1};
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        animation: floatParticle ${Math.random() * 20 + 20}s linear infinite;
+    `;
+    
+    container.appendChild(particle);
+    
+    // Remove particle after animation
+    particle.addEventListener('animationend', () => {
+        particle.remove();
+        createParticle(container); // Create new particle to maintain count
+    });
+}
+
+// Add floating particle animation
+const particleStyle = document.createElement('style');
+particleStyle.textContent = `
+    @keyframes floatParticle {
+        0% {
+            transform: translateY(100vh) translateX(0) rotate(0deg);
+        }
+        25% {
+            transform: translateY(75vh) translateX(20px) rotate(90deg);
+        }
+        50% {
+            transform: translateY(50vh) translateX(-20px) rotate(180deg);
+        }
+        75% {
+            transform: translateY(25vh) translateX(20px) rotate(270deg);
+        }
+        100% {
+            transform: translateY(-100px) translateX(0) rotate(360deg);
+        }
+    }
+    
+    .animate-in {
+        animation: riseAndGlow 1s ease forwards;
+    }
+    
+    @keyframes riseAndGlow {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+document.head.appendChild(particleStyle);
+
+// Enhanced scroll reveal with different directions
+const scrollRevealElements = document.querySelectorAll('.scroll-reveal, .fade-in-left, .fade-in-right');
+scrollRevealElements.forEach(el => {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    revealObserver.observe(el);
+});
