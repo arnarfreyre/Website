@@ -67,10 +67,11 @@ class VoiceToText {
                 let interimTranscript = '';
                 let finalTranscript = '';
 
+                // Process NEW final results only (to avoid duplicates)
                 for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    
                     if (event.results[i].isFinal) {
+                        const transcript = event.results[i][0].transcript;
+                        
                         // Check for voice commands in the transcript
                         const commandResult = this.checkForVoiceCommand(transcript);
                         
@@ -82,8 +83,13 @@ class VoiceToText {
                             // Only add non-command text to the transcript
                             finalTranscript += transcript + ' ';
                         }
-                    } else {
-                        interimTranscript += transcript;
+                    }
+                }
+
+                // Collect ALL interim results (not just new ones) for live display
+                for (let i = 0; i < event.results.length; i++) {
+                    if (!event.results[i].isFinal) {
+                        interimTranscript += event.results[i][0].transcript + ' ';
                     }
                 }
 
@@ -93,12 +99,8 @@ class VoiceToText {
                     this.updateTranscriptionDisplay();
                 }
 
-                // Show interim results
-                if (interimTranscript) {
-                    this.interimText.textContent = interimTranscript;
-                } else {
-                    this.interimText.textContent = '';
-                }
+                // Show interim results - always update to show complete interim transcript
+                this.interimText.textContent = interimTranscript.trim();
             };
 
             // Handle errors
