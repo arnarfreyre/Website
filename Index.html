@@ -533,6 +533,13 @@
     <main id="main" class="main-content">
         <h1 class="page-title">Creative Projects</h1>
         <p class="page-subtitle">Explore a collection of interactive web experiences and experiments</p>
+        
+        <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #4caf50;">
+            <p style="margin: 0; color: #2e7d32;">
+                <strong>Note:</strong> This is the main projects page. Normally, you'll be redirected to a random portfolio variation. 
+                To always access this page directly, bookmark: <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">Index.html?main=true</code>
+            </p>
+        </div>
 
         <div class="projects-grid" role="list">
             <!-- Featured Project -->
@@ -667,6 +674,26 @@
     </footer>
 
     <script>
+        // Randomizer functionality - redirect to a random index page
+        (function() {
+            // Check if user wants to stay on main page
+            const urlParams = new URLSearchParams(window.location.search);
+            const stayOnMain = urlParams.get('main') === 'true';
+            
+            if (!stayOnMain) {
+                // Array of available index pages
+                const indexPages = ['index1.html', 'index2.html', 'index3.html', 'index4.html', 'index5.html', 'index6.html'];
+                
+                // Select a random page
+                const randomIndex = Math.floor(Math.random() * indexPages.length);
+                const selectedPage = indexPages[randomIndex];
+                
+                // Redirect to the selected page
+                window.location.href = selectedPage;
+                return; // Stop executing the rest of the script
+            }
+        })();
+
         // Filter and Search functionality
         const filterBtns = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
