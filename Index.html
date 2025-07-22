@@ -680,12 +680,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const stayOnMain = urlParams.get('main') === 'true';
             
-            // Only use randomizer if running locally (not on a web server)
-            const isLocal = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1' || 
-                           window.location.protocol === 'file:';
-            
-            if (!stayOnMain && isLocal) {
+            if (!stayOnMain) {
                 // Array of available index pages
                 const indexPages = ['Landing-Page/index1.html', 'Landing-Page/index2.html', 'Landing-Page/index3.html', 'Landing-Page/index4.html', 'Landing-Page/index5.html', 'Landing-Page/index6.html'];
                 
