@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT MAGAZINE - Digital Innovation Quarterly</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #1a1a1a;
+            --paper: #fefdf8;
+            --red: #ff3333;
+            --gold: #d4a574;
+            --gray: #6b6b6b;
+            --light-gray: #e5e5e5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Magazine Header */
+        .magazine-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 4px double var(--ink);
+            position: relative;
+            background: var(--paper);
+        }
+
+        .magazine-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4rem, 10vw, 8rem);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .magazine-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: var(--red);
+        }
+
+        .magazine-subtitle {
+            font-family: 'Libre Baskerville', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .issue-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--paper);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Hero Feature */
+        .hero-feature {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-image {
+            position: relative;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, var(--red), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: var(--paper);
+            overflow: hidden;
+        }
+
+        .hero-image::before {
+            content: 'FEATURED';
+            position: absolute;
+            top: 2rem;
+            left: -3rem;
+            background: var(--red);
+            color: var(--paper);
+            padding: 0.5rem 4rem;
+            transform: rotate(-45deg);
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+        }
+
+        .hero-content h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .category-label {
+            display: inline-block;
+            background: var(--red);
+            color: var(--paper);
+            padding: 0.25rem 1rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .read-more {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--ink);
+            color: var(--paper);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            background: var(--red);
+            transform: translateX(5px);
+        }
+
+        /* Content Grid */
+        .content-section {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .section-header::before,
+        .section-header::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: var(--ink);
+        }
+
+        .section-header::before {
+            left: 0;
+        }
+
+        .section-header::after {
+            right: 0;
+        }
+
+        .section-header h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 0.1em;
+            position: relative;
+            display: inline-block;
+            background: var(--paper);
+            padding: 0 2rem;
+        }
+
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .article-card {
+            background: white;
+            border: 1px solid var(--light-gray);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-card.featured {
+            grid-column: span 8;
+            grid-row: span 2;
+        }
+
+        .article-card.standard {
+            grid-column: span 4;
+        }
+
+        .article-card.wide {
+            grid-column: span 6;
+        }
+
+        .article-image {
+            aspect-ratio: 16/9;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-image.tall {
+            aspect-ratio: 3/4;
+        }
+
+        .article-number {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--red);
+            opacity: 0.8;
+        }
+
+        .article-content {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .article-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.75rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .featured .article-title {
+            font-size: 2.5rem;
+        }
+
+        .article-excerpt {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--ink);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Pull Quote */
+        .pull-quote {
+            grid-column: span 12;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .pull-quote::before,
+        .pull-quote::after {
+            content: '"';
+            font-family: 'Libre Baskerville', serif;
+            font-size: 6rem;
+            color: var(--red);
+            position: absolute;
+            opacity: 0.3;
+        }
+
+        .pull-quote::before {
+            top: 0;
+            left: 2rem;
+        }
+
+        .pull-quote::after {
+            bottom: 0;
+            right: 2rem;
+        }
+
+        .pull-quote p {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2rem;
+            font-style: italic;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .magazine-footer {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 4rem 2rem;
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--paper);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-feature {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .editorial-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .article-card.featured,
+            .article-card.standard,
+            .article-card.wide {
+                grid-column: span 1;
+            }
+
+            .section-header::before,
+            .section-header::after {
+                width: 20%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Magazine Header -->
+    <header class="magazine-header">
+        <h1 class="magazine-title">PROJECT MAGAZINE</h1>
+        <p class="magazine-subtitle">Digital Innovation Quarterly</p>
+        <div class="issue-info">
+            <span>Issue No. 2024</span>
+            <span>•</span>
+            <span>Volume XII</span>
+            <span>•</span>
+            <span>Winter Edition</span>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-logo">PM</div>
+            <ul class="nav-links">
+                <li><a href="#featured">Featured</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#archive">Archive</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Feature -->
+    <section class="hero-feature" id="featured">
+        <div class="hero-image">
+            🎮
+        </div>
+        <div class="hero-content">
+            <span class="category-label">Cover Story</span>
+            <h1>The Future of Browser Gaming</h1>
+            <p>Explore how modern web technologies are revolutionizing game development with our feature platformer—complete with level editor, Firebase integration, and community-driven content.</p>
+            <a href="Projects/PlatformerGame/index.html" class="read-more">Play Now</a>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="content-section" id="projects">
+        <div class="section-header">
+            <h2>PROJECT SHOWCASE</h2>
+        </div>
+        
+        <div class="editorial-grid">
+            <!-- Featured Article -->
+            <a href="Projects/MiniGames/index.html" class="article-card featured">
+                <div class="article-image tall">
+                    <span class="article-number">01</span>
+                    🎯
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Gaming</span>
+                        <span>•</span>
+                        <span>Classics Reimagined</span>
+                    </div>
+                    <h3 class="article-title">Mini Games Collection: Where Nostalgia Meets Modern Design</h3>
+                    <p class="article-excerpt">Step into a world where timeless games are reborn with contemporary aesthetics. Our collection features Chess, Memory, Tic-Tac-Toe, and Snake—each reimagined for today's web.</p>
+                    <div class="article-tags">
+                        <span class="tag">HTML5</span>
+                        <span class="tag">CSS3</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Standard Article 1 -->
+            <a href="Projects/Voice to text/index.html" class="article-card standard">
+                <div class="article-image">
+                    <span class="article-number">02</span>
+                    🎤
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Technology</span>
+                    </div>
+                    <h3 class="article-title">Breaking the Sound Barrier</h3>
+                    <p class="article-excerpt">Real-time voice transcription powered by Python and WebSockets.</p>
+                    <div class="article-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">AI</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Pull Quote -->
+            <div class="pull-quote">
+                <p>"The intersection of creativity and technology produces experiences that transcend traditional boundaries"</p>
+            </div>
+
+            <!-- Wide Article -->
+            <a href="Projects/Tree Website/index.html" class="article-card wide">
+                <div class="article-image">
+                    <span class="article-number">03</span>
+                    🌳
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Interactive Design</span>
+                        <span>•</span>
+                        <span>Visualization</span>
+                    </div>
+                    <h3 class="article-title">Nature's Digital Canvas</h3>
+                    <p class="article-excerpt">Experience the beauty of algorithmic nature through interactive tree visualizations.</p>
+                    <div class="article-tags">
+                        <span class="tag">SVG</span>
+                        <span class="tag">Animation</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Wide Article 2 -->
+            <a href="Projects/Drinking SImulator/index.html" class="article-card wide">
+                <div class="article-image">
+                    <span class="article-number">04</span>
+                    🎉
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Entertainment</span>
+                        <span>•</span>
+                        <span>Social Gaming</span>
+                    </div>
+                    <h3 class="article-title">Party Mode: Activated</h3>
+                    <p class="article-excerpt">Where digital meets social—an interactive party game experience.</p>
+                    <div class="article-tags">
+                        <span class="tag">Audio API</span>
+                        <span class="tag">Interactive</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Standard Article 2 -->
+            <a href="Projects/fourier.html" class="article-card standard">
+                <div class="article-image">
+                    <span class="article-number">05</span>
+                    📊
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Mathematics</span>
+                    </div>
+                    <h3 class="article-title">The Art of Mathematics</h3>
+                    <p class="article-excerpt">Fourier transforms visualized in stunning interactive displays.</p>
+                    <div class="article-tags">
+                        <span class="tag">Canvas</span>
+                        <span class="tag">Math</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="magazine-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PROJECT MAGAZINE</h3>
+                <p>A quarterly publication showcasing digital innovation and creative coding.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <p><a href="#">Newsletter</a></p>
+                <p><a href="#">GitHub</a></p>
+                <p><a href="#">Twitter</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Archive</h3>
+                <p><a href="#">Previous Issues</a></p>
+                <p><a href="#">Project Index</a></p>
+                <p><a href="#">Contributors</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>© 2024 Project Magazine</p>
+                <p>Designed with passion for code</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelectorAll('.article-image');
+            
+            parallax.forEach(element => {
+                const speed = 0.5;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Intersection Observer for fade-in
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '0';
+                    entry.target.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        entry.target.style.transition = 'all 0.6s ease';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.article-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
