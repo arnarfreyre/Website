@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPLIT STUDIO - Interactive Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #1a1a1a;
+            --accent-coral: #ff6b6b;
+            --accent-mint: #4ecdc4;
+            --accent-peach: #ffe66d;
+            --accent-lavender: #c77dff;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Split Screen Container */
+        .split-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Left Panel - Menu */
+        .left-panel {
+            width: 50%;
+            background: var(--bg-primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            transition: width 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+            overflow: hidden;
+        }
+
+        .left-panel.expanded {
+            width: 70%;
+        }
+
+        .left-panel.collapsed {
+            width: 30%;
+        }
+
+        /* Right Panel - Content */
+        .right-panel {
+            width: 50%;
+            background: var(--bg-secondary);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: width 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .right-panel.expanded {
+            width: 70%;
+        }
+
+        .right-panel.collapsed {
+            width: 30%;
+        }
+
+        /* Center Divider */
+        .divider {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--border);
+            z-index: 10;
+            cursor: ew-resize;
+            transition: left 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 0;
+            width: 20px;
+            height: 100%;
+        }
+
+        .divider-handle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .divider-handle::before,
+        .divider-handle::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 12px;
+            background: var(--bg-primary);
+        }
+
+        .divider-handle::before {
+            left: 14px;
+        }
+
+        .divider-handle::after {
+            right: 14px;
+        }
+
+        /* Left Panel Content */
+        .brand {
+            position: absolute;
+            top: 4rem;
+            left: 4rem;
+        }
+
+        .brand h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .menu {
+            max-width: 500px;
+        }
+
+        .menu-item {
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 0;
+            background: var(--accent-coral);
+            transition: height 0.3s ease;
+        }
+
+        .menu-item:hover::before,
+        .menu-item.active::before {
+            height: 100%;
+        }
+
+        .menu-number {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .menu-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover .menu-title,
+        .menu-item.active .menu-title {
+            transform: translateX(20px);
+        }
+
+        .menu-item:hover .menu-subtitle,
+        .menu-item.active .menu-subtitle {
+            opacity: 1;
+            max-height: 50px;
+            margin-top: 0.5rem;
+        }
+
+        .menu-item:hover .menu-number,
+        .menu-item.active .menu-number {
+            color: var(--accent-coral);
+        }
+
+        /* Color variations for menu items */
+        .menu-item:nth-child(2)::before,
+        .menu-item:nth-child(2).active .menu-number { background-color: var(--accent-mint); color: var(--accent-mint); }
+        .menu-item:nth-child(3)::before,
+        .menu-item:nth-child(3).active .menu-number { background-color: var(--accent-peach); color: var(--accent-peach); }
+        .menu-item:nth-child(4)::before,
+        .menu-item:nth-child(4).active .menu-number { background-color: var(--accent-lavender); color: var(--accent-lavender); }
+        .menu-item:nth-child(5)::before,
+        .menu-item:nth-child(5).active .menu-number { background-color: var(--accent-coral); color: var(--accent-coral); }
+        .menu-item:nth-child(6)::before,
+        .menu-item:nth-child(6).active .menu-number { background-color: var(--accent-mint); color: var(--accent-mint); }
+
+        /* Right Panel Content */
+        .project-showcase {
+            padding: 4rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .project-header {
+            margin-bottom: 3rem;
+        }
+
+        .project-header h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .project-header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-coral), var(--accent-mint));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: transparent;
+        }
+
+        .project-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .project-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .project-tech {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tech-tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+        }
+
+        /* Floating Navigation */
+        .floating-nav {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            width: 30px;
+            border-radius: 5px;
+            background: var(--text-primary);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .split-container {
+                flex-direction: column;
+            }
+
+            .left-panel,
+            .right-panel {
+                width: 100% !important;
+                height: 50vh;
+            }
+
+            .divider {
+                display: none;
+            }
+
+            .menu-title {
+                font-size: 2rem;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-header h2 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <!-- Left Panel -->
+        <div class="left-panel" id="leftPanel">
+            <div class="brand">
+                <h1>SPLIT STUDIO</h1>
+                <p>Interactive Project Showcase</p>
+            </div>
+
+            <div class="menu">
+                <div class="menu-item active" data-project="1">
+                    <div class="menu-number">01</div>
+                    <h3 class="menu-title">Gaming</h3>
+                    <p class="menu-subtitle">Interactive platformer experience</p>
+                </div>
+
+                <div class="menu-item" data-project="2">
+                    <div class="menu-number">02</div>
+                    <h3 class="menu-title">Classic</h3>
+                    <p class="menu-subtitle">Timeless games collection</p>
+                </div>
+
+                <div class="menu-item" data-project="3">
+                    <div class="menu-number">03</div>
+                    <h3 class="menu-title">Voice AI</h3>
+                    <p class="menu-subtitle">Speech recognition technology</p>
+                </div>
+
+                <div class="menu-item" data-project="4">
+                    <div class="menu-number">04</div>
+                    <h3 class="menu-title">Nature</h3>
+                    <p class="menu-subtitle">Interactive tree visualization</p>
+                </div>
+
+                <div class="menu-item" data-project="5">
+                    <div class="menu-number">05</div>
+                    <h3 class="menu-title">Party</h3>
+                    <p class="menu-subtitle">Social gaming experience</p>
+                </div>
+
+                <div class="menu-item" data-project="6">
+                    <div class="menu-number">06</div>
+                    <h3 class="menu-title">Math Art</h3>
+                    <p class="menu-subtitle">Fourier visualization</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Divider -->
+        <div class="divider">
+            <div class="divider-handle"></div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel" id="rightPanel">
+            <div class="project-showcase" id="projectShowcase">
+                <div class="project-header">
+                    <h2>Gaming Platform</h2>
+                    <p>Explore innovative digital experiences through interactive projects</p>
+                </div>
+
+                <div class="project-grid">
+                    <a href="Projects/PlatformerGame/index.html" class="project-card">
+                        <span class="project-icon">🎮</span>
+                        <h4 class="project-name">Platformer Engine</h4>
+                        <p class="project-description">Full-featured browser platformer with level editor</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Firebase</span>
+                        </div>
+                    </a>
+
+                    <a href="Projects/MiniGames/index.html" class="project-card">
+                        <span class="project-icon">🎯</span>
+                        <h4 class="project-name">Game Collection</h4>
+                        <p class="project-description">Classic games with modern design</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">HTML5</span>
+                            <span class="tech-tag">CSS3</span>
+                        </div>
+                    </a>
+
+                    <a href="Projects/Voice to text/index.html" class="project-card">
+                        <span class="project-icon">🎤</span>
+                        <h4 class="project-name">Voice Engine</h4>
+                        <p class="project-description">Real-time speech recognition</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">AI</span>
+                        </div>
+                    </a>
+
+                    <a href="Projects/Tree Website/index.html" class="project-card">
+                        <span class="project-icon">🌳</span>
+                        <h4 class="project-name">Nature Canvas</h4>
+                        <p class="project-description">Algorithmic tree visualization</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">SVG</span>
+                            <span class="tech-tag">Animation</span>
+                        </div>
+                    </a>
+
+                    <a href="Projects/Drinking SImulator/index.html" class="project-card">
+                        <span class="project-icon">🎉</span>
+                        <h4 class="project-name">Party Game</h4>
+                        <p class="project-description">Social entertainment app</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Audio API</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </a>
+
+                    <a href="Projects/fourier.html" class="project-card">
+                        <span class="project-icon">📊</span>
+                        <h4 class="project-name">Fourier Art</h4>
+                        <p class="project-description">Mathematical visualizations</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Canvas</span>
+                            <span class="tech-tag">Math</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Navigation -->
+    <div class="floating-nav">
+        <div class="nav-dot active" data-project="1"></div>
+        <div class="nav-dot" data-project="2"></div>
+        <div class="nav-dot" data-project="3"></div>
+        <div class="nav-dot" data-project="4"></div>
+        <div class="nav-dot" data-project="5"></div>
+        <div class="nav-dot" data-project="6"></div>
+    </div>
+
+    <script>
+        // Project data
+        const projects = {
+            1: {
+                title: "Gaming Platform",
+                description: "Explore innovative digital experiences through interactive projects",
+                cards: [
+                    {
+                        icon: "🎮",
+                        name: "Platformer Engine",
+                        desc: "Full-featured browser platformer with level editor",
+                        tech: ["JavaScript", "Firebase"],
+                        link: "Projects/PlatformerGame/index.html"
+                    }
+                ]
+            },
+            2: {
+                title: "Classic Collection",
+                description: "Timeless games reimagined for the modern web",
+                cards: [
+                    {
+                        icon: "🎯",
+                        name: "Mini Games Hub",
+                        desc: "Chess, Memory, Tic-Tac-Toe, and Snake",
+                        tech: ["HTML5", "CSS3", "JavaScript"],
+                        link: "Projects/MiniGames/index.html"
+                    }
+                ]
+            },
+            3: {
+                title: "Voice Technology",
+                description: "Cutting-edge speech recognition and AI processing",
+                cards: [
+                    {
+                        icon: "🎤",
+                        name: "Voice to Text Engine",
+                        desc: "Real-time transcription with multi-language support",
+                        tech: ["Python", "WebSockets", "AI"],
+                        link: "Projects/Voice to text/index.html"
+                    }
+                ]
+            },
+            4: {
+                title: "Digital Nature",
+                description: "Algorithmic beauty through interactive visualizations",
+                cards: [
+                    {
+                        icon: "🌳",
+                        name: "Tree Visualization",
+                        desc: "Interactive ecosystem with seasonal changes",
+                        tech: ["SVG", "Animation", "JavaScript"],
+                        link: "Projects/Tree Website/index.html"
+                    }
+                ]
+            },
+            5: {
+                title: "Social Gaming",
+                description: "Interactive entertainment for social gatherings",
+                cards: [
+                    {
+                        icon: "🎉",
+                        name: "Party Simulator",
+                        desc: "Dynamic party games with audio integration",
+                        tech: ["Audio API", "CSS3", "JavaScript"],
+                        link: "Projects/Drinking SImulator/index.html"
+                    }
+                ]
+            },
+            6: {
+                title: "Mathematical Art",
+                description: "Where mathematics meets visual beauty",
+                cards: [
+                    {
+                        icon: "📊",
+                        name: "Fourier Visualizer",
+                        desc: "Transform complex math into stunning visuals",
+                        tech: ["Canvas", "WebGL", "Mathematics"],
+                        link: "Projects/fourier.html"
+                    }
+                ]
+            }
+        };
+
+        // Menu interaction
+        const menuItems = document.querySelectorAll('.menu-item');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const projectShowcase = document.getElementById('projectShowcase');
+        const leftPanel = document.getElementById('leftPanel');
+        const rightPanel = document.getElementById('rightPanel');
+
+        function updateProject(projectId) {
+            const project = projects[projectId];
+            
+            // Update active states
+            menuItems.forEach(item => item.classList.remove('active'));
+            navDots.forEach(dot => dot.classList.remove('active'));
+            
+            document.querySelector(`.menu-item[data-project="${projectId}"]`).classList.add('active');
+            document.querySelector(`.nav-dot[data-project="${projectId}"]`).classList.add('active');
+            
+            // Update content with animation
+            projectShowcase.style.opacity = '0';
+            projectShowcase.style.transform = 'translateX(30px)';
+            
+            setTimeout(() => {
+                let cardsHTML = '';
+                project.cards.forEach(card => {
+                    cardsHTML += `
+                        <a href="${card.link}" class="project-card">
+                            <span class="project-icon">${card.icon}</span>
+                            <h4 class="project-name">${card.name}</h4>
+                            <p class="project-description">${card.desc}</p>
+                            <div class="project-tech">
+                                ${card.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                            </div>
+                        </a>
+                    `;
+                });
+                
+                projectShowcase.innerHTML = `
+                    <div class="project-header">
+                        <h2>${project.title}</h2>
+                        <p>${project.description}</p>
+                    </div>
+                    <div class="project-grid">
+                        ${cardsHTML}
+                    </div>
+                `;
+                
+                projectShowcase.style.transition = 'all 0.5s ease';
+                projectShowcase.style.opacity = '1';
+                projectShowcase.style.transform = 'translateX(0)';
+            }, 300);
+        }
+
+        // Add click handlers
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const projectId = item.dataset.project;
+                updateProject(projectId);
+            });
+        });
+
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const projectId = dot.dataset.project;
+                updateProject(projectId);
+            });
+        });
+
+        // Split panel interaction
+        let isHoveringLeft = false;
+        let isHoveringRight = false;
+
+        leftPanel.addEventListener('mouseenter', () => {
+            if (!isHoveringRight) {
+                leftPanel.classList.add('expanded');
+                rightPanel.classList.add('collapsed');
+                document.querySelector('.divider').style.left = '70%';
+            }
+        });
+
+        leftPanel.addEventListener('mouseleave', () => {
+            leftPanel.classList.remove('expanded');
+            rightPanel.classList.remove('collapsed');
+            document.querySelector('.divider').style.left = '50%';
+        });
+
+        rightPanel.addEventListener('mouseenter', () => {
+            if (!isHoveringLeft) {
+                rightPanel.classList.add('expanded');
+                leftPanel.classList.add('collapsed');
+                document.querySelector('.divider').style.left = '30%';
+            }
+        });
+
+        rightPanel.addEventListener('mouseleave', () => {
+            rightPanel.classList.remove('expanded');
+            leftPanel.classList.remove('collapsed');
+            document.querySelector('.divider').style.left = '50%';
+        });
+
+        // Divider drag functionality (optional)
+        const divider = document.querySelector('.divider');
+        let isDragging = false;
+
+        divider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            document.body.style.cursor = 'ew-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const x = e.clientX;
+            const windowWidth = window.innerWidth;
+            const percentage = (x / windowWidth) * 100;
+            
+            if (percentage > 20 && percentage < 80) {
+                leftPanel.style.width = percentage + '%';
+                rightPanel.style.width = (100 - percentage) + '%';
+                divider.style.left = percentage + '%';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // Initial load with all projects
+        const allProjectsHTML = Object.entries(projects).map(([id, project]) => {
+            return project.cards.map(card => `
+                <a href="${card.link}" class="project-card">
+                    <span class="project-icon">${card.icon}</span>
+                    <h4 class="project-name">${card.name}</h4>
+                    <p class="project-description">${card.desc}</p>
+                    <div class="project-tech">
+                        ${card.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                    </div>
+                </a>
+            `).join('');
+        }).join('');
+
+        projectShowcase.innerHTML = `
+            <div class="project-header">
+                <h2>All Projects</h2>
+                <p>Explore the complete collection of digital experiences</p>
+            </div>
+            <div class="project-grid">
+                ${allProjectsHTML}
+            </div>
+        `;
+    </script>
+</body>
+</html>

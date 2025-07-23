@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Portfolio - Professional Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --secondary: #e11d48;
+            --accent: #0891b2;
+            --success: #059669;
+            --neutral-900: #111827;
+            --neutral-800: #1f2937;
+            --neutral-700: #374151;
+            --neutral-600: #4b5563;
+            --neutral-500: #6b7280;
+            --neutral-400: #9ca3af;
+            --neutral-300: #d1d5db;
+            --neutral-200: #e5e7eb;
+            --neutral-100: #f3f4f6;
+            --white: #ffffff;
+            --accent-purple: #6366f1;
+            --accent-pink: #ec4899;
+            --text-secondary: #6b7280;
+            --bg-card: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background-color: var(--white);
+            color: var(--neutral-900);
+            line-height: 1.6;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+
+
+        /* About View */
+        .about-view {
+            max-width: 800px;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .about-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-purple);
+        }
+
+        .about-view .stat-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-view .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Circular Navigation Menu */
+        .nav-toggle {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .nav-toggle-icon {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            margin: 10px;
+        }
+
+        .nav-toggle-icon span {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--neutral-900);
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle-icon span:nth-child(1) {
+            top: 0;
+        }
+
+        .nav-toggle-icon span:nth-child(2) {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .nav-toggle-icon span:nth-child(3) {
+            bottom: 0;
+        }
+
+        .nav-toggle.active .nav-toggle-icon span:nth-child(1) {
+            transform: rotate(45deg) translateY(10px);
+        }
+
+        .nav-toggle.active .nav-toggle-icon span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.active .nav-toggle-icon span:nth-child(3) {
+            transform: rotate(-45deg) translateY(-10px);
+        }
+
+        .circular-menu {
+            position: absolute;
+            top: 80px;
+            right: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-toggle.active ~ .circular-menu {
+            display: flex;
+        }
+
+        .menu-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.2);
+        }
+
+        .menu-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.3);
+        }
+
+        /* Background Gradient */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, var(--neutral-100) 0%, var(--white) 100%);
+            z-index: -1;
+        }
+
+        /* App Container */
+        .app-container {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header adjustments */
+        .header {
+            background-color: var(--white);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Playfair Display', Georgia, serif;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Views */
+        .view {
+            position: absolute;
+            width: 100%;
+            min-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s ease;
+        }
+
+        .view.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Home View */
+        .home-view {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .home-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .home-title span {
+            display: block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .home-subtitle {
+            font-size: 1.5rem;
+            color: var(--neutral-600);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .explore-btn {
+            padding: 1.25rem 3rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(30, 64, 175, 0.4);
+        }
+
+        /* Projects View */
+        .projects-view {
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .projects-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .projects-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3rem;
+            color: var(--neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .card-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            color: var(--neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            color: var(--neutral-600);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.875rem;
+            padding: 0.375rem 1rem;
+            background-color: var(--neutral-100);
+            color: var(--neutral-700);
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Detail View */
+        .detail-view {
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .detail-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .close-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .detail-content {
+            padding: 3rem;
+        }
+
+        .detail-icon {
+            font-size: 5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .detail-info {
+            text-align: center;
+        }
+
+        .detail-description {
+            font-size: 1.125rem;
+            color: var(--neutral-600);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .detail-tech {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tech-badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, var(--neutral-100), var(--neutral-200));
+            color: var(--neutral-700);
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent), #0e7490);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(8, 145, 178, 0.3);
+        }
+
+        /* Page Transitions */
+        .view.slide-out-left {
+            animation: slideOutLeft 0.6s ease forwards;
+        }
+
+        .view.slide-in-right {
+            animation: slideInRight 0.6s ease forwards;
+        }
+
+        .view.slide-out-right {
+            animation: slideOutRight 0.6s ease forwards;
+        }
+
+        .view.slide-in-left {
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        @keyframes slideOutLeft {
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .circular-menu {
+                right: 1rem;
+                top: 70px;
+            }
+
+            .menu-item {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+
+            .home-title {
+                font-size: 2.5rem;
+            }
+
+            .home-subtitle {
+                font-size: 1.25rem;
+            }
+
+            .explore-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+
+            .projects-title {
+                font-size: 2rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .project-card {
+                padding: 2rem;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .detail-container {
+                margin: 0 1rem;
+            }
+
+            .detail-header {
+                padding: 1.5rem;
+            }
+
+            .detail-title {
+                font-size: 1.5rem;
+            }
+
+            .detail-content {
+                padding: 2rem;
+            }
+
+            .detail-icon {
+                font-size: 4rem;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Gradient -->
+    <div class="bg-gradient"></div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo" onclick="navigateTo('home')">FLOW STUDIO</div>
+            
+            <!-- Circular Navigation -->
+            <div class="nav-toggle" id="navToggle">
+                <div class="nav-toggle-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div class="circular-menu">
+                <div class="menu-item" onclick="navigateTo('home')">
+                    <span>🏠</span>
+                </div>
+                <div class="menu-item" onclick="navigateTo('projects')">
+                    <span>💼</span>
+                </div>
+                <div class="menu-item" onclick="navigateTo('about')">
+                    <span>👤</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home View -->
+            <div class="view home-view active" id="homeView">
+                <h1 class="home-title">
+                    <span>DYNAMIC</span>
+                    <span>PROJECT</span>
+                    <span>EXPLORER</span>
+                </h1>
+                <p class="home-subtitle">Navigate through innovative digital experiences</p>
+                <button class="explore-btn" onclick="navigateTo('projects')">
+                    Explore Projects
+                </button>
+            </div>
+
+            <!-- Projects View -->
+            <div class="view projects-view" id="projectsView">
+                <div class="projects-header">
+                    <h2 class="projects-title">Project Collection</h2>
+                </div>
+                <div class="card-grid">
+                    <div class="project-card" onclick="showProjectDetail(0)">
+                        <div class="card-icon">🎮</div>
+                        <h3 class="card-title">Platformer Game</h3>
+                        <p class="card-description">Browser-based platformer with level editor and Firebase integration</p>
+                        <div class="card-tags">
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Firebase</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="showProjectDetail(1)">
+                        <div class="card-icon">🎯</div>
+                        <h3 class="card-title">Mini Games</h3>
+                        <p class="card-description">Classic games collection with modern design</p>
+                        <div class="card-tags">
+                            <span class="tag">HTML5</span>
+                            <span class="tag">CSS3</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="showProjectDetail(2)">
+                        <div class="card-icon">🎤</div>
+                        <h3 class="card-title">Voice to Text</h3>
+                        <p class="card-description">Real-time voice transcription with Python backend</p>
+                        <div class="card-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">AI</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="showProjectDetail(3)">
+                        <div class="card-icon">🌳</div>
+                        <h3 class="card-title">Tree Visualization</h3>
+                        <p class="card-description">Interactive tree structures with beautiful animations</p>
+                        <div class="card-tags">
+                            <span class="tag">SVG</span>
+                            <span class="tag">Animation</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="showProjectDetail(4)">
+                        <div class="card-icon">🎉</div>
+                        <h3 class="card-title">Party Game</h3>
+                        <p class="card-description">Social gaming experience with audio integration</p>
+                        <div class="card-tags">
+                            <span class="tag">Audio API</span>
+                            <span class="tag">JavaScript</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="showProjectDetail(5)">
+                        <div class="card-icon">📊</div>
+                        <h3 class="card-title">Fourier Visualizer</h3>
+                        <p class="card-description">Mathematical visualizations with Canvas</p>
+                        <div class="card-tags">
+                            <span class="tag">Canvas</span>
+                            <span class="tag">Math</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail View -->
+            <div class="view detail-view" id="detailView">
+                <div class="detail-container">
+                    <div class="detail-header">
+                        <h2 class="detail-title" id="detailTitle"></h2>
+                        <div class="close-btn" onclick="navigateTo('projects')">
+                            <span>✕</span>
+                        </div>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-icon" id="detailIcon"></div>
+                        <div class="detail-info">
+                            <p class="detail-description" id="detailDescription"></p>
+                            <div class="detail-tech" id="detailTech"></div>
+                            <a href="#" class="launch-btn" id="detailLink">
+                                Launch Project <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About View -->
+            <div class="view about-view" id="aboutView">
+                <h2 class="about-title">About This Showcase</h2>
+                <p class="about-content">
+                    A collection of innovative web projects exploring different technologies and creative concepts. 
+                    Each project represents a unique journey in digital craftsmanship, from game development to 
+                    data visualization and interactive experiences.
+                </p>
+                <div class="about-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Possibilities</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Project data
+        const projects = [
+            {
+                title: "Platformer Game Engine",
+                icon: "🎮",
+                description: "A fully-featured browser-based platformer with custom level editor, Firebase authentication, and community-driven content sharing. Experience the future of browser gaming.",
+                tech: ["JavaScript", "Firebase", "Canvas API", "Game Physics"],
+                link: "Projects/PlatformerGame/index.html"
+            },
+            {
+                title: "Classic Games Collection",
+                icon: "🎯",
+                description: "Timeless games reimagined for the modern web. Featuring Chess, Memory, Tic-Tac-Toe, and Snake with contemporary design and smooth gameplay.",
+                tech: ["HTML5", "CSS3", "JavaScript", "Local Storage"],
+                link: "Projects/MiniGames/index.html"
+            },
+            {
+                title: "Voice Recognition System",
+                icon: "🎤",
+                description: "Advanced real-time voice transcription powered by cutting-edge speech recognition technology. Multi-language support with Python backend and WebSocket streaming.",
+                tech: ["Python", "WebSockets", "Speech API", "AI/ML"],
+                link: "Projects/Voice to text/index.html"
+            },
+            {
+                title: "Interactive Tree Visualization",
+                icon: "🌳",
+                description: "Experience the beauty of algorithmic nature through interactive tree visualizations. Features seasonal changes and dynamic growth patterns.",
+                tech: ["SVG", "Animation", "JavaScript", "Algorithm Design"],
+                link: "Projects/Tree Website/index.html"
+            },
+            {
+                title: "Social Gaming Experience",
+                icon: "🎉",
+                description: "An engaging party game simulator featuring dynamic audio integration and interactive gameplay designed for social entertainment.",
+                tech: ["JavaScript", "Audio API", "CSS3", "Responsive Design"],
+                link: "Projects/Drinking Simulator/index.html"
+            },
+            {
+                title: "Fourier Transform Explorer",
+                icon: "📊",
+                description: "Transform complex mathematics into stunning visual experiences. Interactive Fourier analysis for educational and artistic purposes.",
+                tech: ["Canvas", "Mathematics", "WebGL", "Animation"],
+                link: "Projects/fourier.html"
+            }
+        ];
+
+        // Current view state
+        let currentView = 'home';
+        let previousView = null;
+
+        // Navigation function
+        function navigateTo(view, transition = true) {
+            if (view === currentView) return;
+
+            const views = {
+                home: document.getElementById('homeView'),
+                projects: document.getElementById('projectsView'),
+                detail: document.getElementById('detailView'),
+                about: document.getElementById('aboutView')
+            };
+
+            // Close navigation menu
+            document.getElementById('navToggle').classList.remove('active');
+
+            // Determine transition direction
+            const viewOrder = ['home', 'projects', 'detail', 'about'];
+            const currentIndex = viewOrder.indexOf(currentView);
+            const targetIndex = viewOrder.indexOf(view);
+            
+            const isForward = targetIndex > currentIndex || (view === 'detail' && currentView === 'projects');
+            const isBackward = !isForward;
+
+            // Apply transition classes
+            if (transition && views[currentView]) {
+                views[currentView].classList.add(isForward ? 'slide-out-left' : 'slide-out-right');
+                views[currentView].classList.remove('active');
+                
+                setTimeout(() => {
+                    views[currentView].classList.remove('slide-out-left', 'slide-out-right');
+                    views[currentView].style.visibility = 'hidden';
+                }, 600);
+            }
+
+            // Show new view
+            if (views[view]) {
+                views[view].style.visibility = 'visible';
+                views[view].classList.add('active', isForward ? 'slide-in-right' : 'slide-in-left');
+                
+                setTimeout(() => {
+                    views[view].classList.remove('slide-in-right', 'slide-in-left');
+                }, 600);
+            }
+
+            previousView = currentView;
+            currentView = view;
+        }
+
+        // Show project detail
+        function showProjectDetail(index) {
+            const project = projects[index];
+            
+            document.getElementById('detailTitle').textContent = project.title;
+            document.getElementById('detailIcon').textContent = project.icon;
+            document.getElementById('detailDescription').textContent = project.description;
+            
+            // Update tech tags
+            const techContainer = document.getElementById('detailTech');
+            techContainer.innerHTML = project.tech.map(tech => 
+                `<span class="tech-badge">${tech}</span>`
+            ).join('');
+            
+            // Update link
+            document.getElementById('detailLink').href = project.link;
+            
+            navigateTo('detail');
+        }
+
+        // Toggle navigation menu
+        document.getElementById('navToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const navToggle = document.getElementById('navToggle');
+            const circularMenu = document.querySelector('.circular-menu');
+            
+            if (!navToggle.contains(e.target) && !circularMenu.contains(e.target)) {
+                navToggle.classList.remove('active');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide all views except home
+            ['projectsView', 'detailView', 'aboutView'].forEach(id => {
+                document.getElementById(id).style.visibility = 'hidden';
+            });
+        });
+    </script>
+</body>
+</html>
