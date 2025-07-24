@@ -9,6 +9,13 @@ class VoiceToText {
         this.clearBtn = document.getElementById('clearBtn');
         this.transcriptionText = document.getElementById('transcriptionText');
         this.interimText = document.getElementById('interimText');
+        
+        // Verify interim text element exists
+        if (!this.interimText) {
+            console.error('Critical: interimText element not found in DOM!');
+        } else {
+            console.log('interimText element successfully initialized');
+        }
         this.languageSelect = document.getElementById('languageSelect');
         this.audioVisualizer = document.getElementById('audioVisualizer');
         this.micIcon = document.getElementById('micIcon');
@@ -67,40 +74,69 @@ class VoiceToText {
                 let interimTranscript = '';
                 let finalTranscript = '';
 
-                // Process NEW final results only (to avoid duplicates)
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) {
-                        const transcript = event.results[i][0].transcript;
-                        
-                        // Check for voice commands in the transcript
-                        const commandResult = this.checkForVoiceCommand(transcript);
-                        
-                        if (commandResult.isCommand && this.voiceCommandMode) {
-                            // Process the command but don't add it to the transcript
-                            this.processVoiceCommand(commandResult.command);
-                            // Don't add command text to transcript
-                        } else {
-                            // Only add non-command text to the transcript
-                            finalTranscript += transcript + ' ';
-                        }
-                    }
-                }
+                // Debug logging
+                console.log('Speech event - resultIndex:', event.resultIndex, 'total results:', event.results.length, 'voiceCommandMode:', this.voiceCommandMode);
 
-                // Collect ALL interim results (not just new ones) for live display
+                // FIRST: Collect ALL interim results for immediate display
+                // This happens BEFORE any command checking to ensure live display works
                 for (let i = 0; i < event.results.length; i++) {
                     if (!event.results[i].isFinal) {
                         interimTranscript += event.results[i][0].transcript + ' ';
                     }
                 }
 
-                // Update the transcription display
+                // IMMEDIATELY show interim results - this ensures live display works
+                const trimmedInterim = interimTranscript.trim();
+                
+                // Update the interim text element RIGHT AWAY
+                if (this.interimText) {
+                    this.interimText.textContent = trimmedInterim;
+                    
+                    // Force visibility and proper styling if there's content
+                    if (trimmedInterim) {
+                        this.interimText.style.display = 'block';
+                        this.interimText.style.opacity = '1';
+                        this.interimText.style.visibility = 'visible';
+                        console.log('Interim text updated and made visible:', trimmedInterim);
+                    } else {
+                        // Let CSS handle empty state
+                        this.interimText.style.display = '';
+                        this.interimText.style.opacity = '';
+                        this.interimText.style.visibility = '';
+                    }
+                } else {
+                    console.error('interimText element not found!');
+                }
+
+                // THEN: Process final results and check for commands
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        const transcript = event.results[i][0].transcript;
+                        
+                        // Check for voice commands ONLY in final results
+                        if (this.voiceCommandMode) {
+                            const commandResult = this.checkForVoiceCommand(transcript);
+                            
+                            if (commandResult.isCommand) {
+                                console.log('Voice command detected in final result:', commandResult.command);
+                                // Process the command but don't add it to the transcript
+                                this.processVoiceCommand(commandResult.command);
+                                // Don't add command text to transcript
+                                continue; // Skip adding this to the transcript
+                            }
+                        }
+                        
+                        // Add non-command text to the transcript
+                        finalTranscript += transcript + ' ';
+                    }
+                }
+
+                // Update the final transcription display
                 if (finalTranscript) {
                     this.fullTranscript += finalTranscript;
                     this.updateTranscriptionDisplay();
+                    console.log('Final transcript added:', finalTranscript);
                 }
-
-                // Show interim results - always update to show complete interim transcript
-                this.interimText.textContent = interimTranscript.trim();
             };
 
             // Handle errors

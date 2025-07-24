@@ -3,6 +3,14 @@
 ## Issue
 Users were not seeing live transcription as they spoke. Only the most recent word or phrase was visible instead of the complete interim transcript.
 
+## Update (Latest Fix)
+Fixed voice command interference with live transcription display:
+- Restructured speech recognition handler to process interim results FIRST
+- Voice commands are now only checked in FINAL results, not interim
+- Interim text displays immediately, before any command processing
+- Added CSS !important rules to ensure visibility
+- Voice commands now work mid-conversation without blocking live display
+
 ## Root Cause
 The speech recognition `onresult` handler was only processing NEW interim results (starting from `event.resultIndex`) instead of accumulating ALL interim results. This caused earlier words to disappear as new ones arrived.
 

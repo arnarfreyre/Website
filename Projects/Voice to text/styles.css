@@ -274,6 +274,9 @@ body {
 
 .interim-text:not(:empty) {
     animation: fadeInUp 0.3s ease;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 @keyframes fadeInUp {
@@ -285,6 +288,26 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.8;
+    }
+}
+
+.interim-text:not(:empty)::after {
+    content: "●";
+    color: var(--primary-blue);
+    margin-left: 5px;
+    display: inline-block;
+    animation: pulse 1s ease-in-out infinite;
 }
 
 /* Controls */
