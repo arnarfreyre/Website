@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laplace-Fourier Transform Relationship</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f3460 100%);
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-panel h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #00d4ff, #ff0080, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .info-panel p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 300px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            color: #00d4ff;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00d4ff, #ff0080);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .legend h3 {
+            color: #ff0080;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .legend-text {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .equation {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            color: #00d4ff;
+        }
+
+        .highlight {
+            color: #ff0080;
+            font-weight: bold;
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+
+        .instructions h4 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0080ff);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <div class="info-panel">
+        <h1>Laplace & Fourier Transform</h1>
+        <p>The Fourier transform is a special case of the Laplace transform where σ = 0.</p>
+        
+        <div class="equation">
+            Laplace: F(s) = ∫ f(t)e<sup>-st</sup>dt<br>
+            where s = <span class="highlight">σ</span> + jω
+        </div>
+        
+        <div class="equation">
+            Fourier: F(jω) = ∫ f(t)e<sup>-jωt</sup>dt<br>
+            (Laplace with <span class="highlight">σ = 0</span>)
+        </div>
+
+        <p>The red plane shows where the Fourier transform lives - it's literally a vertical slice of the Laplace transform!</p>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Signal Type</label>
+            <button class="btn" onclick="changeSignal('exponential')">Exponential</button>
+            <button class="btn" onclick="changeSignal('damped-sine')">Damped Sine</button>
+            <button class="btn" onclick="changeSignal('step')">Step Function</button>
+        </div>
+
+        <div class="control-group">
+            <label>Damping Factor (α): <span id="dampingValue">0.5</span></label>
+            <input type="range" id="damping" class="slider" min="0" max="2" step="0.1" value="0.5">
+        </div>
+
+        <div class="control-group">
+            <label>Frequency (ω₀): <span id="freqValue">2.0</span> rad/s</label>
+            <input type="range" id="frequency" class="slider" min="0.5" max="5" step="0.1" value="2.0">
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="showGrid" class="checkbox" checked>
+            <label for="showGrid">Show Grid</label>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="showPoles" class="checkbox" checked>
+            <label for="showPoles">Show Poles/Zeros</label>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="animateFourier" class="checkbox" checked>
+            <label for="animateFourier">Animate Fourier Slice</label>
+        </div>
+    </div>
+
+    <div class="legend">
+        <h3>Color Legend</h3>
+        <div class="legend-item">
+            <div class="legend-color" style="background: rgba(0, 212, 255, 0.8);"></div>
+            <div class="legend-text">Laplace Magnitude Surface</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255, 0, 128, 0.8);"></div>
+            <div class="legend-text">Fourier Transform (σ=0)</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255, 170, 0, 0.8);"></div>
+            <div class="legend-text">Poles</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: rgba(0, 255, 128, 0.8);"></div>
+            <div class="legend-text">Zeros</div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h4>Mouse Controls:</h4>
+        • Left Click + Drag: Rotate<br>
+        • Right Click + Drag: Pan<br>
+        • Scroll: Zoom<br>
+        • Double Click: Reset View
+    </div>
+
+    <script>
+        let scene, camera, renderer, controls;
+        let laplaceSurface, fourierSlice, gridHelper;
+        let poles = [], zeros = [];
+        let signalType = 'exponential';
+        let damping = 0.5;
+        let frequency = 2.0;
+        let animateFourierSlice = true;
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x0a0a0a, 50, 200);
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(30, 20, 30);
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x0a0a0a);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.target.set(0, 0, 0);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(20, 30, 20);
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0x00d4ff, 0.5);
+            pointLight.position.set(-20, 20, -20);
+            scene.add(pointLight);
+
+            // Create 3D axes
+            createAxes();
+
+            // Create grid
+            createGrid();
+
+            // Create Laplace surface
+            createLaplaceSurface();
+
+            // Create Fourier slice
+            createFourierSlice();
+
+            // Setup controls
+            setupControls();
+
+            // Start animation
+            animate();
+        }
+
+        function createAxes() {
+            // σ axis (real) - X axis
+            const sigmaGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-25, 0, 0),
+                new THREE.Vector3(25, 0, 0)
+            ]);
+            const sigmaMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+            const sigmaAxis = new THREE.Line(sigmaGeometry, sigmaMaterial);
+            scene.add(sigmaAxis);
+
+            // ω axis (imaginary) - Z axis
+            const omegaGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 0, -25),
+                new THREE.Vector3(0, 0, 25)
+            ]);
+            const omegaMaterial = new THREE.LineBasicMaterial({ color: 0xff0080 });
+            const omegaAxis = new THREE.Line(omegaGeometry, omegaMaterial);
+            scene.add(omegaAxis);
+
+            // Magnitude axis - Y axis
+            const magGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(0, 30, 0)
+            ]);
+            const magMaterial = new THREE.LineBasicMaterial({ color: 0xffaa00 });
+            const magAxis = new THREE.Line(magGeometry, magMaterial);
+            scene.add(magAxis);
+
+            // Labels
+            addAxisLabel('σ (Real)', 26, 0, 0, 0x00ff00);
+            addAxisLabel('jω (Imag)', 0, 0, 26, 0xff0080);
+            addAxisLabel('|F(s)|', 0, 32, 0, 0xffaa00);
+        }
+
+        function addAxisLabel(text, x, y, z, color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 64;
+            const context = canvas.getContext('2d');
+            context.fillStyle = '#' + color.toString(16).padStart(6, '0');
+            context.font = 'Bold 24px Arial';
+            context.textAlign = 'center';
+            context.fillText(text, 64, 40);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const material = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(material);
+            sprite.position.set(x, y, z);
+            sprite.scale.set(4, 2, 1);
+            scene.add(sprite);
+        }
+
+        function createGrid() {
+            gridHelper = new THREE.GridHelper(50, 20, 0x444444, 0x222222);
+            gridHelper.rotateX(Math.PI / 2);
+            scene.add(gridHelper);
+        }
+
+        function createLaplaceSurface() {
+            // Remove existing surface if any
+            if (laplaceSurface) {
+                scene.remove(laplaceSurface);
+            }
+
+            const resolution = 50;
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const colors = [];
+            const indices = [];
+
+            const sigmaRange = 20;
+            const omegaRange = 20;
+
+            // Generate vertices
+            for (let i = 0; i <= resolution; i++) {
+                for (let j = 0; j <= resolution; j++) {
+                    const sigma = (i / resolution - 0.5) * 2 * sigmaRange;
+                    const omega = (j / resolution - 0.5) * 2 * omegaRange;
+                    
+                    // Calculate Laplace transform magnitude
+                    const magnitude = calculateLaplaceMagnitude(sigma, omega);
+                    
+                    vertices.push(sigma, magnitude, omega);
+
+                    // Color based on magnitude
+                    const hue = (1 - magnitude / 30) * 240; // Blue to red
+                    const color = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
+                    colors.push(color.r, color.g, color.b);
+                }
+            }
+
+            // Generate indices for triangles
+            for (let i = 0; i < resolution; i++) {
+                for (let j = 0; j < resolution; j++) {
+                    const a = i * (resolution + 1) + j;
+                    const b = a + resolution + 1;
+
+                    indices.push(a, b, a + 1);
+                    indices.push(b, b + 1, a + 1);
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setIndex(indices);
+            geometry.computeVertexNormals();
+
+            const material = new THREE.MeshPhongMaterial({
+                vertexColors: true,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.7,
+                shininess: 100
+            });
+
+            laplaceSurface = new THREE.Mesh(geometry, material);
+            scene.add(laplaceSurface);
+        }
+
+        function createFourierSlice() {
+            // Remove existing slice if any
+            if (fourierSlice) {
+                scene.remove(fourierSlice);
+            }
+
+            const geometry = new THREE.PlaneGeometry(40, 30, 1, 50);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xff0080,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.3,
+                emissive: 0xff0080,
+                emissiveIntensity: 0.5
+            });
+
+            fourierSlice = new THREE.Mesh(geometry, material);
+            fourierSlice.rotation.y = Math.PI / 2;
+            scene.add(fourierSlice);
+
+            // Add Fourier curve on the slice
+            const curvePoints = [];
+            for (let i = -20; i <= 20; i += 0.5) {
+                const omega = i;
+                const magnitude = calculateLaplaceMagnitude(0, omega);
+                curvePoints.push(new THREE.Vector3(0, magnitude, omega));
+            }
+
+            const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
+            const curveMaterial = new THREE.LineBasicMaterial({
+                color: 0xff0080,
+                linewidth: 3
+            });
+            const fourierCurve = new THREE.Line(curveGeometry, curveMaterial);
+            scene.add(fourierCurve);
+
+            // Add glow effect to Fourier slice
+            const glowGeometry = new THREE.PlaneGeometry(42, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff0080,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.1
+            });
+            const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+            glowMesh.rotation.y = Math.PI / 2;
+            glowMesh.position.x = 0.1;
+            scene.add(glowMesh);
+        }
+
+        function calculateLaplaceMagnitude(sigma, omega) {
+            // Calculate based on selected signal type
+            let magnitude;
+            
+            switch(signalType) {
+                case 'exponential':
+                    // L{e^(-at)} = 1/(s+a)
+                    const denomReal = sigma + damping;
+                    const denomImag = omega;
+                    magnitude = 1 / Math.sqrt(denomReal * denomReal + denomImag * denomImag);
+                    break;
+                
+                case 'damped-sine':
+                    // L{e^(-at)sin(ω₀t)} = ω₀/((s+a)² + ω₀²)
+                    const sReal = sigma + damping;
+                    const denom = sReal * sReal + (omega - frequency) * (omega - frequency);
+                    magnitude = frequency / Math.sqrt(denom);
+                    break;
+                
+                case 'step':
+                    // L{u(t)} = 1/s
+                    magnitude = 1 / Math.sqrt(sigma * sigma + omega * omega);
+                    break;
+                
+                default:
+                    magnitude = 1;
+            }
+
+            // Scale and limit magnitude for visualization
+            return Math.min(magnitude * 10, 30);
+        }
+
+        function updatePoles() {
+            // Remove existing poles
+            poles.forEach(pole => scene.remove(pole));
+            poles = [];
+
+            // Add poles based on signal type
+            const poleGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+            const poleMaterial = new THREE.MeshPhongMaterial({
+                color: 0xffaa00,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.5
+            });
+
+            switch(signalType) {
+                case 'exponential':
+                    // Pole at s = -a
+                    const pole1 = new THREE.Mesh(poleGeometry, poleMaterial);
+                    pole1.position.set(-damping, 0, 0);
+                    scene.add(pole1);
+                    poles.push(pole1);
+                    break;
+                
+                case 'damped-sine':
+                    // Poles at s = -a ± jω₀
+                    const pole2 = new THREE.Mesh(poleGeometry, poleMaterial);
+                    pole2.position.set(-damping, 0, frequency);
+                    scene.add(pole2);
+                    poles.push(pole2);
+
+                    const pole3 = new THREE.Mesh(poleGeometry, poleMaterial);
+                    pole3.position.set(-damping, 0, -frequency);
+                    scene.add(pole3);
+                    poles.push(pole3);
+                    break;
+                
+                case 'step':
+                    // Pole at s = 0
+                    const pole4 = new THREE.Mesh(poleGeometry, poleMaterial);
+                    pole4.position.set(0, 0, 0);
+                    scene.add(pole4);
+                    poles.push(pole4);
+                    break;
+            }
+        }
+
+        function setupControls() {
+            // Damping control
+            document.getElementById('damping').addEventListener('input', (e) => {
+                damping = parseFloat(e.target.value);
+                document.getElementById('dampingValue').textContent = damping.toFixed(1);
+                updateVisualization();
+            });
+
+            // Frequency control
+            document.getElementById('frequency').addEventListener('input', (e) => {
+                frequency = parseFloat(e.target.value);
+                document.getElementById('freqValue').textContent = frequency.toFixed(1);
+                updateVisualization();
+            });
+
+            // Checkboxes
+            document.getElementById('showGrid').addEventListener('change', (e) => {
+                gridHelper.visible = e.target.checked;
+            });
+
+            document.getElementById('showPoles').addEventListener('change', (e) => {
+                poles.forEach(pole => pole.visible = e.target.checked);
+            });
+
+            document.getElementById('animateFourier').addEventListener('change', (e) => {
+                animateFourierSlice = e.target.checked;
+            });
+
+            // Double click to reset view
+            renderer.domElement.addEventListener('dblclick', () => {
+                camera.position.set(30, 20, 30);
+                controls.target.set(0, 0, 0);
+                controls.update();
+            });
+        }
+
+        function changeSignal(type) {
+            signalType = type;
+            updateVisualization();
+        }
+
+        function updateVisualization() {
+            createLaplaceSurface();
+            createFourierSlice();
+            updatePoles();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            controls.update();
+
+            // Animate Fourier slice
+            if (animateFourierSlice && fourierSlice) {
+                fourierSlice.material.opacity = 0.3 + Math.sin(Date.now() * 0.002) * 0.1;
+            }
+
+            // Rotate poles
+            poles.forEach((pole, index) => {
+                pole.rotation.y += 0.02;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

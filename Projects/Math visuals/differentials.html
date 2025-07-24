@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differential Equations Visualizer</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --canvas-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .visualization-panel {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: crosshair;
+            width: 100%;
+            height: 600px;
+            max-height: 70vh;
+        }
+
+        .control-panel {
+            width: 350px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 2rem);
+        }
+
+        .control-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .equation-selector {
+            margin-bottom: 1rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .parameter-control {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 0.3rem;
+        }
+
+        .range-value {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .info-panel {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .equation-display {
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .visualization-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .checkbox-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .control-panel {
+                width: 100%;
+                max-height: none;
+            }
+            
+            #canvas {
+                height: 400px;
+            }
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Differential Equations Visualizer</h1>
+        </header>
+        
+        <div class="main-content">
+            <div class="visualization-panel">
+                <canvas id="canvas"></canvas>
+                <div class="visualization-controls">
+                    <div class="checkbox-control">
+                        <input type="checkbox" id="showVectorField" checked>
+                        <label for="showVectorField">Show Vector Field</label>
+                    </div>
+                    <div class="checkbox-control">
+                        <input type="checkbox" id="showSolutions" checked>
+                        <label for="showSolutions">Show Solutions</label>
+                    </div>
+                    <div class="checkbox-control">
+                        <input type="checkbox" id="showGrid" checked>
+                        <label for="showGrid">Show Grid</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-panel">
+                <div class="control-section">
+                    <h2>Equation Selection</h2>
+                    <div class="equation-selector">
+                        <select id="equationType" aria-label="Select differential equation type">
+                            <option value="linear">Linear: dy/dx = ax + by</option>
+                            <option value="exponential">Exponential Growth: dy/dx = ky</option>
+                            <option value="logistic">Logistic Growth: dy/dx = ry(1 - y/K)</option>
+                            <option value="predatorPrey">Predator-Prey (Lotka-Volterra)</option>
+                            <option value="pendulum">Damped Pendulum</option>
+                            <option value="vanderpol">Van der Pol Oscillator</option>
+                            <option value="lorenz">Lorenz Attractor (3D)</option>
+                        </select>
+                    </div>
+                    <div class="equation-display" id="equationDisplay">
+                        dy/dx = ax + by
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h2>Parameters</h2>
+                    <div id="parameterControls">
+                        <!-- Parameters will be dynamically generated -->
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h2>Simulation Controls</h2>
+                    <div class="button-group">
+                        <button class="btn-primary" id="playPauseBtn">
+                            <span id="playPauseText">Pause</span>
+                        </button>
+                        <button class="btn-secondary" id="resetBtn">Reset</button>
+                        <button class="btn-danger" id="clearBtn">Clear</button>
+                    </div>
+                    
+                    <div class="parameter-control">
+                        <label for="animationSpeed">Animation Speed</label>
+                        <input type="range" id="animationSpeed" min="0.1" max="3" step="0.1" value="1">
+                        <span class="range-value" id="animationSpeedValue">1.0x</span>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h2>Solver Settings</h2>
+                    <div class="parameter-control">
+                        <label for="solverType">Numerical Solver</label>
+                        <select id="solverType">
+                            <option value="euler">Euler's Method</option>
+                            <option value="rk4" selected>Runge-Kutta 4th Order</option>
+                        </select>
+                    </div>
+                    <div class="parameter-control">
+                        <label for="stepSize">Step Size (dt)</label>
+                        <input type="range" id="stepSize" min="0.001" max="0.1" step="0.001" value="0.01">
+                        <span class="range-value" id="stepSizeValue">0.01</span>
+                    </div>
+                </div>
+                
+                <div class="info-panel" id="infoPanel">
+                    <strong>Linear Differential Equation</strong><br>
+                    This equation represents a linear relationship between the derivative and the variables. 
+                    Click on the canvas to add solution curves with different initial conditions.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Global variables
+        let canvas, ctx;
+        let animationId;
+        let isPlaying = true;
+        let solutions = [];
+        let time = 0;
+        let selectedEquation = 'linear';
+        let parameters = {};
+        let vectorField = [];
+        let mousePos = { x: 0, y: 0 };
+        
+        // Equation definitions
+        const equations = {
+            linear: {
+                name: 'Linear Equation',
+                display: 'dy/dx = ax + by',
+                params: { a: 0.5, b: -1 },
+                info: 'A linear differential equation where the rate of change depends linearly on x and y. Solutions can grow, decay, or remain constant.',
+                solve: function(x, y, params) {
+                    return params.a * x + params.b * y;
+                }
+            },
+            exponential: {
+                name: 'Exponential Growth',
+                display: 'dy/dx = ky',
+                params: { k: 0.5 },
+                info: 'Models exponential growth (k > 0) or decay (k < 0). Common in population dynamics, radioactive decay, and compound interest.',
+                solve: function(x, y, params) {
+                    return params.k * y;
+                }
+            },
+            logistic: {
+                name: 'Logistic Growth',
+                display: 'dy/dx = ry(1 - y/K)',
+                params: { r: 1, K: 10 },
+                info: 'Models population growth with carrying capacity K. The population grows exponentially at first, then levels off.',
+                solve: function(x, y, params) {
+                    return params.r * y * (1 - y / params.K);
+                }
+            },
+            predatorPrey: {
+                name: 'Predator-Prey System',
+                display: 'dx/dt = ax - bxy, dy/dt = -cy + dxy',
+                params: { a: 1, b: 0.1, c: 1.5, d: 0.075 },
+                info: 'The Lotka-Volterra equations model the dynamics of predator-prey interactions. Shows cyclic behavior.',
+                isSystem: true,
+                solve: function(t, state, params) {
+                    const [x, y] = state;
+                    return [
+                        params.a * x - params.b * x * y,
+                        -params.c * y + params.d * x * y
+                    ];
+                }
+            },
+            pendulum: {
+                name: 'Damped Pendulum',
+                display: 'd²θ/dt² + γ(dθ/dt) + sin(θ) = 0',
+                params: { gamma: 0.2 },
+                info: 'Models a pendulum with damping. Shows how energy dissipates over time, leading to equilibrium.',
+                isSystem: true,
+                solve: function(t, state, params) {
+                    const [theta, omega] = state;
+                    return [
+                        omega,
+                        -params.gamma * omega - Math.sin(theta)
+                    ];
+                }
+            },
+            vanderpol: {
+                name: 'Van der Pol Oscillator',
+                display: 'd²x/dt² - μ(1-x²)(dx/dt) + x = 0',
+                params: { mu: 1 },
+                info: 'A nonlinear oscillator with self-sustaining oscillations. Shows limit cycle behavior.',
+                isSystem: true,
+                solve: function(t, state, params) {
+                    const [x, v] = state;
+                    return [
+                        v,
+                        params.mu * (1 - x * x) * v - x
+                    ];
+                }
+            },
+            lorenz: {
+                name: 'Lorenz Attractor',
+                display: 'dx/dt = σ(y-x), dy/dt = x(ρ-z)-y, dz/dt = xy-βz',
+                params: { sigma: 10, rho: 28, beta: 8/3 },
+                info: 'A chaotic system that exhibits the butterfly effect. Small changes in initial conditions lead to dramatically different outcomes.',
+                is3D: true,
+                solve: function(t, state, params) {
+                    const [x, y, z] = state;
+                    return [
+                        params.sigma * (y - x),
+                        x * (params.rho - z) - y,
+                        x * y - params.beta * z
+                    ];
+                }
+            }
+        };
+        
+        // Numerical solvers
+        class Solver {
+            static euler(derivative, t, y, dt) {
+                if (Array.isArray(y)) {
+                    const dy = derivative(t, y);
+                    return y.map((val, i) => val + dt * dy[i]);
+                } else {
+                    return y + dt * derivative(t, y);
+                }
+            }
+            
+            static rk4(derivative, t, y, dt) {
+                if (Array.isArray(y)) {
+                    const k1 = derivative(t, y);
+                    const k2 = derivative(t + dt/2, y.map((val, i) => val + dt/2 * k1[i]));
+                    const k3 = derivative(t + dt/2, y.map((val, i) => val + dt/2 * k2[i]));
+                    const k4 = derivative(t + dt, y.map((val, i) => val + dt * k3[i]));
+                    
+                    return y.map((val, i) => 
+                        val + dt/6 * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i])
+                    );
+                } else {
+                    const k1 = derivative(t, y);
+                    const k2 = derivative(t + dt/2, y + dt/2 * k1);
+                    const k3 = derivative(t + dt/2, y + dt/2 * k2);
+                    const k4 = derivative(t + dt, y + dt * k3);
+                    
+                    return y + dt/6 * (k1 + 2*k2 + 2*k3 + k4);
+                }
+            }
+        }
+        
+        // Initialize canvas and controls
+        function init() {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Event listeners
+            document.getElementById('equationType').addEventListener('change', updateEquation);
+            document.getElementById('playPauseBtn').addEventListener('click', togglePlayPause);
+            document.getElementById('resetBtn').addEventListener('click', reset);
+            document.getElementById('clearBtn').addEventListener('click', clearSolutions);
+            document.getElementById('animationSpeed').addEventListener('input', updateAnimationSpeed);
+            document.getElementById('stepSize').addEventListener('input', updateStepSize);
+            document.getElementById('showVectorField').addEventListener('change', render);
+            document.getElementById('showSolutions').addEventListener('change', render);
+            document.getElementById('showGrid').addEventListener('change', render);
+            
+            canvas.addEventListener('click', addSolution);
+            canvas.addEventListener('mousemove', updateMousePosition);
+            
+            // Initialize equation
+            updateEquation();
+            
+            // Start animation
+            animate();
+        }
+        
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            updateVectorField();
+        }
+        
+        function updateEquation() {
+            selectedEquation = document.getElementById('equationType').value;
+            const eq = equations[selectedEquation];
+            
+            // Update display
+            document.getElementById('equationDisplay').textContent = eq.display;
+            document.getElementById('infoPanel').innerHTML = `<strong>${eq.name}</strong><br>${eq.info}`;
+            
+            // Update parameters
+            parameters = { ...eq.params };
+            updateParameterControls();
+            
+            // Clear solutions and update vector field
+            clearSolutions();
+            updateVectorField();
+        }
+        
+        function updateParameterControls() {
+            const container = document.getElementById('parameterControls');
+            container.innerHTML = '';
+            
+            const eq = equations[selectedEquation];
+            
+            for (const [param, value] of Object.entries(eq.params)) {
+                const control = document.createElement('div');
+                control.className = 'parameter-control';
+                
+                const min = value < 0 ? value * 2 : (value === 0 ? -1 : 0);
+                const max = value > 0 ? value * 2 : (value === 0 ? 1 : 0);
+                const step = Math.abs(max - min) / 100;
+                
+                control.innerHTML = `
+                    <label for="${param}Slider">${param}</label>
+                    <input type="range" id="${param}Slider" min="${min}" max="${max}" step="${step}" value="${value}">
+                    <span class="range-value" id="${param}Value">${value.toFixed(3)}</span>
+                `;
+                
+                container.appendChild(control);
+                
+                // Add event listener
+                document.getElementById(`${param}Slider`).addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    parameters[param] = val;
+                    document.getElementById(`${param}Value`).textContent = val.toFixed(3);
+                    updateVectorField();
+                });
+            }
+        }
+        
+        function updateVectorField() {
+            const eq = equations[selectedEquation];
+            if (eq.is3D) return; // Skip vector field for 3D systems
+            
+            vectorField = [];
+            const spacing = 30;
+            const arrowScale = 15;
+            
+            for (let x = spacing/2; x < canvas.width; x += spacing) {
+                for (let y = spacing/2; y < canvas.height; y += spacing) {
+                    const [wx, wy] = screenToWorld(x, y);
+                    
+                    let dx, dy;
+                    if (eq.isSystem) {
+                        const derivatives = eq.solve(0, [wx, wy], parameters);
+                        [dx, dy] = derivatives;
+                    } else {
+                        dx = 1;
+                        dy = eq.solve(wx, wy, parameters);
+                    }
+                    
+                    const magnitude = Math.sqrt(dx*dx + dy*dy);
+                    if (magnitude > 0) {
+                        vectorField.push({
+                            x, y,
+                            dx: dx / magnitude * arrowScale,
+                            dy: dy / magnitude * arrowScale,
+                            magnitude
+                        });
+                    }
+                }
+            }
+        }
+        
+        function screenToWorld(x, y) {
+            const scale = 20;
+            return [
+                (x - canvas.width/2) / scale,
+                -(y - canvas.height/2) / scale
+            ];
+        }
+        
+        function worldToScreen(x, y) {
+            const scale = 20;
+            return [
+                x * scale + canvas.width/2,
+                -y * scale + canvas.height/2
+            ];
+        }
+        
+        function addSolution(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const [wx, wy] = screenToWorld(x, y);
+            
+            const eq = equations[selectedEquation];
+            const color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            
+            if (eq.is3D) {
+                solutions.push({
+                    points: [[wx, wy, 0]],
+                    color,
+                    age: 0
+                });
+            } else if (eq.isSystem) {
+                solutions.push({
+                    points: [[wx, wy]],
+                    color,
+                    age: 0
+                });
+            } else {
+                solutions.push({
+                    points: [[wx, wy]],
+                    color,
+                    age: 0
+                });
+            }
+        }
+        
+        function updateSolutions(dt) {
+            const eq = equations[selectedEquation];
+            const solver = document.getElementById('solverType').value;
+            const maxPoints = 1000;
+            
+            solutions.forEach(solution => {
+                if (solution.points.length >= maxPoints) return;
+                
+                const lastPoint = solution.points[solution.points.length - 1];
+                let newPoint;
+                
+                if (eq.is3D) {
+                    const derivative = (t, state) => eq.solve(t, state, parameters);
+                    newPoint = solver === 'euler' 
+                        ? Solver.euler(derivative, solution.age, lastPoint, dt)
+                        : Solver.rk4(derivative, solution.age, lastPoint, dt);
+                } else if (eq.isSystem) {
+                    const derivative = (t, state) => eq.solve(t, state, parameters);
+                    newPoint = solver === 'euler'
+                        ? Solver.euler(derivative, solution.age, lastPoint, dt)
+                        : Solver.rk4(derivative, solution.age, lastPoint, dt);
+                } else {
+                    const [x, y] = lastPoint;
+                    const derivative = (t, y) => eq.solve(x + t, y, parameters);
+                    const newY = solver === 'euler'
+                        ? Solver.euler(derivative, 0, y, dt)
+                        : Solver.rk4(derivative, 0, y, dt);
+                    newPoint = [x + dt, newY];
+                }
+                
+                solution.points.push(newPoint);
+                solution.age += dt;
+            });
+        }
+        
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            if (document.getElementById('showGrid').checked) {
+                drawGrid();
+            }
+            
+            // Draw vector field
+            if (document.getElementById('showVectorField').checked) {
+                drawVectorField();
+            }
+            
+            // Draw solutions
+            if (document.getElementById('showSolutions').checked) {
+                drawSolutions();
+            }
+            
+            // Draw axes
+            drawAxes();
+        }
+        
+        function drawGrid() {
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            
+            const spacing = 20;
+            
+            for (let x = 0; x < canvas.width; x += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y < canvas.height; y += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+        
+        function drawAxes() {
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height/2);
+            ctx.lineTo(canvas.width, canvas.height/2);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, 0);
+            ctx.lineTo(canvas.width/2, canvas.height);
+            ctx.stroke();
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText('x', canvas.width - 20, canvas.height/2 + 5);
+            
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('y', canvas.width/2 + 5, 20);
+        }
+        
+        function drawVectorField() {
+            vectorField.forEach(arrow => {
+                const alpha = Math.min(arrow.magnitude / 5, 1);
+                ctx.strokeStyle = `rgba(100, 149, 237, ${alpha})`;
+                ctx.fillStyle = ctx.strokeStyle;
+                ctx.lineWidth = 1;
+                
+                ctx.beginPath();
+                ctx.moveTo(arrow.x, arrow.y);
+                ctx.lineTo(arrow.x + arrow.dx, arrow.y + arrow.dy);
+                ctx.stroke();
+                
+                // Arrowhead
+                const angle = Math.atan2(arrow.dy, arrow.dx);
+                const headLength = 5;
+                
+                ctx.beginPath();
+                ctx.moveTo(arrow.x + arrow.dx, arrow.y + arrow.dy);
+                ctx.lineTo(
+                    arrow.x + arrow.dx - headLength * Math.cos(angle - Math.PI/6),
+                    arrow.y + arrow.dy - headLength * Math.sin(angle - Math.PI/6)
+                );
+                ctx.lineTo(
+                    arrow.x + arrow.dx - headLength * Math.cos(angle + Math.PI/6),
+                    arrow.y + arrow.dy - headLength * Math.sin(angle + Math.PI/6)
+                );
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+        
+        function drawSolutions() {
+            const eq = equations[selectedEquation];
+            
+            solutions.forEach(solution => {
+                ctx.strokeStyle = solution.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                if (eq.is3D) {
+                    // Simple 3D projection
+                    const scale = 10;
+                    const rotX = time * 0.3;
+                    const rotY = time * 0.2;
+                    
+                    solution.points.forEach((point, i) => {
+                        const [x, y, z] = point;
+                        
+                        // Rotate around Y axis
+                        const x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
+                        const z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
+                        
+                        // Rotate around X axis
+                        const y1 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+                        const z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+                        
+                        // Project to 2D
+                        const screenX = canvas.width/2 + x1 * scale;
+                        const screenY = canvas.height/2 - y1 * scale;
+                        
+                        if (i === 0) {
+                            ctx.moveTo(screenX, screenY);
+                        } else {
+                            ctx.lineTo(screenX, screenY);
+                        }
+                    });
+                } else {
+                    solution.points.forEach((point, i) => {
+                        const [sx, sy] = worldToScreen(point[0], point[1]);
+                        if (i === 0) {
+                            ctx.moveTo(sx, sy);
+                        } else {
+                            ctx.lineTo(sx, sy);
+                        }
+                    });
+                }
+                
+                ctx.stroke();
+                
+                // Draw starting point
+                if (solution.points.length > 0) {
+                    const firstPoint = solution.points[0];
+                    const [sx, sy] = eq.is3D 
+                        ? [canvas.width/2 + firstPoint[0] * 10, canvas.height/2 - firstPoint[1] * 10]
+                        : worldToScreen(firstPoint[0], firstPoint[1]);
+                    
+                    ctx.fillStyle = solution.color;
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, 5, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            });
+        }
+        
+        function animate() {
+            if (isPlaying) {
+                const dt = parseFloat(document.getElementById('stepSize').value);
+                const speed = parseFloat(document.getElementById('animationSpeed').value);
+                
+                updateSolutions(dt * speed);
+                time += dt * speed;
+            }
+            
+            render();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            document.getElementById('playPauseText').textContent = isPlaying ? 'Pause' : 'Play';
+        }
+        
+        function reset() {
+            time = 0;
+            solutions.forEach(solution => {
+                if (solution.points.length > 1) {
+                    solution.points = [solution.points[0]];
+                    solution.age = 0;
+                }
+            });
+        }
+        
+        function clearSolutions() {
+            solutions = [];
+        }
+        
+        function updateAnimationSpeed(event) {
+            const value = parseFloat(event.target.value);
+            document.getElementById('animationSpeedValue').textContent = value.toFixed(1) + 'x';
+        }
+        
+        function updateStepSize(event) {
+            const value = parseFloat(event.target.value);
+            document.getElementById('stepSizeValue').textContent = value.toFixed(3);
+        }
+        
+        function updateMousePosition(event) {
+            const rect = canvas.getBoundingClientRect();
+            mousePos.x = event.clientX - rect.left;
+            mousePos.y = event.clientY - rect.top;
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
