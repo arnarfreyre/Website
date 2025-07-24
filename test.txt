@@ -1,0 +1,18 @@
+Allt verkefnið = create a .. game.
+Útskýra tilgang leiks eða ástæðu fyrir línu 1.
+hvað viltu að verkefnið sé
+
+Use css, html and js in a single file.
+---Mismunandi stýlar---
+    Make it visually stunning -> litum og hreifingum
+            Using a 3 color pallet.
+                -> using a combination of pink blue and yellow
+    Make it visually appealing ->
+         Using a 3 color pallet.
+
+Think step by step. -> ef þú notar extended thinking opus
+
+
+
+-----Debug----
+Fix the issue with [Issue] which occurs when [Event] happens.
