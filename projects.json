@@ -1,0 +1,70 @@
+{
+  "projects": [
+    {
+      "id": "platformer-game",
+      "title": "Pixel Platformer",
+      "description": "A browser-based platformer game built with JavaScript and HTML5 Canvas. Experience classic gaming mechanics with smooth animations, multiple levels, and responsive controls. Perfect for both casual players and retro gaming enthusiasts.",
+      "tags": ["Game", "Interactive"],
+      "categories": ["game", "interactive"],
+      "path": "Projects/PlatformerGame/index.html",
+      "featured": true,
+      "technologies": ["HTML5 Canvas", "JavaScript"],
+      "icon": "gamepad"
+    },
+    {
+      "id": "math-visuals",
+      "title": "Math Visuals Collection",
+      "description": "Interactive mathematical visualizations including differentials, integrals, Fourier transforms, and Laplace transforms. Perfect for learning and exploring mathematical concepts.",
+      "tags": ["Visualization", "Math"],
+      "categories": ["visualization"],
+      "path": "Projects/Math visuals/fourier.html",
+      "featured": false,
+      "technologies": ["Mathematics", "Interactive"],
+      "icon": "chart"
+    },
+    {
+      "id": "mini-games",
+      "title": "Mini Games Collection",
+      "description": "All kinds of games like Snake, Tic-Tac-Toe, Chess, and many more games to come. A growing collection of web-based entertainment.",
+      "tags": ["Game", "Interactive", "Collection"],
+      "categories": ["game", "interactive"],
+      "path": "Projects/MiniGames/index.html",
+      "featured": false,
+      "technologies": ["Multiple Games", "Web"],
+      "icon": "dice"
+    },
+    {
+      "id": "drinking-simulator",
+      "title": "Drinking Simulator",
+      "description": "A fun party simulation game with interactive elements and themed music. Perfect for social gatherings and entertainment with friends.",
+      "tags": ["Game", "Party"],
+      "categories": ["game", "interactive"],
+      "path": "Projects/Drinking SImulator/index.html",
+      "featured": false,
+      "technologies": ["Party Game", "Audio"],
+      "icon": "speaker"
+    },
+    {
+      "id": "tree-website",
+      "title": "Tree Website",
+      "description": "An interactive visualization of trees and nature with beautiful biome styling. Experience different environmental themes and natural landscapes.",
+      "tags": ["Nature", "Visualization"],
+      "categories": ["visualization"],
+      "path": "Projects/Tree Website/index.html",
+      "featured": false,
+      "technologies": ["Nature", "Interactive"],
+      "icon": "tree"
+    },
+    {
+      "id": "voice-to-text",
+      "title": "Voice to Text",
+      "description": "Real-time speech recognition tool that converts your voice to text with enhanced accuracy. Perfect for transcription, note-taking, and accessibility.",
+      "tags": ["Voice", "Interactive"],
+      "categories": ["interactive"],
+      "path": "Projects/Voice to text/index.html",
+      "featured": false,
+      "technologies": ["Speech", "AI"],
+      "icon": "mic"
+    }
+  ]
+}
