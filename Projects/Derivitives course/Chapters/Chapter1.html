@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Derivatives Manual - From Fundamentals to Advanced Strategies</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../styles.css">
+    
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+</head>
+<body>
+    <a href="../index.html" class="back-to-main">← Back to Course</a>
+    
+    <div class="nav">
+        <div class="nav-dot active" data-section="0"></div>
+        <div class="nav-dot" data-section="1"></div>
+        <div class="nav-dot" data-section="2"></div>
+        <div class="nav-dot" data-section="3"></div>
+        <div class="nav-dot" data-section="4"></div>
+        <div class="nav-dot" data-section="5"></div>
+        <div class="nav-dot" data-section="6"></div>
+        <div class="nav-dot" data-section="7"></div>
+        <div class="nav-dot" data-section="8"></div>
+        <div class="nav-dot" data-section="9"></div>
+        <div class="nav-dot" data-section="10"></div>
+    </div>
+
+    <div class="container">
+        <h1>Comprehensive Derivatives Manual</h1>
+        <p class="intro">A complete guide to understanding, pricing, and trading derivative instruments - from fundamental concepts to advanced strategies</p>
+
+        <div class="section" id="section-0">
+            <h2>1. Introduction and Basic Concepts</h2>
+            
+            <div class="key-concept">
+                <h3>What Are Derivatives?</h3>
+                <p>A derivative is a financial instrument that derives its value from the performance of an underlying entity. This underlying can be an asset, index, interest rate, or even another derivative.</p>
+            </div>
+
+            <h3>1.1 Types of Derivatives</h3>
+            <p>The derivatives market consists of several major instrument types:</p>
+            
+            <ul>
+                <li><strong>Forwards/Futures</strong>: Agreements to deliver or receive assets at a future date for a price set today</li>
+                <li><strong>Options</strong>: Contracts offering the right (but not obligation) to buy or sell an asset</li>
+                <li><strong>Swaps</strong>: Agreements to exchange fixed against variable cashflows</li>
+                <li><strong>Exotic Derivatives</strong>: Complex instruments with non-standard features</li>
+            </ul>
+
+            <h3>1.2 Market Fundamentals</h3>
+            
+            <h4>Bid-Ask Spread</h4>
+            <div class="math">
+                $$\text{Spread} = \text{Ask Price} - \text{Bid Price}$$
+            </div>
+            <p>
+                The spread reflects market liquidity, transaction costs, and information asymmetry. Narrow spreads indicate highly liquid markets, while wide spreads suggest lower liquidity or higher uncertainty.
+            </p>
+
+            <h4>Market Participants</h4>
+            <ul>
+                <li><strong>Hedgers</strong>: Use derivatives to manage risk exposure</li>
+                <li><strong>Speculators</strong>: Take leveraged positions based on market views</li>
+                <li><strong>Arbitrageurs</strong>: Exploit price discrepancies across markets</li>
+                <li><strong>Market Makers</strong>: Provide liquidity by quoting bid and ask prices</li>
+            </ul>
+
+            <h3>1.3 Primary Uses of Derivatives</h3>
+            
+            <div class="example">
+                <strong>Risk Management (Hedging)</strong><br>
+                A wheat farmer can lock in a selling price for their harvest using futures contracts, protecting against price declines.
+                <br><br>
+                <strong>Speculation</strong><br>
+                A trader believing oil prices will rise can buy call options, gaining leveraged exposure with limited downside risk.
+                <br><br>
+                <strong>Arbitrage</strong><br>
+                If gold futures in New York trade at a premium to London, arbitrageurs can buy in London and sell in New York, profiting from the price difference.
+            </div>
+
+            <h3>1.4 The Concept of Leverage</h3>
+            <p>
+                Derivatives provide leverage - the ability to control large positions with relatively small capital:
+            </p>
+            <div class="math">
+                $$\text{Leverage Ratio} = \frac{\text{Notional Value}}{\text{Initial Investment}}$$
+            </div>
+            
+            <div class="warning-box">
+                <strong>⚠️ Leverage Warning</strong><br>
+                While leverage amplifies potential gains, it equally amplifies losses. A 10:1 leverage means a 10% adverse move results in 100% loss of capital.
+            </div>
+        </div>
+
+        <div class="section" id="section-1">
+            <h2>2. Forward Contracts Fundamentals</h2>
+            
+            <h3>2.1 Definition and Characteristics</h3>
+            <p>
+                A forward contract is an agreement between two parties to buy or sell an asset at a specified future time (maturity T) for a price fixed today (delivery price F).
+            </p>
+
+            <div class="key-concept">
+                <h4>Key Properties of Forward Contracts</h4>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>✓ Zero initial value (no cash exchange at inception)</li>
+                    <li>✓ Settlement at maturity only</li>
+                    <li>✓ Over-the-counter (OTC) - customized bilateral agreements</li>
+                    <li>✓ Counterparty credit risk</li>
+                    <li>✓ Limited secondary market liquidity</li>
+                </ul>
+            </div>
+
+            <h3>2.2 Payoff Structure</h3>
+            <p>The payoff at maturity T depends on whether you are long or short the forward:</p>
+            
+            <div class="math">
+                $$\text{Long Forward Payoff: } V_T^{long} = S_T - F_{0,T}$$
+                $$\text{Short Forward Payoff: } V_T^{short} = F_{0,T} - S_T = -V_T^{long}$$
+            </div>
+            
+            <p>Where:</p>
+            <ul>
+                <li>$S_T$ = Spot price at maturity</li>
+                <li>$F_{0,T}$ = Forward price agreed at time 0</li>
+            </ul>
+
+            <h3>2.3 Forward vs. Futures Contracts</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Forward Contract</th>
+                        <th>Futures Contract</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Trading Venue</strong></td>
+                        <td>Over-the-counter (OTC)</td>
+                        <td>Exchange-traded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standardization</strong></td>
+                        <td>Customized terms</td>
+                        <td>Standardized specifications</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Settlement</strong></td>
+                        <td>At maturity only</td>
+                        <td>Daily mark-to-market</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Credit Risk</strong></td>
+                        <td>Bilateral counterparty risk</td>
+                        <td>Clearinghouse guarantee</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Liquidity</strong></td>
+                        <td>Limited secondary market</td>
+                        <td>High liquidity</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.4 Four Pay-Delivery Alternatives</h3>
+            
+            <div class="example">
+                <strong>Strategies for Acquiring an Asset</strong>
+                <table style="width: 100%; margin-top: 1em;">
+                    <tr>
+                        <th>Strategy</th>
+                        <th>Payment Time</th>
+                        <th>Receipt Time</th>
+                        <th>Payment Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Outright purchase</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>$S_0$</td>
+                    </tr>
+                    <tr>
+                        <td>Fully leveraged purchase</td>
+                        <td>T</td>
+                        <td>0</td>
+                        <td>$S_0 e^{rT}$</td>
+                    </tr>
+                    <tr>
+                        <td>Prepaid forward</td>
+                        <td>0</td>
+                        <td>T</td>
+                        <td>$F_{0,T}^P$</td>
+                    </tr>
+                    <tr>
+                        <td>Forward contract</td>
+                        <td>T</td>
+                        <td>T</td>
+                        <td>$F_{0,T}$</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="section" id="section-2">
+            <h2>3. Fair Pricing of Forward Contracts</h2>
+            
+            <h3>3.1 The No-Arbitrage Principle</h3>
+            <p>
+                The foundation of derivative pricing is the no-arbitrage principle: in efficient markets, there should be no opportunity for risk-free profits.
+            </p>
+
+            <div class="theorem">
+                <strong>Fundamental Theorem of Asset Pricing</strong><br>
+                In a complete, arbitrage-free market, there exists a unique risk-neutral measure under which the price of any derivative is the expected discounted payoff.
+            </div>
+
+            <h3>3.2 Basic Forward Pricing Formula</h3>
+            <p>For an asset with no dividends, storage costs, or other cash flows:</p>
+            
+            <div class="math">
+                $$F_{0,T} = S_0 \cdot e^{rT}$$
+            </div>
+            
+            <p>Where:</p>
+            <ul>
+                <li>$F_{0,T}$ = Forward price at time 0 for delivery at time T</li>
+                <li>$S_0$ = Current spot price</li>
+                <li>$r$ = Continuously compounded risk-free rate</li>
+                <li>$T$ = Time to maturity</li>
+            </ul>
+
+            <h3>3.3 Arbitrage-Free Pricing Proof</h3>
+            
+            <div class="proof">
+                <strong>Proof by Replication:</strong><br><br>
+                Consider two strategies with identical payoffs at time T:<br><br>
+                
+                <strong>Strategy A:</strong> Enter a long forward contract + Invest $F_{0,T}e^{-rT}$ at risk-free rate<br>
+                Payoff at T: $(S_T - F_{0,T}) + F_{0,T} = S_T$<br><br>
+                
+                <strong>Strategy B:</strong> Buy the underlying asset now<br>
+                Payoff at T: $S_T$<br><br>
+                
+                Since both strategies have identical payoffs, they must have the same initial cost:<br>
+                $0 + F_{0,T}e^{-rT} = S_0$<br><br>
+                
+                Therefore: $F_{0,T} = S_0 e^{rT}$ □
+            </div>
+
+            <h3>3.4 Advanced Pricing with Dividends</h3>
+            
+            <h4>Discrete Dividends</h4>
+            <p>For an asset paying dividend $D_i$ at time $t_i < T$:</p>
+            <div class="math">
+                $$F_{0,T} = \left(S_0 - \sum_{i: t_i < T} D_i e^{-rt_i}\right) e^{rT}$$
+            </div>
+
+            <h4>Continuous Dividend Yield</h4>
+            <p>For assets with continuous dividend yield $q$:</p>
+            <div class="math">
+                $$F_{0,T} = S_0 \cdot e^{(r-q)T}$$
+            </div>
+
+            <h3>3.5 Cost of Carry Model</h3>
+            <p>The general forward pricing formula incorporating all costs and benefits:</p>
+            
+            <div class="math">
+                $$F_{0,T} = S_0 \cdot e^{(r-q+u-y)T}$$
+            </div>
+            
+            <p>Where:</p>
+            <ul>
+                <li>$r$ = Risk-free interest rate</li>
+                <li>$q$ = Dividend yield</li>
+                <li>$u$ = Storage cost rate</li>
+                <li>$y$ = Convenience yield</li>
+            </ul>
+
+            <div class="interactive-demo">
+                <h4>Step-by-Step Calculation Example</h4>
+                <strong>Given:</strong>
+                <ul>
+                    <li>Spot price: $S_0 = \$100$</li>
+                    <li>Risk-free rate: $r = 5\%$</li>
+                    <li>Dividend yield: $q = 2\%$</li>
+                    <li>Time to maturity: $T = 0.5$ years</li>
+                </ul>
+                
+                <strong>Solution:</strong>
+                <ol>
+                    <li>Calculate net cost of carry: $(r - q) = 0.05 - 0.02 = 0.03$</li>
+                    <li>Calculate time factor: $(r - q) \times T = 0.03 \times 0.5 = 0.015$</li>
+                    <li>Calculate exponential: $e^{0.015} = 1.0151$</li>
+                    <li>Forward price: $F_{0,0.5} = \$100 \times 1.0151 = \$101.51$</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="section-3">
+            <h2>4. Options Theory and Fundamentals</h2>
+            
+            <h3>4.1 Option Definitions</h3>
+            
+            <div class="key-concept">
+                <p><strong>Call Option:</strong> The right (but not obligation) to buy an asset at a specified strike price K by expiration date T.</p>
+                <p><strong>Put Option:</strong> The right (but not obligation) to sell an asset at a specified strike price K by expiration date T.</p>
+            </div>
+
+            <h3>4.2 Option Styles</h3>
+            <ul>
+                <li><strong>European Options:</strong> Can only be exercised at maturity</li>
+                <li><strong>American Options:</strong> Can be exercised at any time before maturity</li>
+                <li><strong>Bermudan Options:</strong> Can be exercised on specific dates</li>
+                <li><strong>Asian Options:</strong> Payoff depends on average price over time</li>
+            </ul>
+
+            <h3>4.3 Option Payoffs</h3>
+            
+            <div class="math">
+                $$\text{Call Payoff at Expiry: } C_T = \max(S_T - K, 0)$$
+                $$\text{Put Payoff at Expiry: } P_T = \max(K - S_T, 0)$$
+            </div>
+
+            <h3>4.4 Intrinsic and Time Value</h3>
+            <p>An option's premium consists of two components:</p>
+            
+            <div class="math">
+                $$\text{Option Premium} = \text{Intrinsic Value} + \text{Time Value}$$
+            </div>
+            
+            <ul>
+                <li><strong>Intrinsic Value:</strong> The payoff if exercised immediately</li>
+                <li><strong>Time Value:</strong> The additional value from the possibility of favorable price movements</li>
+            </ul>
+
+            <h3>4.5 Moneyness</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Moneyness</th>
+                        <th>Call Option</th>
+                        <th>Put Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>In-the-money (ITM)</strong></td>
+                        <td>$S > K$</td>
+                        <td>$S < K$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>At-the-money (ATM)</strong></td>
+                        <td>$S = K$</td>
+                        <td>$S = K$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Out-of-the-money (OTM)</strong></td>
+                        <td>$S < K$</td>
+                        <td>$S > K$</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>4.6 Put-Call Parity</h3>
+            <p>A fundamental relationship between European put and call options:</p>
+            
+            <div class="theorem">
+                <strong>Put-Call Parity (European Options):</strong>
+                $$C - P = S_0 - K e^{-rT}$$
+                
+                This creates synthetic positions:
+                <ul style="margin-top: 1em;">
+                    <li>Synthetic Call = Put + Stock - Bond</li>
+                    <li>Synthetic Put = Call - Stock + Bond</li>
+                    <li>Synthetic Stock = Call - Put + Bond</li>
+                </ul>
+            </div>
+
+            <h3>4.7 Option Boundaries</h3>
+            
+            <div class="math">
+                <strong>American Call (no dividends):</strong>
+                $$\max(S - K, 0) \leq C \leq S$$
+                
+                <strong>American Put:</strong>
+                $$\max(K - S, 0) \leq P \leq K$$
+                
+                <strong>European Call:</strong>
+                $$\max(S - Ke^{-rT}, 0) \leq c \leq S$$
+                
+                <strong>European Put:</strong>
+                $$\max(Ke^{-rT} - S, 0) \leq p \leq Ke^{-rT}$$
+            </div>
+        </div>
+
+        <div class="section" id="section-4">
+            <h2>5. The Black-Scholes Model</h2>
+            
+            <h3>5.1 Model Assumptions</h3>
+            <p>The Black-Scholes model revolutionized option pricing but relies on several key assumptions:</p>
+            
+            <ol>
+                <li>The stock price follows a geometric Brownian motion (log-normal distribution)</li>
+                <li>No transaction costs or taxes</li>
+                <li>The risk-free rate is constant and known</li>
+                <li>No dividends during the option's life</li>
+                <li>Markets are perfectly liquid</li>
+                <li>No arbitrage opportunities exist</li>
+                <li>Short selling is permitted without restrictions</li>
+            </ol>
+
+            <h3>5.2 The Stochastic Process</h3>
+            <p>Stock price dynamics are modeled as:</p>
+            
+            <div class="math">
+                $$dS = \mu S dt + \sigma S dW$$
+            </div>
+            
+            <p>Where:</p>
+            <ul>
+                <li>$\mu$ = Drift (expected return)</li>
+                <li>$\sigma$ = Volatility</li>
+                <li>$dW$ = Brownian motion increment</li>
+            </ul>
+
+            <h3>5.3 The Black-Scholes Formula</h3>
+            
+            <div class="key-concept">
+                <h4>European Call Option Price:</h4>
+                $$C = S_0 N(d_1) - K e^{-rT} N(d_2)$$
+                
+                <h4>European Put Option Price:</h4>
+                $$P = K e^{-rT} N(-d_2) - S_0 N(-d_1)$$
+                
+                Where:
+                $$d_1 = \frac{\ln(S_0/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}$$
+                $$d_2 = d_1 - \sigma\sqrt{T}$$
+            </div>
+
+            <p>$N(x)$ is the cumulative standard normal distribution function.</p>
+
+            <h3>5.4 Interpretation of the Formula</h3>
+            
+            <div class="example">
+                <strong>Call Option Components:</strong>
+                <ul>
+                    <li>$S_0 N(d_1)$ = Expected stock value conditional on exercise</li>
+                    <li>$K e^{-rT} N(d_2)$ = Present value of expected payment</li>
+                    <li>$N(d_2)$ = Risk-neutral probability of exercise</li>
+                    <li>$N(d_1)$ = Delta of the option (hedge ratio)</li>
+                </ul>
+            </div>
+
+            <h3>5.5 Model with Dividends</h3>
+            <p>For stocks with continuous dividend yield $q$:</p>
+            
+            <div class="math">
+                $$C = S_0 e^{-qT} N(d_1) - K e^{-rT} N(d_2)$$
+                $$P = K e^{-rT} N(-d_2) - S_0 e^{-qT} N(-d_1)$$
+                
+                Where:
+                $$d_1 = \frac{\ln(S_0/K) + (r - q + \sigma^2/2)T}{\sigma\sqrt{T}}$$
+            </div>
+
+            <h3>5.6 Implied Volatility</h3>
+            <p>
+                Since all Black-Scholes inputs except volatility are observable, we can extract the market's volatility expectation from option prices:
+            </p>
+            
+            <div class="math">
+                $$\text{Market Price} = \text{BS}(S, K, r, T, \sigma_{implied})$$
+            </div>
+            
+            <div class="warning-box">
+                <strong>⚠️ Volatility Smile</strong><br>
+                In practice, implied volatility varies with strike price and maturity, creating a "smile" or "skew" pattern. This violates Black-Scholes assumptions and indicates the model's limitations.
+            </div>
+        </div>
+
+        <div class="section" id="section-5">
+            <h2>6. The Greeks - Risk Sensitivities</h2>
+            
+            <h3>6.1 Introduction to Greeks</h3>
+            <p>
+                The Greeks measure how option prices change with respect to various parameters. They are essential for risk management and hedging.
+            </p>
+
+            <div class="greeks-grid">
+                <div class="greek-card">
+                    <h4>Delta (Δ)</h4>
+                    <div class="math">$$\Delta = \frac{\partial V}{\partial S}$$</div>
+                    <p>Price sensitivity to spot</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Gamma (Γ)</h4>
+                    <div class="math">$$\Gamma = \frac{\partial^2 V}{\partial S^2}$$</div>
+                    <p>Delta sensitivity to spot</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Theta (Θ)</h4>
+                    <div class="math">$$\Theta = \frac{\partial V}{\partial t}$$</div>
+                    <p>Time decay</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Vega (ν)</h4>
+                    <div class="math">$$\nu = \frac{\partial V}{\partial \sigma}$$</div>
+                    <p>Volatility sensitivity</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Rho (ρ)</h4>
+                    <div class="math">$$\rho = \frac{\partial V}{\partial r}$$</div>
+                    <p>Interest rate sensitivity</p>
+                </div>
+            </div>
+
+            <h3>6.2 Delta - The Hedge Ratio</h3>
+            
+            <div class="math">
+                <strong>Call Delta:</strong> $\Delta_C = N(d_1)$<br>
+                <strong>Put Delta:</strong> $\Delta_P = N(d_1) - 1 = -N(-d_1)$
+            </div>
+            
+            <p>Properties of Delta:</p>
+            <ul>
+                <li>Call delta ranges from 0 to 1</li>
+                <li>Put delta ranges from -1 to 0</li>
+                <li>ATM options have delta ≈ ±0.5</li>
+                <li>Delta approaches 1 (calls) or -1 (puts) deep ITM</li>
+                <li>Delta approaches 0 far OTM</li>
+            </ul>
+
+            <h3>6.3 Gamma - Convexity</h3>
+            
+            <div class="math">
+                $$\Gamma = \frac{\phi(d_1)}{S_0 \sigma \sqrt{T}}$$
+            </div>
+            
+            <p>Where $\phi$ is the standard normal probability density function.</p>
+            
+            <p>Key Gamma Properties:</p>
+            <ul>
+                <li>Gamma is highest for ATM options</li>
+                <li>Gamma increases as expiration approaches</li>
+                <li>Long options have positive gamma</li>
+                <li>Short options have negative gamma</li>
+            </ul>
+
+            <h3>6.4 Theta - Time Decay</h3>
+            
+            <div class="math">
+                <strong>Call Theta:</strong>
+                $$\Theta_C = -\frac{S_0 \phi(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2)$$
+                
+                <strong>Put Theta:</strong>
+                $$\Theta_P = -\frac{S_0 \phi(d_1) \sigma}{2\sqrt{T}} + rKe^{-rT}N(-d_2)$$
+            </div>
+            
+            <div class="warning-box">
+                <strong>⚠️ Theta Decay Acceleration</strong><br>
+                Time decay accelerates as expiration approaches, particularly for ATM options. The last 30 days typically see the most rapid decay.
+            </div>
+
+            <h3>6.5 Vega - Volatility Sensitivity</h3>
+            
+            <div class="math">
+                $$\nu = S_0 \phi(d_1) \sqrt{T}$$
+            </div>
+            
+            <p>Vega Characteristics:</p>
+            <ul>
+                <li>Vega is highest for ATM options</li>
+                <li>Longer-dated options have higher vega</li>
+                <li>Vega decreases as options move deep ITM or OTM</li>
+                <li>Both calls and puts have positive vega</li>
+            </ul>
+
+            <h3>6.6 Rho - Interest Rate Sensitivity</h3>
+            
+            <div class="math">
+                <strong>Call Rho:</strong> $\rho_C = KTe^{-rT}N(d_2)$<br>
+                <strong>Put Rho:</strong> $\rho_P = -KTe^{-rT}N(-d_2)$
+            </div>
+            
+            <p>Rho is generally less important than other Greeks but becomes significant for:</p>
+            <ul>
+                <li>Long-dated options</li>
+                <li>Periods of volatile interest rates</li>
+                <li>Currency options</li>
+            </ul>
+
+            <h3>6.7 Portfolio Greeks</h3>
+            <p>For a portfolio of options, the total Greeks are the sum of individual Greeks:</p>
+            
+            <div class="math">
+                $$\Delta_{portfolio} = \sum_{i} n_i \Delta_i$$
+                $$\Gamma_{portfolio} = \sum_{i} n_i \Gamma_i$$
+            </div>
+            
+            <p>Where $n_i$ is the position size (positive for long, negative for short).</p>
+        </div>
+
+        <div class="section" id="section-6">
+            <h2>7. Market Conditions: Contango and Backwardation</h2>
+            
+            <h3>7.1 Forward Curves and Term Structure</h3>
+            <p>
+                The relationship between forward prices and maturity dates creates the forward curve, which can exhibit different shapes based on market conditions.
+            </p>
+
+            <h3>7.2 Contango</h3>
+            
+            <div class="key-concept">
+                <h4>Definition</h4>
+                <p>Contango occurs when forward/futures prices exceed the expected future spot price. The forward curve slopes upward.</p>
+                
+                <div class="math">
+                    $$F_{0,T} > E[S_T]$$
+                </div>
+            </div>
+
+            <p>Characteristics of Contango:</p>
+            <ul>
+                <li>Forward premium > 1 for non-dividend assets</li>
+                <li>Common in commodities with storage costs</li>
+                <li>Indicates positive cost of carry</li>
+                <li>Contract value converges down to spot at maturity</li>
+            </ul>
+
+            <h3>7.3 Backwardation</h3>
+            
+            <div class="key-concept">
+                <h4>Definition</h4>
+                <p>Backwardation occurs when forward/futures prices are below the expected future spot price. The forward curve slopes downward.</p>
+                
+                <div class="math">
+                    $$F_{0,T} < E[S_T]$$
+                </div>
+            </div>
+
+            <p>Characteristics of Backwardation:</p>
+            <ul>
+                <li>Forward premium < 1</li>
+                <li>Often occurs with high convenience yield</li>
+                <li>Common during supply shortages</li>
+                <li>Contract value converges up to spot at maturity</li>
+            </ul>
+
+            <h3>7.4 Normal Backwardation Theory (Keynes)</h3>
+            <p>
+                John Maynard Keynes proposed that futures markets exhibit "normal backwardation" where futures prices are systematically below expected spot prices to compensate speculators for bearing risk.
+            </p>
+
+            <h3>7.5 Trading Implications</h3>
+            
+            <div class="example">
+                <strong>Contango Trading Strategies:</strong>
+                <ol>
+                    <li><strong>Calendar Spread:</strong> Short near-month, long far-month</li>
+                    <li><strong>Roll Yield:</strong> Negative for long positions (contracts lose value approaching maturity)</li>
+                    <li><strong>Storage Arbitrage:</strong> Buy spot, sell futures if spread exceeds storage cost</li>
+                </ol>
+                
+                <strong>Backwardation Trading Strategies:</strong>
+                <ol>
+                    <li><strong>Long Futures:</strong> Benefit from convergence to higher spot</li>
+                    <li><strong>Roll Yield:</strong> Positive for long positions</li>
+                    <li><strong>Convenience Yield Capture:</strong> Hold physical commodity</li>
+                </ol>
+            </div>
+
+            <h3>7.6 Measuring the Forward Premium</h3>
+            
+            <div class="math">
+                $$\text{Forward Premium} = \frac{F_{0,T}}{S_0} = e^{(r-q+u-y)T}$$
+            </div>
+            
+            <p>Components affecting the premium:</p>
+            <ul>
+                <li>$r$ = Risk-free rate (increases premium)</li>
+                <li>$q$ = Dividend yield (decreases premium)</li>
+                <li>$u$ = Storage cost (increases premium)</li>
+                <li>$y$ = Convenience yield (decreases premium)</li>
+            </ul>
+        </div>
+
+        <div class="section" id="section-7">
+            <h2>8. Option Trading Strategies</h2>
+            
+            <h3>8.1 Basic Strategies</h3>
+            
+            <h4>Covered Call</h4>
+            <p>Long stock + Short call option</p>
+            <div class="math">
+                $$\text{Payoff} = S_T + \max(0, K - S_T) - C$$
+            </div>
+            <ul>
+                <li>Income generation strategy</li>
+                <li>Limited upside, reduced downside</li>
+                <li>Best in neutral to slightly bullish markets</li>
+            </ul>
+
+            <h4>Protective Put</h4>
+            <p>Long stock + Long put option</p>
+            <div class="math">
+                $$\text{Payoff} = S_T + \max(0, K - S_T) - P$$
+            </div>
+            <ul>
+                <li>Portfolio insurance</li>
+                <li>Limited downside, unlimited upside</li>
+                <li>Cost of protection reduces returns</li>
+            </ul>
+
+            <h3>8.2 Spread Strategies</h3>
+            
+            <h4>Bull Call Spread</h4>
+            <p>Buy call at strike $K_1$, sell call at strike $K_2$ where $K_1 < K_2$</p>
+            <div class="math">
+                $$\text{Max Profit} = K_2 - K_1 - \text{Net Premium}$$
+                $$\text{Max Loss} = \text{Net Premium Paid}$$
+            </div>
+
+            <h4>Bear Put Spread</h4>
+            <p>Buy put at strike $K_2$, sell put at strike $K_1$ where $K_1 < K_2$</p>
+            <div class="math">
+                $$\text{Max Profit} = K_2 - K_1 - \text{Net Premium}$$
+                $$\text{Max Loss} = \text{Net Premium Paid}$$
+            </div>
+
+            <h3>8.3 Volatility Strategies</h3>
+            
+            <h4>Long Straddle</h4>
+            <p>Buy call and put with same strike and expiration</p>
+            <div class="math">
+                $$\text{Payoff} = \max(S_T - K, 0) + \max(K - S_T, 0) - (C + P)$$
+            </div>
+            <ul>
+                <li>Profits from large moves in either direction</li>
+                <li>Expensive due to buying both options</li>
+                <li>Time decay works against position</li>
+            </ul>
+
+            <h4>Long Strangle</h4>
+            <p>Buy OTM call and OTM put with different strikes</p>
+            <ul>
+                <li>Cheaper than straddle</li>
+                <li>Requires larger move to profit</li>
+                <li>Popular before earnings or events</li>
+            </ul>
+
+            <h3>8.4 Advanced Strategies</h3>
+            
+            <h4>Iron Condor</h4>
+            <p>Sell OTM call spread + Sell OTM put spread</p>
+            <ul>
+                <li>Profits from low volatility</li>
+                <li>Limited risk and reward</li>
+                <li>Popular for income generation</li>
+            </ul>
+
+            <h4>Butterfly Spread</h4>
+            <p>Buy 1 ITM call, sell 2 ATM calls, buy 1 OTM call</p>
+            <div class="math">
+                $$\text{Max Profit at } S_T = K_{middle}$$
+            </div>
+            <ul>
+                <li>Low cost, limited risk</li>
+                <li>Profits from minimal movement</li>
+                <li>Narrow profit zone</li>
+            </ul>
+
+            <h3>8.5 Strategy Selection Framework</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Market View</th>
+                        <th>Volatility View</th>
+                        <th>Recommended Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bullish</td>
+                        <td>Low</td>
+                        <td>Bull call spread</td>
+                    </tr>
+                    <tr>
+                        <td>Bearish</td>
+                        <td>Low</td>
+                        <td>Bear put spread</td>
+                    </tr>
+                    <tr>
+                        <td>Neutral</td>
+                        <td>High</td>
+                        <td>Short straddle/strangle</td>
+                    </tr>
+                    <tr>
+                        <td>Uncertain</td>
+                        <td>Rising</td>
+                        <td>Long straddle/strangle</td>
+                    </tr>
+                    <tr>
+                        <td>Neutral</td>
+                        <td>Falling</td>
+                        <td>Iron condor</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section" id="section-8">
+            <h2>9. Interactive Pricing Calculators</h2>
+            
+            <div class="calculator">
+                <h3>Forward Price Calculator</h3>
+                
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="spotPrice">Spot Price ($)</label>
+                        <input type="number" id="spotPrice" value="100" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="riskFreeRate">Risk-Free Rate (%)</label>
+                        <input type="number" id="riskFreeRate" value="5" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="timeToMaturity">Time to Maturity (years)</label>
+                        <input type="number" id="timeToMaturity" value="0.25" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="dividendYield">Dividend Yield (%)</label>
+                        <input type="number" id="dividendYield" value="2" step="0.01">
+                    </div>
+                </div>
+                
+                <button onclick="calculateForwardPrice()">Calculate Forward Price</button>
+                
+                <div id="forwardResult" class="result">
+                    <h4>Results</h4>
+                    <div id="forwardPriceOutput"></div>
+                    <div id="forwardPremium"></div>
+                    <div id="costOfCarry"></div>
+                </div>
+            </div>
+
+            <div class="calculator" style="margin-top: 3rem;">
+                <h3>Black-Scholes Option Calculator</h3>
+                
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="bsSpot">Spot Price ($)</label>
+                        <input type="number" id="bsSpot" value="100" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="bsStrike">Strike Price ($)</label>
+                        <input type="number" id="bsStrike" value="100" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="bsRate">Risk-Free Rate (%)</label>
+                        <input type="number" id="bsRate" value="5" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="bsTime">Time to Expiry (years)</label>
+                        <input type="number" id="bsTime" value="0.25" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="bsVolatility">Volatility (%)</label>
+                        <input type="number" id="bsVolatility" value="20" step="0.01">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="bsDividend">Dividend Yield (%)</label>
+                        <input type="number" id="bsDividend" value="0" step="0.01">
+                    </div>
+                </div>
+                
+                <button onclick="calculateBlackScholes()">Calculate Option Prices</button>
+                
+                <div id="bsResult" class="result">
+                    <h4>Option Prices</h4>
+                    <div id="callPrice"></div>
+                    <div id="putPrice"></div>
+                    
+                    <h4 style="margin-top: 1.5rem;">Greeks</h4>
+                    <div id="greeksOutput"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="section-9">
+            <h2>10. Risk Management and Practical Applications</h2>
+            
+            <h3>10.1 Portfolio Risk Management</h3>
+            
+            <h4>Value at Risk (VaR)</h4>
+            <p>VaR measures the potential loss in value of a portfolio over a defined period for a given confidence interval.</p>
+            
+            <div class="math">
+                $$\text{VaR}_{\alpha} = -\inf\{x : P(L \leq x) \geq \alpha\}$$
+            </div>
+            
+            <p>Common methods:</p>
+            <ul>
+                <li><strong>Historical Simulation:</strong> Use actual historical returns</li>
+                <li><strong>Variance-Covariance:</strong> Assume normal distribution</li>
+                <li><strong>Monte Carlo:</strong> Simulate thousands of scenarios</li>
+            </ul>
+
+            <h3>10.2 Dynamic Hedging</h3>
+            
+            <div class="example">
+                <strong>Delta Hedging Example</strong><br>
+                A market maker sells 100 call options with delta = 0.6:
+                <ol>
+                    <li>Initial hedge: Buy 60 shares (100 × 0.6)</li>
+                    <li>Stock rises, new delta = 0.7</li>
+                    <li>Adjustment: Buy 10 more shares (100 × 0.1)</li>
+                    <li>Continue rebalancing as delta changes</li>
+                </ol>
+                
+                <strong>Challenges:</strong>
+                <ul>
+                    <li>Transaction costs erode profits</li>
+                    <li>Discrete rebalancing introduces error</li>
+                    <li>Gamma risk between rebalances</li>
+                </ul>
+            </div>
+
+            <h3>10.3 Practical Examples</h3>
+            
+            <h4>Example 1: Currency Hedging for Corporations</h4>
+            <div class="example">
+                <strong>Scenario:</strong> US company expects €10 million payment in 90 days<br>
+                <strong>Risk:</strong> Euro depreciation<br>
+                <strong>Current Rate:</strong> 1.20 USD/EUR<br>
+                <strong>Forward Rate:</strong> 1.195 USD/EUR<br><br>
+                
+                <strong>Strategy Options:</strong>
+                <ol>
+                    <li><strong>Forward Contract:</strong> Lock in $11.95 million</li>
+                    <li><strong>Put Options:</strong> Buy right to sell at 1.19, premium cost $50,000</li>
+                    <li><strong>Collar:</strong> Buy 1.18 put, sell 1.22 call, net cost $10,000</li>
+                </ol>
+                
+                <strong>Decision Framework:</strong>
+                <ul>
+                    <li>Forward: Complete certainty, no upside</li>
+                    <li>Put: Downside protection, keep upside, costs premium</li>
+                    <li>Collar: Limited protection and upside, lower cost</li>
+                </ul>
+            </div>
+
+            <h4>Example 2: Commodity Producer Hedging</h4>
+            <div class="example">
+                <strong>Scenario:</strong> Oil producer expects 100,000 barrels production in 6 months<br>
+                <strong>Current Price:</strong> $80/barrel<br>
+                <strong>6-month Future:</strong> $82/barrel<br><br>
+                
+                <strong>Hedging Analysis:</strong>
+                <ul>
+                    <li>Unhedged revenue at $70: $7 million</li>
+                    <li>Unhedged revenue at $90: $9 million</li>
+                    <li>Hedged revenue (short futures): $8.2 million regardless</li>
+                </ul>
+                
+                <strong>Advanced Strategy - Three-Way Collar:</strong>
+                <ol>
+                    <li>Buy $75 put (floor protection)</li>
+                    <li>Sell $85 call (cap upside)</li>
+                    <li>Sell $70 put (reduce cost)</li>
+                </ol>
+                Result: Low-cost protection between $75-$85
+            </div>
+
+            <h3>10.4 Common Risk Management Mistakes</h3>
+            
+            <div class="warning-box">
+                <strong>⚠️ Pitfalls to Avoid</strong>
+                <ol>
+                    <li><strong>Over-hedging:</strong> Hedging more than actual exposure</li>
+                    <li><strong>Basis Risk:</strong> Hedge instrument doesn't perfectly match exposure</li>
+                    <li><strong>Liquidity Risk:</strong> Unable to exit positions when needed</li>
+                    <li><strong>Model Risk:</strong> Over-reliance on models like Black-Scholes</li>
+                    <li><strong>Correlation Breakdown:</strong> Historical correlations failing in crisis</li>
+                    <li><strong>Ignoring Costs:</strong> Transaction costs and bid-ask spreads</li>
+                </ol>
+            </div>
+
+            <h3>10.5 Best Practices</h3>
+            
+            <div class="success-box">
+                <strong>✓ Risk Management Best Practices</strong>
+                <ol>
+                    <li>Define clear risk tolerance and objectives</li>
+                    <li>Use multiple risk metrics (VaR, stress testing, scenario analysis)</li>
+                    <li>Regular mark-to-market and position monitoring</li>
+                    <li>Maintain adequate liquidity buffers</li>
+                    <li>Document all hedging strategies and rationales</li>
+                    <li>Regular strategy review and adjustment</li>
+                    <li>Consider tail risks and black swan events</li>
+                    <li>Implement proper controls and governance</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="section-10">
+            <h2>11. Summary and Key Takeaways</h2>
+            
+            <h3>11.1 Essential Concepts Recap</h3>
+            
+            <div class="key-concept">
+                <h4>Derivatives Fundamentals</h4>
+                <ul>
+                    <li>Derivatives derive value from underlying assets</li>
+                    <li>Main types: Forwards/Futures, Options, Swaps</li>
+                    <li>Primary uses: Hedging, Speculation, Arbitrage</li>
+                    <li>Leverage amplifies both gains and losses</li>
+                </ul>
+            </div>
+
+            <h3>11.2 Pricing Principles</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Instrument</th>
+                        <th>Key Pricing Formula</th>
+                        <th>Main Factors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Forward</strong></td>
+                        <td>$F = Se^{(r-q)T}$</td>
+                        <td>Spot, rate, dividends, time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>European Call</strong></td>
+                        <td>$C = SN(d_1) - Ke^{-rT}N(d_2)$</td>
+                        <td>Spot, strike, rate, volatility, time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>European Put</strong></td>
+                        <td>$P = Ke^{-rT}N(-d_2) - SN(-d_1)$</td>
+                        <td>Spot, strike, rate, volatility, time</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>11.3 Risk Management Summary</h3>
+            
+            <div class="greeks-grid">
+                <div class="greek-card">
+                    <h4>Delta Hedging</h4>
+                    <p>Neutralize directional risk</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Gamma Scalping</h4>
+                    <p>Profit from volatility</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Theta Harvesting</h4>
+                    <p>Collect time decay</p>
+                </div>
+                
+                <div class="greek-card">
+                    <h4>Vega Trading</h4>
+                    <p>Volatility speculation</p>
+                </div>
+            </div>
+
+            <h3>11.4 Strategic Framework</h3>
+            
+            <ol>
+                <li><strong>Identify Objective:</strong> Hedging, income, or speculation?</li>
+                <li><strong>Assess Market View:</strong> Direction, volatility, and timing</li>
+                <li><strong>Select Strategy:</strong> Match strategy to view and risk tolerance</li>
+                <li><strong>Size Position:</strong> Consider leverage and risk limits</li>
+                <li><strong>Monitor and Adjust:</strong> Dynamic management based on Greeks</li>
+                <li><strong>Exit Planning:</strong> Define profit targets and stop losses</li>
+            </ol>
+
+            <h3>11.5 Professional Trading Insights</h3>
+            
+            <div class="example">
+                <strong>Market Maker Perspective:</strong>
+                <ul>
+                    <li>Focus on capturing bid-ask spread</li>
+                    <li>Maintain delta-neutral portfolios</li>
+                    <li>Manage inventory risk carefully</li>
+                    <li>Use technology for rapid quoting</li>
+                </ul>
+                
+                <strong>Hedge Fund Strategies:</strong>
+                <ul>
+                    <li>Volatility arbitrage between implied and realized</li>
+                    <li>Dispersion trading across index and components</li>
+                    <li>Event-driven strategies around earnings/M&A</li>
+                    <li>Relative value between related instruments</li>
+                </ul>
+            </div>
+
+            <h3>11.6 Continuing Education</h3>
+            
+            <p><strong>Advanced Topics to Explore:</strong></p>
+            <ul>
+                <li>Exotic options (barriers, lookbacks, Asians)</li>
+                <li>Credit derivatives and CDS</li>
+                <li>Interest rate derivatives and yield curves</li>
+                <li>Volatility derivatives (VIX, variance swaps)</li>
+                <li>Numerical methods (Monte Carlo, finite difference)</li>
+                <li>Machine learning in derivatives pricing</li>
+                <li>Regulatory frameworks (Dodd-Frank, EMIR)</li>
+            </ul>
+
+            <h3>11.7 Final Thoughts</h3>
+            
+            <div class="success-box">
+                <strong>✓ Key Success Factors</strong>
+                <ol>
+                    <li>Master the fundamentals before attempting complex strategies</li>
+                    <li>Always understand your risk before entering a position</li>
+                    <li>Paper trade strategies before risking real capital</li>
+                    <li>Keep learning - markets constantly evolve</li>
+                    <li>Respect leverage - it's a double-edged sword</li>
+                    <li>Focus on risk-adjusted returns, not absolute profits</li>
+                    <li>Develop a systematic approach to trading</li>
+                    <li>Learn from mistakes but don't dwell on them</li>
+                </ol>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Final Warning</strong><br>
+                Derivatives are sophisticated financial instruments that carry substantial risk. This manual provides educational content only. Always consult with qualified financial professionals before making investment decisions. Past performance does not guarantee future results.
+            </div>
+        </div>
+    </div>
+
+    <!-- KaTeX JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+
+    <script>
+        // Intersection Observer for animations
+        const sections = document.querySelectorAll('.section');
+        const mathBlocks = document.querySelectorAll('.math');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Animate math blocks within the section
+                    const sectionMath = entry.target.querySelectorAll('.math');
+                    sectionMath.forEach((math, index) => {
+                        setTimeout(() => {
+                            math.classList.add('visible');
+                        }, index * 200);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // Navigation dots
+        const navObserverOptions = {
+            threshold: 0.5
+        };
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const index = entry.target.id.split('-')[1];
+                    navDots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i == index);
+                    });
+                }
+            });
+        }, navObserverOptions);
+
+        sections.forEach(section => {
+            navObserver.observe(section);
+        });
+
+        // Click navigation
+        navDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Normal distribution CDF approximation
+        function normalCDF(x) {
+            const a1 = 0.254829592;
+            const a2 = -0.284496736;
+            const a3 = 1.421413741;
+            const a4 = -1.453152027;
+            const a5 = 1.061405429;
+            const p = 0.3275911;
+
+            const sign = x < 0 ? -1 : 1;
+            x = Math.abs(x) / Math.sqrt(2.0);
+
+            const t = 1.0 / (1.0 + p * x);
+            const t2 = t * t;
+            const t3 = t2 * t;
+            const t4 = t3 * t;
+            const t5 = t4 * t;
+            const y = 1.0 - (((((a5 * t5 + a4 * t4) + a3 * t3) + a2 * t2) + a1 * t) * Math.exp(-x * x));
+
+            return 0.5 * (1.0 + sign * y);
+        }
+
+        // Normal distribution PDF
+        function normalPDF(x) {
+            return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+        }
+
+        // Forward Price Calculator
+        function calculateForwardPrice() {
+            const spot = parseFloat(document.getElementById('spotPrice').value);
+            const rate = parseFloat(document.getElementById('riskFreeRate').value) / 100;
+            const time = parseFloat(document.getElementById('timeToMaturity').value);
+            const dividend = parseFloat(document.getElementById('dividendYield').value) / 100;
+
+            // Calculate forward price
+            const costOfCarry = rate - dividend;
+            const forwardPrice = spot * Math.exp(costOfCarry * time);
+            const forwardPremium = forwardPrice / spot;
+
+            // Display results
+            const resultDiv = document.getElementById('forwardResult');
+            resultDiv.classList.add('show');
+
+            document.getElementById('forwardPriceOutput').innerHTML =
+                `<p><strong>Forward Price:</strong> $${forwardPrice.toFixed(4)}</p>`;
+
+            document.getElementById('forwardPremium').innerHTML =
+                `<p><strong>Forward Premium:</strong> ${forwardPremium.toFixed(4)} (${((forwardPremium - 1) * 100).toFixed(2)}%)</p>`;
+
+            document.getElementById('costOfCarry').innerHTML =
+                `<p><strong>Cost of Carry Rate:</strong> ${(costOfCarry * 100).toFixed(2)}% p.a.</p>`;
+        }
+
+        // Black-Scholes Calculator
+        function calculateBlackScholes() {
+            const S = parseFloat(document.getElementById('bsSpot').value);
+            const K = parseFloat(document.getElementById('bsStrike').value);
+            const r = parseFloat(document.getElementById('bsRate').value) / 100;
+            const T = parseFloat(document.getElementById('bsTime').value);
+            const sigma = parseFloat(document.getElementById('bsVolatility').value) / 100;
+            const q = parseFloat(document.getElementById('bsDividend').value) / 100;
+
+            // Calculate d1 and d2
+            const d1 = (Math.log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+            const d2 = d1 - sigma * Math.sqrt(T);
+
+            // Calculate option prices
+            const Nd1 = normalCDF(d1);
+            const Nd2 = normalCDF(d2);
+            const Nmd1 = normalCDF(-d1);
+            const Nmd2 = normalCDF(-d2);
+
+            const callPrice = S * Math.exp(-q * T) * Nd1 - K * Math.exp(-r * T) * Nd2;
+            const putPrice = K * Math.exp(-r * T) * Nmd2 - S * Math.exp(-q * T) * Nmd1;
+
+            // Calculate Greeks
+            const phi_d1 = normalPDF(d1);
+            
+            const deltaCall = Math.exp(-q * T) * Nd1;
+            const deltaPut = -Math.exp(-q * T) * Nmd1;
+            
+            const gamma = Math.exp(-q * T) * phi_d1 / (S * sigma * Math.sqrt(T));
+            
+            const thetaCall = -(S * phi_d1 * sigma * Math.exp(-q * T)) / (2 * Math.sqrt(T))
+                            - r * K * Math.exp(-r * T) * Nd2
+                            + q * S * Math.exp(-q * T) * Nd1;
+            const thetaPut = -(S * phi_d1 * sigma * Math.exp(-q * T)) / (2 * Math.sqrt(T))
+                           + r * K * Math.exp(-r * T) * Nmd2
+                           - q * S * Math.exp(-q * T) * Nmd1;
+            
+            const vega = S * Math.exp(-q * T) * phi_d1 * Math.sqrt(T) / 100; // Divided by 100 for 1% change
+            
+            const rhoCall = K * T * Math.exp(-r * T) * Nd2 / 100; // Divided by 100 for 1% change
+            const rhoPut = -K * T * Math.exp(-r * T) * Nmd2 / 100;
+
+            // Display results
+            const resultDiv = document.getElementById('bsResult');
+            resultDiv.classList.add('show');
+
+            document.getElementById('callPrice').innerHTML =
+                `<p><strong>Call Price:</strong> $${callPrice.toFixed(4)}</p>`;
+
+            document.getElementById('putPrice').innerHTML =
+                `<p><strong>Put Price:</strong> $${putPrice.toFixed(4)}</p>`;
+
+            document.getElementById('greeksOutput').innerHTML = `
+                <table style="width: 100%;">
+                    <tr>
+                        <th>Greek</th>
+                        <th>Call</th>
+                        <th>Put</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Delta</strong></td>
+                        <td>${deltaCall.toFixed(4)}</td>
+                        <td>${deltaPut.toFixed(4)}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gamma</strong></td>
+                        <td>${gamma.toFixed(6)}</td>
+                        <td>${gamma.toFixed(6)}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Theta</strong></td>
+                        <td>${(thetaCall / 365).toFixed(4)}</td>
+                        <td>${(thetaPut / 365).toFixed(4)}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vega</strong></td>
+                        <td>${vega.toFixed(4)}</td>
+                        <td>${vega.toFixed(4)}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rho</strong></td>
+                        <td>${rhoCall.toFixed(4)}</td>
+                        <td>${rhoPut.toFixed(4)}</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        // Render KaTeX
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ],
+                throwOnError: false
+            });
+        });
+
+        // Initial animation
+        setTimeout(() => {
+            document.querySelector('#section-0').classList.add('visible');
+        }, 100);
+    </script>
+</body>
+</html>

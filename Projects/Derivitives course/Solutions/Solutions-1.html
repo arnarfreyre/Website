@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-503-AFLE Derivatives - Problem Set I Solutions</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="main-header">
+            <h1>T-503-AFLE Derivatives</h1>
+            <p>Problem Set I - Solutions</p>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="section">
+            <h2>Q1: No-Arbitrage Principle Explanation</h2>
+            
+            <div class="theorem">
+                <h4>Theorem Statement</h4>
+                <p>If two portfolios P₁ and P₂ have:</p>
+                <ul>
+                    <li>Equal risk (same uncertainty/volatility)</li>
+                    <li>Same expected value at future time T</li>
+                </ul>
+                <p>Then they must have the same price at all times t < T</p>
+            </div>
+
+            <div class="proof">
+                <h4>Proof by Contradiction</h4>
+                <p>Assume P₁ and P₂ have different prices at time t < T (say P₁ < P₂).</p>
+                
+                <p><strong>Arbitrage Strategy:</strong></p>
+                <ol>
+                    <li>Buy the cheaper portfolio P₁ (long position)</li>
+                    <li>Sell the expensive portfolio P₂ (short position)</li>
+                    <li>Pocket the immediate profit: P₂ - P₁ > 0</li>
+                </ol>
+                
+                <p><strong>At time T:</strong></p>
+                <ul>
+                    <li>Receive payoff from P₁</li>
+                    <li>Pay the same payoff for P₂ (since they have same value at T)</li>
+                    <li>Net position = 0 at maturity</li>
+                </ul>
+                
+                <p>This creates a <span class="highlight">risk-free profit with zero net investment</span>, which violates the no-arbitrage principle. Market forces would quickly eliminate this opportunity by equalizing prices.</p>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="section">
+            <h2>Q2: Compound Interest Calculation</h2>
+            
+            <div class="example">
+                <h4>Given Information</h4>
+                <ul>
+                    <li>Monthly return: r = 4% = 0.04</li>
+                    <li>Initial amount: P₀ = $100,000</li>
+                    <li>Target amount: P<sub>T</sub> = $300,000</li>
+                </ul>
+            </div>
+
+            <div class="math">
+                <strong>Formula:</strong> P<sub>T</sub> = P₀ × (1 + r)<sup>n</sup>
+            </div>
+
+            <div class="algorithm">
+                <h4>Solution Steps:</h4>
+                <pre>
+300,000 = 100,000 × (1.04)ⁿ
+3 = (1.04)ⁿ
+ln(3) = n × ln(1.04)
+n = ln(3) / ln(1.04)
+n = 1.0986 / 0.0392
+n = 28.02 months</pre>
+            </div>
+
+            <div class="result show">
+                <p><strong>Answer:</strong> It would take approximately <span class="highlight">28 months</span> to turn $100,000 into $300,000.</p>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="section">
+            <h2>Q3: Bond Pricing and Risk Analysis</h2>
+            
+            <div class="example">
+                <h4>Bond Details (Danske Bank - US23636BAQ23)</h4>
+                <table class="comparison-table">
+                    <tr><th>Parameter</th><th>Value</th></tr>
+                    <tr><td>Nominal</td><td>$1,000</td></tr>
+                    <tr><td>Issue Date</td><td>12/6/2018</td></tr>
+                    <tr><td>Maturity Date</td><td>12/6/2028</td></tr>
+                    <tr><td>Currency</td><td>USD</td></tr>
+                    <tr><td>Coupon Yield</td><td>4.375%</td></tr>
+                    <tr><td>Payments per Year</td><td>2 (semi-annual)</td></tr>
+                    <tr><td>Time to Maturity</td><td>10 years</td></tr>
+                    <tr><td>Coupon Amount</td><td>$21.875 per payment</td></tr>
+                    <tr><td>Callable</td><td>No</td></tr>
+                </table>
+            </div>
+
+            <h3>a) Bond Pricing with Given Term Structure</h3>
+            
+            <div class="math">
+                <p><strong>Semi-annual coupon payment:</strong> C = 1000 × 0.04375 / 2 = $21.875</p>
+                <p><strong>Interest Rate Structure:</strong></p>
+                <ul>
+                    <li>For t ≤ 7 years: IR(t) = 4% + 0.000352 × (t - 0.5) × 2</li>
+                    <li>For t > 7 years: IR(t) = 4% + 0.000352 × (7 - 0.5) × 2 = 4.4576%</li>
+                </ul>
+            </div>
+
+            <div class="calculator">
+                <h4>Present Value Calculation Summary</h4>
+                <p>20 semi-annual periods with varying discount rates</p>
+                <p>Using semi-annual compounding: (1 + r/2)^(2×t)</p>
+                <p>Sum of all present values:</p>
+                <div class="result show">
+                    <strong>Bond Price = $994.87</strong>
+                </div>
+                <p class="note">Note: Semi-annual compounding is standard for bonds with semi-annual coupons</p>
+            </div>
+
+            <h3>b) Bond Pricing with Flat 5% Interest Rate</h3>
+            
+            <div class="math">
+                <p><strong>Formula:</strong> PV = Σ[21.875 / (1.025)<sup>t</sup>] + 1000 / (1.025)<sup>20</sup></p>
+            </div>
+
+            <div class="algorithm">
+                <h4>Calculation:</h4>
+                <pre>
+PV_coupons = 21.875 × [(1 - (1.025)⁻²⁰) / 0.025]
+PV_coupons = 21.875 × 15.589 = $341.01
+
+PV_principal = 1000 / (1.025)²⁰ = $610.27</pre>
+            </div>
+
+            <div class="result show">
+                <strong>Bond Price = $951.28</strong>
+            </div>
+
+            <h3>c) Effective Duration Calculation</h3>
+            
+            <div class="theorem">
+                <h4>Duration Formula</h4>
+                <p>Effective Duration = (PV₋ - PV₊) / (2 × PV₀ × Δr)</p>
+                <p>Where Δr = 0.0001 (1 basis point)</p>
+            </div>
+
+            <div class="algorithm">
+                <h4>Calculation Steps:</h4>
+                <pre>
+Initial bond value (PV₀) = $951.28
+
+Rate down (4.99%): PV₋ = $952.04
+Rate up (5.01%): PV₊ = $950.53
+
+Duration = (952.04 - 950.53) / (2 × 951.28 × 0.0001)
+Duration = 1.51 / 0.19026 = 7.95</pre>
+            </div>
+
+            <div class="result show">
+                <p><strong>Effective Duration = 7.95</strong></p>
+                <p>The bond price changes by 7.95% for a 1% change in interest rates</p>
+                <p class="note">Additional measures: Macaulay Duration = 8.15 years, Modified Duration = 7.76</p>
+            </div>
+
+            <h3>d) Expected Credit Loss (ECL) Calculation</h3>
+            
+            <div class="example">
+                <h4>Given Parameters</h4>
+                <ul>
+                    <li>EAD (Exposure at Default) = ISK 8 billion</li>
+                    <li>PD (Probability of Default) = 2.3% = 0.023</li>
+                    <li>LGD (Loss Given Default) = 60% = 0.60</li>
+                </ul>
+            </div>
+
+            <div class="math">
+                <p><strong>ECL Formula:</strong> ECL = EAD × PD × LGD</p>
+            </div>
+
+            <div class="algorithm">
+                <pre>
+ECL = 8,000,000,000 × 0.023 × 0.60
+ECL = ISK 110,400,000</pre>
+            </div>
+
+            <div class="result show">
+                <strong>Expected Credit Loss = ISK 110.4 million</strong>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="section">
+            <h2>Q4: Python Implementation Framework</h2>
+            
+            <h3>a) AAPL Volatility Calculation</h3>
+            
+            <div class="algorithm">
+                <h4>Implementation Steps:</h4>
+                <pre>
+import yfinance as yf
+import numpy as np
+
+# 1. Fetch 1 year of AAPL data
+data = yf.download('AAPL', period='1y')
+
+# 2. Calculate daily log returns
+returns = np.log(data['Close'] / data['Close'].shift(1))
+
+# 3. Calculate standard deviation
+daily_vol = returns.std()
+
+# 4. Annualize volatility
+annual_vol = daily_vol × np.sqrt(252)</pre>
+            </div>
+
+            <div class="theorem">
+                <h4>Formulas</h4>
+                <p><strong>Log returns:</strong> r<sub>t</sub> = ln(P<sub>t</sub> / P<sub>t-1</sub>)</p>
+                <p><strong>Annualized volatility:</strong> σ<sub>annual</sub> = σ<sub>daily</sub> × √252</p>
+            </div>
+
+            <div class="result show">
+                <p><strong>Expected output:</strong> Annualized volatility ≈ 20-30% (typical for AAPL)</p>
+            </div>
+
+            <h3>b) MSFT Moving Averages Analysis</h3>
+            
+            <div class="algorithm">
+                <h4>Implementation Steps:</h4>
+                <pre>
+# 1. Fetch 4 years MSFT data
+data = yf.download('MSFT', period='4y')
+
+# 2. Calculate moving averages
+MA5 = data['Close'].rolling(window=5).mean()
+MA20 = data['Close'].rolling(window=20).mean()
+MA40 = data['Close'].rolling(window=40).mean()
+
+# 3. Plot all series on same chart</pre>
+            </div>
+
+            <div class="example">
+                <h4>Key Observations</h4>
+                <ul>
+                    <li>Longer period MAs have greater lag (40-day lags more than 5-day)</li>
+                    <li><strong>Golden Cross:</strong> 20-day crosses above 40-day = bullish signal</li>
+                    <li><strong>Death Cross:</strong> 20-day crosses below 40-day = bearish signal</li>
+                </ul>
+            </div>
+
+            <h3>c) S&P 500 Overnight vs Intraday Strategy</h3>
+            
+            <div class="algorithm">
+                <h4>Implementation Steps:</h4>
+                <pre>
+# 1. Fetch 2 years S&P 500 data
+data = yf.download('^GSPC', period='2y')
+
+# 2. Calculate returns
+r_overnight = (data['Open'] - data['Close'].shift(1)) / data['Close'].shift(1)
+r_intraday = (data['Close'] - data['Open']) / data['Open']
+
+# 3. Calculate cumulative returns
+Cum_overnight = (1 + r_overnight).cumprod() - 1
+Cum_intraday = (1 + r_intraday).cumprod() - 1</pre>
+            </div>
+
+            <div class="theorem">
+                <h4>Expected Finding</h4>
+                <p>Historically, overnight returns have outperformed intraday returns due to:</p>
+                <ul>
+                    <li>After-hours news processing</li>
+                    <li>Lower volatility during overnight periods</li>
+                    <li>Risk premium for holding overnight positions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize KaTeX
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+
+            // Animate sections on scroll
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Animate math blocks
+            const mathBlocks = document.querySelectorAll('.math');
+            mathBlocks.forEach(block => {
+                observer.observe(block);
+            });
+        });
+    </script>
+</body>
+</html>

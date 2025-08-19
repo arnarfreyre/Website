@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derivatives Course - Financial Engineering</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-header">
+            <h1>Derivatives: Financial Engineering</h1>
+            <p>A comprehensive mathematical treatment of derivative instruments, pricing theory, and risk management</p>
+            
+            <!-- Navigation tabs -->
+            <div class="nav-tabs">
+                <a href="index.html" class="nav-tab active">Study Materials</a>
+                <a href="problem-sets.html" class="nav-tab">Problem Sets</a>
+            </div>
+        </div>
+
+        <div class="chapter-grid">
+            <!-- Chapter 1: Available -->
+            <a href="Chapters/Chapter1.html" class="chapter-card">
+                <h3>Chapter 1: Futures & Forwards</h3>
+                <p>
+                    Mathematical foundations of futures and forwards contracts. Covers no-arbitrage pricing, 
+                    valuation models, margin mechanics, optimal hedging strategies, and interest rate futures.
+                </p>
+                <span class="chapter-status status-available">Available</span>
+            </a>
+
+            <!-- Chapter 2: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 2: Options Fundamentals</h3>
+                <p>
+                    Introduction to options pricing, payoff structures, put-call parity, and basic strategies. 
+                    Binomial models and introduction to Black-Scholes framework.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 3: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 3: Black-Scholes Model</h3>
+                <p>
+                    Stochastic calculus foundations, derivation of Black-Scholes PDE, risk-neutral valuation, 
+                    and the Greeks. Numerical methods for option pricing.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 4: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 4: Exotic Options</h3>
+                <p>
+                    Path-dependent options, barrier options, Asian options, and lookback options. 
+                    Monte Carlo simulation and advanced pricing techniques.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 5: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 5: Interest Rate Derivatives</h3>
+                <p>
+                    Caps, floors, and swaptions. Term structure models, short rate models, 
+                    and the Heath-Jarrow-Morton framework.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 6: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 6: Credit Derivatives</h3>
+                <p>
+                    Credit default swaps, collateralized debt obligations, and credit risk modeling. 
+                    Copula methods and correlation trading.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 7: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 7: Volatility Derivatives</h3>
+                <p>
+                    Variance swaps, volatility swaps, and VIX derivatives. Stochastic volatility models 
+                    and volatility surface dynamics.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 8: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 8: Risk Management</h3>
+                <p>
+                    Value at Risk, Expected Shortfall, and stress testing. Portfolio optimization, 
+                    dynamic hedging strategies, and regulatory frameworks.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+
+            <!-- Chapter 9: Coming Soon -->
+            <div class="chapter-card" style="opacity: 0.7; cursor: not-allowed;">
+                <h3>Chapter 9: Cryptocurrency Derivatives</h3>
+                <p>
+                    Bitcoin futures, perpetual swaps, and DeFi derivatives. Unique challenges 
+                    in crypto markets and decentralized derivative protocols.
+                </p>
+                <span class="chapter-status status-coming-soon">Coming Soon</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #ddd;">
+            <h2 style="border-bottom: none; font-size: 1.4em; color: #666;">Course Resources</h2>
+            <p style="color: #666;">
+                This course provides a rigorous mathematical treatment of derivative instruments used in modern finance. 
+                Each chapter includes theoretical foundations, practical examples, and interactive calculators to 
+                reinforce learning.
+            </p>
+            <p style="color: #666;">
+                Prerequisites: Calculus, probability theory, and basic understanding of financial markets.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth fade-in animation when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.chapter-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = card.classList.contains('chapter-card') && !card.hasAttribute('href') ? '0.7' : '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
