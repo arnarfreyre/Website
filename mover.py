@@ -15,6 +15,7 @@ from typing import Dict, List, Optional
 BASE_DIR = Path(__file__).parent
 PROJECTS_DIR = BASE_DIR / "Projects"
 PROJECTS_JSON = BASE_DIR / "projects.json"
+PROJECT_CONFIG = BASE_DIR / "project_config.json"
 
 # Exclude these from being added to projects.json
 EXCLUDE_DIRS = {'.git', '__pycache__', 'node_modules', '_cleanup_archive', 'dev', 'test', 'debug', 'utils', 'CSS', 'Games', 'audio', 'css', 'js'}
@@ -217,8 +218,15 @@ def get_technologies(folder_name: str, files: List[str]) -> List[str]:
     
     return tech
 
-def find_main_file(project_path: Path) -> Optional[str]:
+def find_main_file(project_path: Path, project_name: str, config: Dict) -> Optional[str]:
     """Find the main HTML file for a project"""
+    # Check if project has a configured main file
+    project_settings = config.get("project_settings", {})
+    if project_name in project_settings:
+        configured_main = project_settings[project_name].get("main_file")
+        if configured_main and (project_path / configured_main).exists():
+            return configured_main
+    
     # Priority order for main files
     priority_files = ['index.html', 'Main.html', 'main.html', 'home.html']
     
@@ -238,12 +246,37 @@ def find_main_file(project_path: Path) -> Optional[str]:
     
     return None
 
-def has_multiple_subprojects(project_path: Path) -> bool:
+def load_project_config() -> Dict:
+    """Load project configuration from JSON file"""
+    if PROJECT_CONFIG.exists():
+        with open(PROJECT_CONFIG, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {"project_settings": {}, "default_settings": {"needs_main": True, "subproject_threshold": 2}}
+
+def should_create_main_html(project_path: Path, project_name: str, config: Dict) -> bool:
+    """Determine if a project needs a Main.html file based on configuration"""
+    project_settings = config.get("project_settings", {})
+    default_settings = config.get("default_settings", {})
+    
+    # Check if project has specific configuration
+    if project_name in project_settings:
+        needs_main = project_settings[project_name].get("needs_main", default_settings.get("needs_main", True))
+        if not needs_main:
+            print(f"  Config: {project_name} set to not need Main.html")
+            return False
+    
+    # If needs_main is True or not specified, check for multiple subprojects
+    return has_multiple_subprojects(project_path, config)
+
+def has_multiple_subprojects(project_path: Path, config: Dict) -> bool:
     """Check if a project has multiple HTML files that could be subprojects"""
     html_files = list(project_path.glob('*.html'))
     
-    # Filter out common utility/admin files
-    exclude_patterns = ['test', 'debug', 'admin', 'login', 'setup', 'accounts', 'index', 'main']
+    # Get exclude patterns from config or use defaults
+    default_settings = config.get("default_settings", {})
+    exclude_patterns = default_settings.get("exclude_patterns", 
+                                           ['test', 'debug', 'admin', 'login', 'setup', 'accounts', 'index', 'main'])
+    threshold = default_settings.get("subproject_threshold", 2)
     
     subproject_files = []
     for html_file in html_files:
@@ -251,7 +284,7 @@ def has_multiple_subprojects(project_path: Path) -> bool:
         if not any(pattern in name_lower for pattern in exclude_patterns):
             subproject_files.append(html_file)
     
-    return len(subproject_files) > 2  # More than 2 non-utility HTML files suggests subprojects
+    return len(subproject_files) > threshold  # More than threshold non-utility HTML files suggests subprojects
 
 def create_main_html(project_path: Path, project_name: str):
     """Create a Main.html file for projects with multiple subprojects"""
@@ -442,6 +475,10 @@ def scan_projects() -> List[Dict]:
     """Scan the Projects directory and generate project entries"""
     projects = []
     
+    # Load project configuration
+    config = load_project_config()
+    print(f"Loaded configuration from {PROJECT_CONFIG}\n")
+    
     if not PROJECTS_DIR.exists():
         print(f"Projects directory not found: {PROJECTS_DIR}")
         return projects
@@ -465,13 +502,27 @@ def scan_projects() -> List[Dict]:
                     all_files.append(file)
         
         # Find main file
-        main_file = find_main_file(folder)
+        main_file = find_main_file(folder, folder.name, config)
         if not main_file:
             print(f"  Warning: No main HTML file found for {folder.name}")
             continue
         
-        # Check if we need to create Main.html
-        if has_multiple_subprojects(folder) and main_file != 'Main.html':
+        # Check if project should be displayed
+        project_settings = config.get("project_settings", {})
+        default_settings = config.get("default_settings", {})
+        
+        # Check if project is configured to be displayed
+        if folder.name in project_settings:
+            displayed = project_settings[folder.name].get("displayed", default_settings.get("displayed", True))
+        else:
+            displayed = default_settings.get("displayed", True)
+        
+        if not displayed:
+            print(f"  Skipping: {folder.name} (displayed=false in config)")
+            continue
+        
+        # Check if we need to create Main.html based on configuration
+        if should_create_main_html(folder, folder.name, config) and main_file != 'Main.html':
             create_main_html(folder, get_project_title(folder.name))
             main_file = 'Main.html'  # Use the newly created Main.html
         

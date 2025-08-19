@@ -1,0 +1,50 @@
+{
+  "project_settings": {
+    "PlatformerGame": {
+      "needs_main": false,
+      "displayed": true,
+      "description": "Platformer game doesn't need a Main.html since it has its own index.html",
+      "main_file": "index.html"
+    },
+    "Minigames": {
+      "needs_main": true,
+      "displayed": true,
+      "description": "Collection of multiple games, needs Main.html for navigation"
+    },
+    "Math visuals": {
+      "needs_main": true,
+      "displayed": true,
+      "description": "Collection of math visualizations, needs Main.html for navigation"
+    },
+    "Drinking SImulator": {
+      "needs_main": false,
+      "displayed": false,
+      "description": "Single game application - hidden from portfolio",
+      "main_file": "index.html"
+    },
+    "Tree Website": {
+      "needs_main": false,
+      "displayed": true,
+      "description": "Single application with its own navigation",
+      "main_file": "index.html"
+    },
+    "Voice to text": {
+      "needs_main": false,
+      "displayed": true,
+      "description": "Single application",
+      "main_file": "index.html"
+    },
+    "Derivitives course": {
+      "needs_main": true,
+      "displayed": true,
+      "description": "Course with multiple components"
+    }
+  },
+  "default_settings": {
+    "needs_main": true,
+    "displayed": true,
+    "description": "Default: create Main.html for projects with multiple HTML files",
+    "subproject_threshold": 2,
+    "exclude_patterns": ["test", "debug", "admin", "login", "setup", "accounts", "index", "main"]
+  }
+}
