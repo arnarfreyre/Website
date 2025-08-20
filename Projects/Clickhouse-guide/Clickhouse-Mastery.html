@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickHouse Tables Guide</title>
+    <style>
+        :root {
+            --primary: #1e3a5f;    /* Deep blue */
+            --secondary: #ff6b35;   /* Vibrant orange */
+            --accent: #f0f4f8;      /* Light gray-blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--primary);
+            background: linear-gradient(135deg, var(--accent) 0%, white 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--primary);
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(30, 58, 95, 0.1);
+            animation: fadeIn 0.6s ease;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary);
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .code-block {
+            background: var(--accent);
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block:hover {
+            transform: translateX(5px);
+            transition: transform 0.3s ease;
+        }
+
+        .keyword {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .type {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .string {
+            color: #059862;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+
+        .tip {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(30, 58, 95, 0.1));
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .tip::before {
+            content: "💡 Tip: ";
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .comparison-table th {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--accent);
+        }
+
+        .interactive-demo {
+            background: var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .demo-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(30, 58, 95, 0.2);
+        }
+
+        #demo-output {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-family: monospace;
+            min-height: 60px;
+            display: none;
+        }
+
+        .tab-container {
+            margin: 1.5rem 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: -1px;
+        }
+
+        .tab {
+            background: var(--accent);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .tab-content {
+            background: white;
+            border: 2px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 8px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, transparent 0%, rgba(255, 107, 53, 0.2) 50%, transparent 100%);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        .skeleton-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(30, 58, 95, 0.2);
+        }
+
+        .skeleton-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(30, 58, 95, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ClickHouse Tables Mastery</h1>
+            <p class="subtitle">CREATE TABLE & INSERT Operations Guide</p>
+            <button class="skeleton-btn" onclick="openSkeletons()">
+                📋 Open Table Skeletons
+            </button>
+        </header>
+
+        <div class="section">
+            <h2>Understanding ClickHouse Tables</h2>
+            <p>ClickHouse is a columnar database optimized for analytical queries. While it shares SQL syntax with traditional databases, it introduces powerful concepts like <span class="highlight">table engines</span> that determine how data is stored, indexed, and queried.</p>
+
+            <div class="tip">
+                Unlike traditional SQL databases, ClickHouse requires you to specify a table engine. The engine determines the table's behavior, performance characteristics, and features.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Basic CREATE TABLE Syntax</h2>
+
+            <h3>The Foundation</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><span class="keyword">CREATE TABLE</span> <span class="string">table_name</span> (
+    column_name1 <span class="type">DataType1</span>,
+    column_name2 <span class="type">DataType2</span>,
+    ...
+) <span class="keyword">ENGINE</span> = EngineName()
+<span class="keyword">ORDER BY</span> (column_name);</pre>
+            </div>
+
+            <h3>Your Example Explained</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><span class="keyword">CREATE TABLE</span> <span class="string">products</span> (
+    id <span class="type">UInt32</span>,        <span style="color: #666;">-- Unsigned 32-bit integer</span>
+    name <span class="type">String</span>,      <span style="color: #666;">-- Variable-length string</span>
+    price <span class="type">Float64</span>     <span style="color: #666;">-- 64-bit floating point</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">ORDER BY</span> id;</pre>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Purpose</th>
+                        <th>ClickHouse Specific?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CREATE TABLE</strong></td>
+                        <td>Standard SQL table creation</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>UInt32, Float64</strong></td>
+                        <td>Precise data types for optimization</td>
+                        <td>Yes - More specific than SQL's INT/FLOAT</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ENGINE</strong></td>
+                        <td>Defines storage and query behavior</td>
+                        <td>Yes - Unique to ClickHouse</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ORDER BY</strong></td>
+                        <td>Physical data sorting on disk</td>
+                        <td>Yes - Not just for queries, but storage</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>MergeTree Engine Deep Dive</h2>
+
+            <p>MergeTree is ClickHouse's most powerful and commonly used engine family. It provides:</p>
+            <ul>
+                <li>📊 <strong>Sorted storage</strong> - Data physically sorted by ORDER BY columns</li>
+                <li>🔍 <strong>Primary indexes</strong> - Automatic sparse indexing for fast queries</li>
+                <li>🗜️ <strong>Data compression</strong> - Columnar storage with excellent compression</li>
+                <li>🔄 <strong>Background merges</strong> - Continuously optimizes data storage</li>
+            </ul>
+
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(event, 'basic')">Basic</button>
+                    <button class="tab" onclick="switchTab(event, 'partition')">With Partitions</button>
+                    <button class="tab" onclick="switchTab(event, 'advanced')">Advanced</button>
+                </div>
+
+                <div id="basic" class="tab-content active">
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">events</span> (
+    event_date <span class="type">Date</span>,
+    user_id <span class="type">UInt64</span>,
+    event_type <span class="type">String</span>,
+    value <span class="type">Float32</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">ORDER BY</span> (event_date, user_id);</pre>
+                    </div>
+                    <p><strong>Key Point:</strong> ORDER BY with multiple columns creates a compound sorting key. Queries filtering by event_date will be very fast!</p>
+                </div>
+
+                <div id="partition" class="tab-content">
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">metrics</span> (
+    timestamp <span class="type">DateTime</span>,
+    metric_name <span class="type">String</span>,
+    value <span class="type">Float64</span>,
+    tags <span class="type">Array(String)</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(timestamp)
+<span class="keyword">ORDER BY</span> (metric_name, timestamp);</pre>
+                    </div>
+                    <p><strong>Key Point:</strong> PARTITION BY creates separate data folders. Old partitions can be dropped instantly without scanning data!</p>
+                </div>
+
+                <div id="advanced" class="tab-content">
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">user_actions</span> (
+    user_id <span class="type">UInt64</span>,
+    action_time <span class="type">DateTime</span>,
+    action_type <span class="type">Enum8</span>('click' = 1, 'view' = 2, 'purchase' = 3),
+    product_id <span class="type">UInt64</span>,
+    revenue <span class="type">Decimal64(2)</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(action_time)
+<span class="keyword">ORDER BY</span> (user_id, action_time)
+<span class="keyword">PRIMARY KEY</span> user_id
+<span class="keyword">SETTINGS</span> index_granularity = 8192;</pre>
+                    </div>
+                    <p><strong>Key Points:</strong></p>
+                    <ul>
+                        <li>PRIMARY KEY can differ from ORDER BY (must be a prefix)</li>
+                        <li>Enum8 saves space vs String for categorical data</li>
+                        <li>Decimal64(2) for precise monetary values</li>
+                        <li>index_granularity controls index density</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>INSERT Operations</h2>
+
+            <h3>Basic INSERT</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><span class="keyword">INSERT INTO</span> <span class="string">products</span> (id, name, price)
+<span class="keyword">VALUES</span>
+    (1, 'Laptop', 999.99),
+    (2, 'Mouse', 29.99),
+    (3, 'Keyboard', 79.99);</pre>
+            </div>
+
+            <h3>INSERT with SELECT</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><span class="keyword">INSERT INTO</span> <span class="string">products_backup</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> products
+<span class="keyword">WHERE</span> price > 50;</pre>
+            </div>
+
+            <h3>INSERT with FORMAT</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><span class="keyword">INSERT INTO</span> <span class="string">products</span> <span class="keyword">FORMAT</span> <span class="type">CSV</span>
+4,"Monitor",299.99
+5,"SSD Drive",149.99
+6,"RAM Module",89.99</pre>
+            </div>
+
+            <div class="tip">
+                ClickHouse performs best with bulk inserts (>1000 rows). Avoid single-row inserts in production. Use batching or buffering mechanisms!
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Common Data Types</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>ClickHouse Type</th>
+                        <th>SQL Equivalent</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3"><strong>Integers</strong></td>
+                        <td>UInt8, UInt16, UInt32, UInt64</td>
+                        <td>UNSIGNED INT</td>
+                        <td>IDs, counts, positive numbers</td>
+                    </tr>
+                    <tr>
+                        <td>Int8, Int16, Int32, Int64</td>
+                        <td>INT, BIGINT</td>
+                        <td>Signed numbers, differences</td>
+                    </tr>
+                    <tr>
+                        <td>UInt256</td>
+                        <td>-</td>
+                        <td>Blockchain, cryptography</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>Decimals</strong></td>
+                        <td>Float32, Float64</td>
+                        <td>FLOAT, DOUBLE</td>
+                        <td>Scientific data, ratios</td>
+                    </tr>
+                    <tr>
+                        <td>Decimal32(S), Decimal64(S)</td>
+                        <td>DECIMAL</td>
+                        <td>Money, precise calculations</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>Strings</strong></td>
+                        <td>String</td>
+                        <td>VARCHAR, TEXT</td>
+                        <td>Variable-length text</td>
+                    </tr>
+                    <tr>
+                        <td>FixedString(N)</td>
+                        <td>CHAR(N)</td>
+                        <td>Fixed-length codes, hashes</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><strong>Dates</strong></td>
+                        <td>Date, Date32</td>
+                        <td>DATE</td>
+                        <td>Calendar dates</td>
+                    </tr>
+                    <tr>
+                        <td>DateTime, DateTime64</td>
+                        <td>TIMESTAMP</td>
+                        <td>Timestamps with time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Special</strong></td>
+                        <td>Array(T), Tuple, Map</td>
+                        <td>-</td>
+                        <td>Complex nested data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Interactive Demo</h2>
+
+            <div class="interactive-demo">
+                <p><strong>Try these examples to see ClickHouse syntax in action:</strong></p>
+                <button class="demo-btn" onclick="showExample('create')">Show CREATE</button>
+                <button class="demo-btn" onclick="showExample('insert')">Show INSERT</button>
+                <button class="demo-btn" onclick="showExample('complex')">Show Complex Table</button>
+                <button class="demo-btn" onclick="showExample('best')">Best Practices</button>
+
+                <div id="demo-output"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Best Practices Summary</h2>
+
+            <ul>
+                <li>✅ <strong>Choose ORDER BY wisely</strong> - It's your primary query optimization</li>
+                <li>✅ <strong>Use appropriate data types</strong> - UInt64 for IDs, DateTime for timestamps</li>
+                <li>✅ <strong>Batch your inserts</strong> - Aim for 10K-1M rows per INSERT</li>
+                <li>✅ <strong>Consider partitioning</strong> - For time-series data, partition by month/day</li>
+                <li>✅ <strong>Use PRIMARY KEY</strong> - When different from ORDER BY for optimization</li>
+                <li>❌ <strong>Avoid many small inserts</strong> - They create too many parts</li>
+                <li>❌ <strong>Don't over-partition</strong> - Too many partitions hurt performance</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function openSkeletons() {
+            window.location.href = 'clickhouse-skeletons.html';
+        }
+
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement.querySelector('pre');
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text);
+
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.style.background = '#059862';
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        function switchTab(event, tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function showExample(type) {
+            const output = document.getElementById('demo-output');
+            output.style.display = 'block';
+
+            const examples = {
+                'create': `<span class="keyword">CREATE TABLE</span> <span class="string">sales_data</span> (
+    sale_id <span class="type">UInt64</span>,
+    sale_date <span class="type">DateTime</span>,
+    customer_id <span class="type">UInt32</span>,
+    product_id <span class="type">UInt32</span>,
+    quantity <span class="type">UInt16</span>,
+    total_amount <span class="type">Decimal64(2)</span>,
+    payment_method <span class="type">Enum8</span>('cash' = 1, 'card' = 2, 'online' = 3)
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(sale_date)
+<span class="keyword">ORDER BY</span> (customer_id, sale_date)
+<span class="keyword">PRIMARY KEY</span> customer_id;`,
+
+                'insert': `<span class="keyword">INSERT INTO</span> <span class="string">sales_data</span>
+    (sale_id, sale_date, customer_id, product_id, quantity, total_amount, payment_method)
+<span class="keyword">VALUES</span>
+    (1001, '2024-01-15 10:30:00', 101, 501, 2, 59.98, 'card'),
+    (1002, '2024-01-15 11:15:00', 102, 502, 1, 29.99, 'online'),
+    (1003, '2024-01-15 14:20:00', 103, 501, 3, 89.97, 'cash');
+
+<span style="color: #666;">-- Or using SELECT for bulk insert:</span>
+<span class="keyword">INSERT INTO</span> <span class="string">sales_summary</span>
+<span class="keyword">SELECT</span>
+    toStartOfDay(sale_date) as day,
+    count() as total_sales,
+    sum(total_amount) as revenue
+<span class="keyword">FROM</span> sales_data
+<span class="keyword">GROUP BY</span> day;`,
+
+                'complex': `<span class="keyword">CREATE TABLE</span> <span class="string">web_analytics</span> (
+    <span style="color: #666;">-- Identifiers</span>
+    event_id <span class="type">UUID</span>,
+    session_id <span class="type">String</span>,
+    user_id <span class="type">Nullable(UInt64)</span>,
+
+    <span style="color: #666;">-- Timestamps</span>
+    event_time <span class="type">DateTime64(3)</span>,
+    event_date <span class="type">Date</span> <span class="keyword">MATERIALIZED</span> toDate(event_time),
+
+    <span style="color: #666;">-- Event data</span>
+    event_type <span class="type">LowCardinality(String)</span>,
+    page_url <span class="type">String</span>,
+    referer_url <span class="type">Nullable(String)</span>,
+
+    <span style="color: #666;">-- User properties</span>
+    browser <span class="type">LowCardinality(String)</span>,
+    os <span class="type">LowCardinality(String)</span>,
+    device_type <span class="type">Enum8</span>('desktop' = 1, 'mobile' = 2, 'tablet' = 3),
+
+    <span style="color: #666;">-- Metrics</span>
+    page_load_time <span class="type">Float32</span>,
+    clicks_count <span class="type">UInt16</span> <span class="keyword">DEFAULT</span> 0,
+
+    <span style="color: #666;">-- Complex types</span>
+    custom_dimensions <span class="type">Map(String, String)</span>,
+    interaction_details <span class="type">Array(Tuple(action String, timestamp DateTime))</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(event_date)
+<span class="keyword">ORDER BY</span> (user_id, event_time)
+<span class="keyword">TTL</span> event_date + <span class="keyword">INTERVAL</span> 90 <span class="keyword">DAY</span>
+<span class="keyword">SETTINGS</span>
+    index_granularity = 8192,
+    enable_mixed_granularity_parts = 1;`,
+
+                'best': `<span style="color: #059862; font-weight: bold;">🎯 Best Practices Example:</span>
+
+<span class="keyword">CREATE TABLE</span> <span class="string">optimized_logs</span> (
+    <span style="color: #666;">-- Use specific integer types for space efficiency</span>
+    log_id <span class="type">UInt64</span>,                    <span style="color: #666;">-- Not just 'Int'</span>
+
+    <span style="color: #666;">-- DateTime64 for microsecond precision when needed</span>
+    timestamp <span class="type">DateTime64(6, 'UTC')</span>,
+
+    <span style="color: #666;">-- LowCardinality for columns with few unique values</span>
+    level <span class="type">LowCardinality(String)</span>,      <span style="color: #666;">-- Better than Enum if values might change</span>
+    service <span class="type">LowCardinality(String)</span>,
+
+    <span style="color: #666;">-- Nullable only when truly needed (has performance cost)</span>
+    error_code <span class="type">Nullable(UInt16)</span>,
+
+    <span style="color: #666;">-- CODEC for compression</span>
+    message <span class="type">String</span> <span class="keyword">CODEC</span>(ZSTD(3)),      <span style="color: #666;">-- Compress large text</span>
+
+    <span style="color: #666;">-- Materialized columns for common calculations</span>
+    hour <span class="type">UInt8</span> <span class="keyword">MATERIALIZED</span> toHour(timestamp),
+    date <span class="type">Date</span> <span class="keyword">MATERIALIZED</span> toDate(timestamp)
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMMDD(date)         <span style="color: #666;">-- Daily partitions for logs</span>
+<span class="keyword">ORDER BY</span> (service, level, timestamp)   <span style="color: #666;">-- Most common query pattern</span>
+<span class="keyword">TTL</span> timestamp + <span class="keyword">INTERVAL</span> 30 <span class="keyword">DAY</span>     <span style="color: #666;">-- Auto-delete old data</span>
+<span class="keyword">SETTINGS</span>
+    index_granularity = 8192,             <span style="color: #666;">-- Default is good for most cases</span>
+    min_bytes_for_wide_part = 10485760;   <span style="color: #666;">-- 10MB threshold for wide parts</span>`
+            };
+
+            output.innerHTML = examples[type];
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

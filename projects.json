@@ -19,16 +19,34 @@
       "icon": "gamepad"
     },
     {
-      "id": "derivitives-course",
-      "title": "Derivatives Course",
-      "description": "Comprehensive course materials for learning derivatives and calculus. Includes formula sheets, problem sets, and interactive examples.",
+      "id": "clickhouse-guide",
+      "title": "Clickhouse-guide",
+      "description": "Explore Clickhouse-guide with interactive features and modern design.",
       "tags": [
+        "Interactive"
+      ],
+      "categories": [
+        "interactive"
+      ],
+      "path": "Projects/Clickhouse-guide/Clickhouse-Mastery.html",
+      "featured": false,
+      "technologies": [
+        "Web"
+      ],
+      "icon": "folder"
+    },
+    {
+      "id": "derivative-course",
+      "title": "Derivative Course",
+      "description": "Educational materials and interactive tools for Derivative Course.",
+      "tags": [
+        "Math",
         "Education"
       ],
       "categories": [
         "education"
       ],
-      "path": "Projects/Derivitives course/index.html",
+      "path": "Projects/Derivative course/index.html",
       "featured": false,
       "technologies": [
         "Education",

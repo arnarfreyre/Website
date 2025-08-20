@@ -34,7 +34,7 @@
       "description": "Single application",
       "main_file": "index.html"
     },
-    "Derivitives course": {
+    "Derivative course": {
       "needs_main": true,
       "displayed": true,
       "description": "Course with multiple components"

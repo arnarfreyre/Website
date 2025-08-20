@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickHouse Table Skeletons</title>
+    <style>
+        :root {
+            --primary: #1e3a5f;    /* Deep blue */
+            --secondary: #ff6b35;   /* Vibrant orange */
+            --accent: #f0f4f8;      /* Light gray-blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--primary);
+            background: linear-gradient(135deg, var(--accent) 0%, white 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--primary);
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(30, 58, 95, 0.2);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(30, 58, 95, 0.3);
+        }
+
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .skeleton-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(30, 58, 95, 0.1);
+            animation: fadeIn 0.6s ease;
+            transition: transform 0.3s ease;
+        }
+
+        .skeleton-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(30, 58, 95, 0.15);
+        }
+
+        .skeleton-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .skeleton-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .use-case {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(30, 58, 95, 0.1));
+            color: var(--secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .skeleton-description {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .code-block {
+            background: var(--accent);
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            position: relative;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .code-block::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .code-block::-webkit-scrollbar-track {
+            background: var(--accent);
+        }
+
+        .code-block::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+
+        .keyword {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .type {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .string {
+            color: #059862;
+        }
+
+        .comment {
+            color: #666;
+            font-style: italic;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-tag {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .category-section {
+            margin-bottom: 3rem;
+        }
+
+        .category-title {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            border-left: 5px solid var(--secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quick-nav {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(30, 58, 95, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .nav-link {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 ClickHouse Table Skeletons</h1>
+            <p class="subtitle">Copy, Paste, Modify - Ready-to-Use Templates</p>
+            <button class="back-btn" onclick="window.location.href='Clickhouse-Mastery.html'">← Back to Guide</button>
+        </header>
+
+        <div class="quick-nav">
+            <div class="nav-links">
+                <a href="#analytics" class="nav-link">📊 Analytics</a>
+                <a href="#timeseries" class="nav-link">⏰ Time Series</a>
+                <a href="#logging" class="nav-link">📝 Logging</a>
+                <a href="#ecommerce" class="nav-link">🛒 E-Commerce</a>
+                <a href="#iot" class="nav-link">🌐 IoT</a>
+                <a href="#financial" class="nav-link">💰 Financial</a>
+            </div>
+        </div>
+
+        <!-- Analytics Tables -->
+        <div id="analytics" class="category-section">
+            <h2 class="category-title">📊 Analytics Tables</h2>
+
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Web Analytics Events</span>
+                        <span class="use-case">User Behavior</span>
+                    </div>
+                    <p class="skeleton-description">Track user interactions, page views, and conversion events with session tracking.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">web_events</span> (
+    <span class="comment">-- Event Identifiers</span>
+    event_id <span class="type">UUID</span> <span class="keyword">DEFAULT</span> generateUUIDv4(),
+    event_timestamp <span class="type">DateTime64(3)</span>,
+    event_date <span class="type">Date</span> <span class="keyword">DEFAULT</span> toDate(event_timestamp),
+
+    <span class="comment">-- User & Session</span>
+    user_id <span class="type">String</span>,
+    session_id <span class="type">String</span>,
+    is_new_user <span class="type">UInt8</span>,
+
+    <span class="comment">-- Event Details</span>
+    event_type <span class="type">LowCardinality(String)</span>, <span class="comment">-- pageview, click, scroll, etc.</span>
+    page_url <span class="type">String</span>,
+    page_title <span class="type">String</span>,
+    referrer_url <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- User Properties</span>
+    country <span class="type">LowCardinality(String)</span>,
+    city <span class="type">String</span>,
+    device_type <span class="type">LowCardinality(String)</span>,
+    browser <span class="type">LowCardinality(String)</span>,
+    os <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Metrics</span>
+    page_load_time_ms <span class="type">UInt32</span>,
+    time_on_page_seconds <span class="type">UInt32</span>,
+    scroll_depth_percent <span class="type">UInt8</span>,
+
+    <span class="comment">-- Custom Properties</span>
+    utm_source <span class="type">Nullable(String)</span>,
+    utm_medium <span class="type">Nullable(String)</span>,
+    utm_campaign <span class="type">Nullable(String)</span>,
+    custom_properties <span class="type">Map(String, String)</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(event_date)
+<span class="keyword">ORDER BY</span> (user_id, event_timestamp)
+<span class="keyword">SAMPLE BY</span> cityHash64(user_id)
+<span class="keyword">TTL</span> event_date + <span class="keyword">INTERVAL</span> 365 <span class="keyword">DAY</span>;</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">UUID Generation</span>
+                        <span class="feature-tag">Session Tracking</span>
+                        <span class="feature-tag">UTM Parameters</span>
+                        <span class="feature-tag">TTL</span>
+                        <span class="feature-tag">Sampling</span>
+                    </div>
+                </div>
+
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Product Analytics</span>
+                        <span class="use-case">Feature Usage</span>
+                    </div>
+                    <p class="skeleton-description">Track feature adoption, user journeys, and product metrics.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">product_events</span> (
+    <span class="comment">-- Core Fields</span>
+    event_id <span class="type">String</span>,
+    user_id <span class="type">UInt64</span>,
+    timestamp <span class="type">DateTime64(3)</span>,
+
+    <span class="comment">-- Product Context</span>
+    product_version <span class="type">LowCardinality(String)</span>,
+    feature_name <span class="type">LowCardinality(String)</span>,
+    action_type <span class="type">Enum8</span>('view' = 1, 'click' = 2, 'submit' = 3, 'error' = 4),
+
+    <span class="comment">-- User Segments</span>
+    user_type <span class="type">LowCardinality(String)</span>, <span class="comment">-- free, premium, enterprise</span>
+    cohort_week <span class="type">Date</span>,
+    account_age_days <span class="type">UInt16</span>,
+
+    <span class="comment">-- Metrics</span>
+    duration_ms <span class="type">UInt32</span>,
+    success <span class="type">UInt8</span>,
+    error_code <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- A/B Testing</span>
+    experiment_id <span class="type">Nullable(String)</span>,
+    variant <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- Nested Data</span>
+    properties <span class="type">Nested</span>(
+        key <span class="type">String</span>,
+        value <span class="type">String</span>
+    )
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toStartOfMonth(timestamp)
+<span class="keyword">ORDER BY</span> (feature_name, user_id, timestamp)
+<span class="keyword">PRIMARY KEY</span> (feature_name, user_id);</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">A/B Testing</span>
+                        <span class="feature-tag">Nested Properties</span>
+                        <span class="feature-tag">Feature Tracking</span>
+                        <span class="feature-tag">Cohort Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Series Tables -->
+        <div id="timeseries" class="category-section">
+            <h2 class="category-title">⏰ Time Series Tables</h2>
+
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Metrics Time Series</span>
+                        <span class="use-case">Monitoring</span>
+                    </div>
+                    <p class="skeleton-description">High-performance time series storage for metrics and monitoring data.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">metrics</span> (
+    <span class="comment">-- Time</span>
+    timestamp <span class="type">DateTime64(3)</span>,
+    date <span class="type">Date</span> <span class="keyword">DEFAULT</span> toDate(timestamp),
+
+    <span class="comment">-- Metric Identity</span>
+    metric_name <span class="type">LowCardinality(String)</span>,
+    host <span class="type">LowCardinality(String)</span>,
+    datacenter <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Values</span>
+    value <span class="type">Float64</span>,
+    min_value <span class="type">Float64</span>,
+    max_value <span class="type">Float64</span>,
+    sum_value <span class="type">Float64</span>,
+    count <span class="type">UInt32</span>,
+
+    <span class="comment">-- Tags for filtering</span>
+    tags <span class="type">Map(LowCardinality(String), String)</span>,
+
+    <span class="comment">-- Metadata</span>
+    unit <span class="type">LowCardinality(String)</span>, <span class="comment">-- bytes, ms, percent, etc.</span>
+    aggregation_type <span class="type">Enum8</span>('gauge' = 1, 'counter' = 2, 'histogram' = 3)
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toStartOfDay(date)
+<span class="keyword">ORDER BY</span> (metric_name, host, timestamp)
+<span class="keyword">TTL</span> date + <span class="keyword">INTERVAL</span> 30 <span class="keyword">DAY</span> <span class="keyword">DELETE</span>,
+     date + <span class="keyword">INTERVAL</span> 7 <span class="keyword">DAY</span> <span class="keyword">GROUP BY</span>
+        metric_name, host, datacenter, toStartOfHour(timestamp)
+     <span class="keyword">SET</span>
+        value = avg(value),
+        min_value = min(min_value),
+        max_value = max(max_value),
+        sum_value = sum(sum_value),
+        count = sum(count);</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Rollup TTL</span>
+                        <span class="feature-tag">Map Tags</span>
+                        <span class="feature-tag">Aggregations</span>
+                        <span class="feature-tag">Data Retention</span>
+                    </div>
+                </div>
+
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Sensor Data</span>
+                        <span class="use-case">IoT Time Series</span>
+                    </div>
+                    <p class="skeleton-description">Store high-frequency sensor readings with automatic aggregation.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">sensor_data</span> (
+    <span class="comment">-- Timestamp with microsecond precision</span>
+    timestamp <span class="type">DateTime64(6)</span>,
+    date <span class="type">Date</span> <span class="keyword">DEFAULT</span> toDate(timestamp),
+
+    <span class="comment">-- Device Information</span>
+    device_id <span class="type">FixedString(16)</span>, <span class="comment">-- UUID as binary</span>
+    device_type <span class="type">LowCardinality(String)</span>,
+    location_id <span class="type">UInt32</span>,
+
+    <span class="comment">-- Measurements</span>
+    temperature <span class="type">Nullable(Float32)</span>,
+    humidity <span class="type">Nullable(Float32)</span>,
+    pressure <span class="type">Nullable(Float32)</span>,
+    battery_level <span class="type">UInt8</span>,
+
+    <span class="comment">-- Quality Indicators</span>
+    signal_strength <span class="type">Int8</span>,
+    error_flags <span class="type">UInt16</span>,
+
+    <span class="comment">-- Materialized Columns for Fast Queries</span>
+    hour <span class="type">DateTime</span> <span class="keyword">MATERIALIZED</span> toStartOfHour(timestamp),
+    is_anomaly <span class="type">UInt8</span> <span class="keyword">DEFAULT</span> 0
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> (device_type, toYYYYMM(date))
+<span class="keyword">ORDER BY</span> (device_id, timestamp)
+<span class="keyword">SETTINGS</span>
+    index_granularity = 8192,
+    min_bytes_for_wide_part = 0;</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Microsecond Precision</span>
+                        <span class="feature-tag">Binary UUID</span>
+                        <span class="feature-tag">Materialized Columns</span>
+                        <span class="feature-tag">Multi-Partition</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logging Tables -->
+        <div id="logging" class="category-section">
+            <h2 class="category-title">📝 Logging Tables</h2>
+
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Application Logs</span>
+                        <span class="use-case">Centralized Logging</span>
+                    </div>
+                    <p class="skeleton-description">Structured logging with full-text search capabilities and automatic cleanup.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">app_logs</span> (
+    <span class="comment">-- Timestamp and Partitioning</span>
+    timestamp <span class="type">DateTime64(3, 'UTC')</span>,
+    date <span class="type">Date</span> <span class="keyword">DEFAULT</span> toDate(timestamp),
+
+    <span class="comment">-- Log Source</span>
+    service_name <span class="type">LowCardinality(String)</span>,
+    host <span class="type">LowCardinality(String)</span>,
+    pod_name <span class="type">String</span>,
+    container_id <span class="type">String</span>,
+
+    <span class="comment">-- Log Level and Category</span>
+    level <span class="type">Enum8</span>('DEBUG' = 1, 'INFO' = 2, 'WARN' = 3, 'ERROR' = 4, 'FATAL' = 5),
+    logger_name <span class="type">LowCardinality(String)</span>,
+    thread_name <span class="type">String</span>,
+
+    <span class="comment">-- Message Content</span>
+    message <span class="type">String</span> <span class="keyword">CODEC</span>(ZSTD(3)),
+    stack_trace <span class="type">Nullable(String)</span> <span class="keyword">CODEC</span>(ZSTD(3)),
+
+    <span class="comment">-- Request Context</span>
+    trace_id <span class="type">Nullable(String)</span>,
+    span_id <span class="type">Nullable(String)</span>,
+    user_id <span class="type">Nullable(String)</span>,
+    request_id <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- Structured Fields</span>
+    fields <span class="type">Map(String, String)</span>,
+
+    <span class="comment">-- Search Optimization</span>
+    message_tokens <span class="type">Array(String)</span> <span class="keyword">MATERIALIZED</span>
+        splitByRegexp('[^a-zA-Z0-9]+', lower(message))
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> (service_name, toYYYYMMDD(date))
+<span class="keyword">ORDER BY</span> (level, service_name, timestamp)
+<span class="keyword">TTL</span> date + toIntervalDay(level = 1 ? 1 : level = 2 ? 7 : 30)
+<span class="keyword">SETTINGS</span>
+    index_granularity = 8192,
+    merge_with_ttl_timeout = 86400;</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Compression</span>
+                        <span class="feature-tag">Tracing Support</span>
+                        <span class="feature-tag">Dynamic TTL</span>
+                        <span class="feature-tag">Token Search</span>
+                    </div>
+                </div>
+
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Audit Trail</span>
+                        <span class="use-case">Compliance</span>
+                    </div>
+                    <p class="skeleton-description">Immutable audit log for compliance and security tracking.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">audit_log</span> (
+    <span class="comment">-- Event Metadata</span>
+    event_id <span class="type">UUID</span> <span class="keyword">DEFAULT</span> generateUUIDv4(),
+    event_time <span class="type">DateTime64(3)</span>,
+    event_date <span class="type">Date</span> <span class="keyword">DEFAULT</span> toDate(event_time),
+
+    <span class="comment">-- Actor Information</span>
+    user_id <span class="type">String</span>,
+    user_email <span class="type">String</span>,
+    user_role <span class="type">LowCardinality(String)</span>,
+    ip_address <span class="type">IPv6</span>, <span class="comment">-- Stores both IPv4 and IPv6</span>
+    user_agent <span class="type">String</span>,
+
+    <span class="comment">-- Action Details</span>
+    action <span class="type">LowCardinality(String)</span>, <span class="comment">-- CREATE, READ, UPDATE, DELETE</span>
+    resource_type <span class="type">LowCardinality(String)</span>,
+    resource_id <span class="type">String</span>,
+    resource_name <span class="type">String</span>,
+
+    <span class="comment">-- Change Tracking</span>
+    old_value <span class="type">Nullable(String)</span> <span class="keyword">CODEC</span>(ZSTD(3)),
+    new_value <span class="type">Nullable(String)</span> <span class="keyword">CODEC</span>(ZSTD(3)),
+    changed_fields <span class="type">Array(String)</span>,
+
+    <span class="comment">-- Result</span>
+    success <span class="type">UInt8</span>,
+    error_message <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- Compliance Fields</span>
+    compliance_flags <span class="type">Array(String)</span>, <span class="comment">-- GDPR, HIPAA, etc.</span>
+    retention_days <span class="type">UInt16</span> <span class="keyword">DEFAULT</span> 2555
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(event_date)
+<span class="keyword">ORDER BY</span> (user_id, event_time, action)
+<span class="keyword">SETTINGS</span>
+    index_granularity = 8192,
+    enable_mixed_granularity_parts = 1;</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Immutable</span>
+                        <span class="feature-tag">IPv6 Support</span>
+                        <span class="feature-tag">Change Tracking</span>
+                        <span class="feature-tag">Compliance Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- E-Commerce Tables -->
+        <div id="ecommerce" class="category-section">
+            <h2 class="category-title">🛒 E-Commerce Tables</h2>
+
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Order Transactions</span>
+                        <span class="use-case">Sales Analytics</span>
+                    </div>
+                    <p class="skeleton-description">Complete order tracking with line items and payment processing.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">orders</span> (
+    <span class="comment">-- Order Identification</span>
+    order_id <span class="type">String</span>,
+    order_date <span class="type">DateTime</span>,
+    date <span class="type">Date</span> <span class="keyword">DEFAULT</span> toDate(order_date),
+
+    <span class="comment">-- Customer Information</span>
+    customer_id <span class="type">UInt64</span>,
+    customer_email <span class="type">String</span>,
+    customer_segment <span class="type">LowCardinality(String)</span>,
+    is_first_order <span class="type">UInt8</span>,
+
+    <span class="comment">-- Order Details</span>
+    status <span class="type">Enum8</span>('pending' = 1, 'processing' = 2, 'shipped' = 3,
+                       'delivered' = 4, 'cancelled' = 5, 'refunded' = 6),
+    payment_method <span class="type">LowCardinality(String)</span>,
+    shipping_method <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Financial</span>
+    subtotal <span class="type">Decimal128(2)</span>,
+    tax_amount <span class="type">Decimal128(2)</span>,
+    shipping_cost <span class="type">Decimal128(2)</span>,
+    discount_amount <span class="type">Decimal128(2)</span>,
+    total_amount <span class="type">Decimal128(2)</span>,
+    currency <span class="type">FixedString(3)</span>,
+
+    <span class="comment">-- Line Items (Nested)</span>
+    items <span class="type">Nested</span>(
+        product_id <span class="type">UInt64</span>,
+        sku <span class="type">String</span>,
+        name <span class="type">String</span>,
+        category <span class="type">String</span>,
+        quantity <span class="type">UInt16</span>,
+        unit_price <span class="type">Decimal64(2)</span>,
+        discount <span class="type">Decimal64(2)</span>,
+        total <span class="type">Decimal64(2)</span>
+    ),
+
+    <span class="comment">-- Location</span>
+    billing_country <span class="type">LowCardinality(String)</span>,
+    billing_state <span class="type">String</span>,
+    shipping_country <span class="type">LowCardinality(String)</span>,
+    shipping_state <span class="type">String</span>,
+
+    <span class="comment">-- Marketing Attribution</span>
+    utm_source <span class="type">Nullable(String)</span>,
+    utm_medium <span class="type">Nullable(String)</span>,
+    utm_campaign <span class="type">Nullable(String)</span>,
+    referrer <span class="type">Nullable(String)</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(date)
+<span class="keyword">ORDER BY</span> (customer_id, order_date)
+<span class="keyword">PRIMARY KEY</span> (customer_id);</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Nested Line Items</span>
+                        <span class="feature-tag">Decimal Precision</span>
+                        <span class="feature-tag">Attribution</span>
+                        <span class="feature-tag">Multi-Currency</span>
+                    </div>
+                </div>
+
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Product Catalog</span>
+                        <span class="use-case">Inventory</span>
+                    </div>
+                    <p class="skeleton-description">Product information with versioning and inventory tracking.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">products</span> (
+    <span class="comment">-- Product Identity</span>
+    product_id <span class="type">UInt64</span>,
+    sku <span class="type">String</span>,
+    version <span class="type">UInt32</span>,
+    valid_from <span class="type">DateTime</span>,
+    valid_to <span class="type">Nullable(DateTime)</span>,
+
+    <span class="comment">-- Product Information</span>
+    name <span class="type">String</span>,
+    description <span class="type">String</span> <span class="keyword">CODEC</span>(ZSTD(3)),
+    category_path <span class="type">Array(String)</span>,
+    brand <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Pricing</span>
+    base_price <span class="type">Decimal64(2)</span>,
+    sale_price <span class="type">Nullable(Decimal64(2))</span>,
+    cost <span class="type">Decimal64(2)</span>,
+    currency <span class="type">FixedString(3)</span>,
+
+    <span class="comment">-- Inventory</span>
+    stock_quantity <span class="type">Int32</span>,
+    reserved_quantity <span class="type">UInt32</span>,
+    warehouse_locations <span class="type">Array(String)</span>,
+
+    <span class="comment">-- Attributes</span>
+    weight_kg <span class="type">Nullable(Float32)</span>,
+    dimensions_cm <span class="type">Tuple(Float32, Float32, Float32)</span>, <span class="comment">-- L x W x H</span>
+    color <span class="type">Nullable(String)</span>,
+    size <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- Media</span>
+    image_urls <span class="type">Array(String)</span>,
+
+    <span class="comment">-- Flags and Status</span>
+    is_active <span class="type">UInt8</span>,
+    is_featured <span class="type">UInt8</span>,
+    tags <span class="type">Array(String)</span>,
+
+    <span class="comment">-- Metadata</span>
+    created_at <span class="type">DateTime</span>,
+    updated_at <span class="type">DateTime</span>
+) <span class="keyword">ENGINE</span> = <span class="type">ReplacingMergeTree</span>(version)
+<span class="keyword">PARTITION BY</span> toYYYYMM(valid_from)
+<span class="keyword">ORDER BY</span> (product_id, valid_from);</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Versioning</span>
+                        <span class="feature-tag">ReplacingMergeTree</span>
+                        <span class="feature-tag">Tuple Dimensions</span>
+                        <span class="feature-tag">Array Attributes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IoT Tables -->
+        <div id="iot" class="category-section">
+            <h2 class="category-title">🌐 IoT Tables</h2>
+
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Device Telemetry</span>
+                        <span class="use-case">Real-time IoT</span>
+                    </div>
+                    <p class="skeleton-description">High-throughput telemetry ingestion with automatic aggregation.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">device_telemetry</span> (
+    <span class="comment">-- Time and Device</span>
+    timestamp <span class="type">DateTime64(3)</span>,
+    device_id <span class="type">FixedString(16)</span>,
+    device_type <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Location</span>
+    latitude <span class="type">Float64</span>,
+    longitude <span class="type">Float64</span>,
+    altitude_m <span class="type">Float32</span>,
+
+    <span class="comment">-- Telemetry Data</span>
+    metrics <span class="type">Map(LowCardinality(String), Float64)</span>,
+
+    <span class="comment">-- Device Status</span>
+    battery_percent <span class="type">UInt8</span>,
+    signal_strength_dbm <span class="type">Int8</span>,
+    firmware_version <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Derived Fields</span>
+    geohash <span class="type">String</span> <span class="keyword">MATERIALIZED</span> geohashEncode(longitude, latitude, 8),
+    hour <span class="type">DateTime</span> <span class="keyword">MATERIALIZED</span> toStartOfHour(timestamp)
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> (device_type, toYYYYMMDD(timestamp))
+<span class="keyword">ORDER BY</span> (device_id, timestamp)
+<span class="keyword">TTL</span> timestamp + <span class="keyword">INTERVAL</span> 7 <span class="keyword">DAY</span> <span class="keyword">GROUP BY</span>
+    device_id, device_type, toStartOfFiveMinute(timestamp)
+<span class="keyword">SET</span>
+    latitude = avg(latitude),
+    longitude = avg(longitude),
+    metrics = mapFromArrays(
+        mapKeys(metrics),
+        arrayMap(k -> avg(metrics[k]), mapKeys(metrics))
+    );</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Geohash</span>
+                        <span class="feature-tag">Map Metrics</span>
+                        <span class="feature-tag">Auto Rollup</span>
+                        <span class="feature-tag">GPS Tracking</span>
+                    </div>
+                </div>
+
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Vehicle Tracking</span>
+                        <span class="use-case">Fleet Management</span>
+                    </div>
+                    <p class="skeleton-description">Real-time vehicle tracking with journey analysis.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">vehicle_tracking</span> (
+    <span class="comment">-- Core Fields</span>
+    timestamp <span class="type">DateTime64(3)</span>,
+    vehicle_id <span class="type">String</span>,
+    driver_id <span class="type">Nullable(String)</span>,
+    trip_id <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- Position</span>
+    latitude <span class="type">Float64</span>,
+    longitude <span class="type">Float64</span>,
+    heading <span class="type">UInt16</span>, <span class="comment">-- 0-359 degrees</span>
+    speed_kmh <span class="type">Float32</span>,
+
+    <span class="comment">-- Vehicle Metrics</span>
+    engine_rpm <span class="type">UInt16</span>,
+    fuel_level_percent <span class="type">UInt8</span>,
+    engine_temp_c <span class="type">Float32</span>,
+    odometer_km <span class="type">UInt32</span>,
+
+    <span class="comment">-- Events</span>
+    event_type <span class="type">Nullable(Enum8)</span>(
+        'ignition_on' = 1, 'ignition_off' = 2,
+        'harsh_brake' = 3, 'harsh_accel' = 4,
+        'idle_start' = 5, 'idle_end' = 6
+    ),
+
+    <span class="comment">-- Calculated Fields</span>
+    distance_from_prev_km <span class="type">Float32</span> <span class="keyword">DEFAULT</span> 0,
+    time_from_prev_sec <span class="type">UInt32</span> <span class="keyword">DEFAULT</span> 0,
+
+    <span class="comment">-- Metadata</span>
+    road_type <span class="type">LowCardinality(String)</span>,
+    in_geofence <span class="type">Array(String)</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMMDD(timestamp)
+<span class="keyword">ORDER BY</span> (vehicle_id, timestamp)
+<span class="keyword">SETTINGS</span> index_granularity_bytes = 10485760;</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Trip Tracking</span>
+                        <span class="feature-tag">Geofencing</span>
+                        <span class="feature-tag">Event Detection</span>
+                        <span class="feature-tag">Vehicle Metrics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Tables -->
+        <div id="financial" class="category-section">
+            <h2 class="category-title">💰 Financial Tables</h2>
+
+            <div class="skeleton-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Financial Transactions</span>
+                        <span class="use-case">Banking</span>
+                    </div>
+                    <p class="skeleton-description">Double-entry bookkeeping with transaction integrity.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">transactions</span> (
+    <span class="comment">-- Transaction Identity</span>
+    transaction_id <span class="type">UUID</span>,
+    transaction_date <span class="type">DateTime64(3)</span>,
+    posting_date <span class="type">Date</span>,
+
+    <span class="comment">-- Accounts</span>
+    from_account_id <span class="type">String</span>,
+    to_account_id <span class="type">String</span>,
+    account_type <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Financial Details</span>
+    amount <span class="type">Decimal128(4)</span>, <span class="comment">-- 4 decimal places for precision</span>
+    currency <span class="type">FixedString(3)</span>,
+    exchange_rate <span class="type">Decimal64(6)</span> <span class="keyword">DEFAULT</span> 1,
+    base_amount <span class="type">Decimal128(4)</span>, <span class="comment">-- In base currency</span>
+
+    <span class="comment">-- Transaction Type</span>
+    transaction_type <span class="type">Enum16</span>(
+        'payment' = 1, 'deposit' = 2, 'withdrawal' = 3,
+        'transfer' = 4, 'fee' = 5, 'interest' = 6,
+        'adjustment' = 7, 'reversal' = 8
+    ),
+
+    <span class="comment">-- Status and Processing</span>
+    status <span class="type">Enum8</span>('pending' = 1, 'completed' = 2, 'failed' = 3, 'reversed' = 4),
+    processing_time_ms <span class="type">UInt32</span>,
+
+    <span class="comment">-- Reference Information</span>
+    reference_number <span class="type">String</span>,
+    merchant_id <span class="type">Nullable(String)</span>,
+    merchant_category <span class="type">Nullable(String)</span>,
+
+    <span class="comment">-- Risk and Compliance</span>
+    risk_score <span class="type">Float32</span>,
+    fraud_check_passed <span class="type">UInt8</span>,
+    requires_review <span class="type">UInt8</span> <span class="keyword">DEFAULT</span> 0,
+
+    <span class="comment">-- Metadata</span>
+    created_by <span class="type">String</span>,
+    metadata <span class="type">Map(String, String)</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> toYYYYMM(posting_date)
+<span class="keyword">ORDER BY</span> (from_account_id, transaction_date)
+<span class="keyword">PRIMARY KEY</span> (from_account_id);</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">High Precision Decimal</span>
+                        <span class="feature-tag">Multi-Currency</span>
+                        <span class="feature-tag">Risk Scoring</span>
+                        <span class="feature-tag">Compliance Ready</span>
+                    </div>
+                </div>
+
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <span class="skeleton-title">Market Data</span>
+                        <span class="use-case">Trading</span>
+                    </div>
+                    <p class="skeleton-description">High-frequency market data with OHLCV aggregations.</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><span class="keyword">CREATE TABLE</span> <span class="string">market_data</span> (
+    <span class="comment">-- Time and Symbol</span>
+    timestamp <span class="type">DateTime64(9)</span>, <span class="comment">-- Nanosecond precision</span>
+    symbol <span class="type">LowCardinality(String)</span>,
+    exchange <span class="type">LowCardinality(String)</span>,
+
+    <span class="comment">-- Price Data</span>
+    bid_price <span class="type">Decimal64(4)</span>,
+    ask_price <span class="type">Decimal64(4)</span>,
+    last_price <span class="type">Decimal64(4)</span>,
+
+    <span class="comment">-- Volume</span>
+    bid_size <span class="type">UInt64</span>,
+    ask_size <span class="type">UInt64</span>,
+    last_size <span class="type">UInt64</span>,
+    cumulative_volume <span class="type">UInt64</span>,
+
+    <span class="comment">-- OHLC (for aggregated views)</span>
+    open_price <span class="type">Decimal64(4)</span>,
+    high_price <span class="type">Decimal64(4)</span>,
+    low_price <span class="type">Decimal64(4)</span>,
+    close_price <span class="type">Decimal64(4)</span>,
+    vwap <span class="type">Decimal64(4)</span>, <span class="comment">-- Volume Weighted Average Price</span>
+
+    <span class="comment">-- Market Conditions</span>
+    spread <span class="type">Decimal64(4)</span> <span class="keyword">MATERIALIZED</span> ask_price - bid_price,
+    mid_price <span class="type">Decimal64(4)</span> <span class="keyword">MATERIALIZED</span> (bid_price + ask_price) / 2,
+
+    <span class="comment">-- Trade Flags</span>
+    is_halted <span class="type">UInt8</span>,
+    is_auction <span class="type">UInt8</span>
+) <span class="keyword">ENGINE</span> = <span class="type">MergeTree</span>()
+<span class="keyword">PARTITION BY</span> (exchange, toYYYYMMDD(timestamp))
+<span class="keyword">ORDER BY</span> (symbol, timestamp)
+<span class="keyword">TTL</span> timestamp + <span class="keyword">INTERVAL</span> 1 <span class="keyword">HOUR</span> <span class="keyword">GROUP BY</span>
+    symbol, exchange, toStartOfMinute(timestamp)
+<span class="keyword">SET</span>
+    open_price = first_value(last_price),
+    high_price = max(last_price),
+    low_price = min(last_price),
+    close_price = last_value(last_price),
+    cumulative_volume = sum(last_size);</pre>
+                    </div>
+                    <div class="features">
+                        <span class="feature-tag">Nanosecond Precision</span>
+                        <span class="feature-tag">OHLCV</span>
+                        <span class="feature-tag">Auto Aggregation</span>
+                        <span class="feature-tag">Market Indicators</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference Section -->
+        <div class="category-section">
+            <h2 class="category-title">🎯 Quick Reference</h2>
+
+            <div class="skeleton-card">
+                <div class="skeleton-header">
+                    <span class="skeleton-title">Common Patterns</span>
+                    <span class="use-case">Best Practices</span>
+                </div>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment">-- Pattern 1: Materialized columns for common calculations</span>
+hour <span class="type">DateTime</span> <span class="keyword">MATERIALIZED</span> toStartOfHour(timestamp),
+date <span class="type">Date</span> <span class="keyword">MATERIALIZED</span> toDate(timestamp),
+
+<span class="comment">-- Pattern 2: TTL with automatic rollup</span>
+<span class="keyword">TTL</span> date + <span class="keyword">INTERVAL</span> 30 <span class="keyword">DAY</span> <span class="keyword">GROUP BY</span>
+    dimension1, dimension2, toStartOfHour(timestamp)
+<span class="keyword">SET</span>
+    metric = avg(metric),
+    count = sum(count),
+
+<span class="comment">-- Pattern 3: Efficient string storage</span>
+category <span class="type">LowCardinality(String)</span>, <span class="comment">-- For low cardinality</span>
+id <span class="type">FixedString(16)</span>, <span class="comment">-- For fixed-length IDs</span>
+content <span class="type">String</span> <span class="keyword">CODEC</span>(ZSTD(3)), <span class="comment">-- For large text</span>
+
+<span class="comment">-- Pattern 4: Nested data structures</span>
+items <span class="type">Nested</span>(
+    id <span class="type">UInt64</span>,
+    name <span class="type">String</span>,
+    value <span class="type">Float64</span>
+),
+
+<span class="comment">-- Pattern 5: Map for dynamic attributes</span>
+properties <span class="type">Map(String, String)</span>,
+metrics <span class="type">Map(LowCardinality(String), Float64)</span>,</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement.querySelector('pre');
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                const originalBg = btn.style.background;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#059862';
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = originalBg;
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll to sections
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.skeleton-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
