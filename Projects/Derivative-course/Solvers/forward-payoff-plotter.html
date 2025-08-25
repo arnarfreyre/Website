@@ -3,14 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Payoff Plotter - Test Version</title>
+    <title>Forward & Options Payoff Plotter - Derivatives Course</title>
     <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* View toggle buttons */
+        .view-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 2px solid #e74c3c;
+            width: fit-content;
+        }
+
+        .view-btn {
+            padding: 0.75rem 2rem;
+            background-color: white;
+            color: #e74c3c;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background-color: #fdeaea;
+        }
+
+        .view-btn.active {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .view-btn:first-child {
+            border-right: 1px solid #e74c3c;
+        }
+
+        /* Table styling */
+        .payoff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-family: Georgia, serif;
+        }
+
+        .payoff-table th,
+        .payoff-table td {
+            padding: 0.75rem;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+
+        .payoff-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .payoff-table td {
+            background-color: white;
+        }
+
+        .payoff-table tr:hover td {
+            background-color: #f5f5f5;
+        }
+
+        .payoff-table td.positive {
+            color: #27ae60;
+        }
+
+        .payoff-table td.negative {
+            color: #e74c3c;
+        }
+
+        .table-controls {
+            background-color: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .table-wrapper {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .custom-prices {
+            background-color: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 5px;
+        }
+
+        .custom-prices h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* Hide disabled contracts in table view */
+        .contract-hidden {
+            opacity: 0.5;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="main-header">
-            <h1>Advanced Payoff Plotter - Test Version</h1>
-            <p>Interactive tool with enhanced visibility controls and hover tooltips</p>
+            <h1>Forward & Options Payoff Plotter</h1>
+            <p>Interactive tool for plotting payoffs at maturity for forwards, calls, and puts with customizable positions</p>
 
             <!-- Navigation tabs -->
             <div class="nav-tabs">
@@ -113,14 +216,65 @@
             <button onclick="generatePlot()" style="margin-top: 1.5rem;">Generate Plot</button>
         </div>
 
-        <!-- Plot Display -->
+        <!-- View Toggle -->
         <div class="plotter-section">
+            <div class="view-toggle">
+                <button id="graphViewBtn" class="view-btn active" onclick="switchToGraphView()">Graph View</button>
+                <button id="tableViewBtn" class="view-btn" onclick="switchToTableView()">Table View</button>
+            </div>
+        </div>
+
+        <!-- Plot Display -->
+        <div id="graphView" class="plotter-section">
             <h2>Payoff Diagram</h2>
             <div class="canvas-container">
                 <canvas id="payoffChart" width="800" height="500"></canvas>
-                <div id="chartTooltip" class="chart-tooltip"></div>
             </div>
             <div id="legend" class="legend" style="display: none;"></div>
+        </div>
+
+        <!-- Table Display -->
+        <div id="tableView" class="plotter-section" style="display: none;">
+            <h2>Payoff Values Table</h2>
+            
+            <div class="table-controls">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="tableMinPrice">Start Price</label>
+                        <input type="number" id="tableMinPrice" value="0" step="5">
+                    </div>
+                    <div class="input-group">
+                        <label for="tableMaxPrice">End Price</label>
+                        <input type="number" id="tableMaxPrice" value="30" step="5">
+                    </div>
+                    <div class="input-group">
+                        <label for="tablePriceStep">Price Increment</label>
+                        <input type="number" id="tablePriceStep" value="2" step="1" min="0.5">
+                    </div>
+                </div>
+                <button onclick="generateTable()" style="margin-top: 1rem;">Update Table</button>
+            </div>
+
+            <div class="table-wrapper" style="margin-top: 2rem; overflow-x: auto;">
+                <table id="payoffTable" class="payoff-table">
+                    <thead>
+                        <tr id="tableHeader">
+                            <th>Stock Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="custom-prices" style="margin-top: 2rem;">
+                <h3>Custom Price Points</h3>
+                <div class="input-group">
+                    <label for="customPrices">Enter custom prices (comma-separated)</label>
+                    <input type="text" id="customPrices" placeholder="e.g., 10, 12, 15, 18, 20" style="width: 100%;">
+                </div>
+                <button onclick="generateCustomTable()" style="margin-top: 1rem;">Generate Custom Table</button>
+            </div>
         </div>
 
         <div class="section">
@@ -197,16 +351,31 @@
         function toggleContractVisibility(index) {
             contracts[index].visible = !contracts[index].visible;
             updateContractsList();
-            generatePlot();
+            
+            // Update current view
+            const currentView = document.getElementById('tableView').style.display;
+            if (currentView === 'block') {
+                generateTable();
+            } else {
+                generatePlot();
+            }
         }
 
         function removeContract(index) {
             contracts.splice(index, 1);
             updateContractsList();
+            
+            const currentView = document.getElementById('tableView').style.display;
             if (contracts.length > 0) {
-                generatePlot();
+                if (currentView === 'block') {
+                    generateTable();
+                } else {
+                    generatePlot();
+                }
             } else {
                 clearCanvas();
+                // Clear table as well
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="10" style="text-align: center;">No contracts to display</td></tr>';
             }
         }
 
@@ -348,6 +517,7 @@
             // Store y-axis range for hover calculations
             plotData.yMin = yMin;
             plotData.yMax = yMax;
+            plotData.contracts = contracts.filter(c => c.visible);
 
             // Set up dimensions
             const padding = plotData.padding;
@@ -552,114 +722,133 @@
             };
         }
 
-        // Hover functionality
-        function setupCanvasHover() {
-            const canvas = document.getElementById('payoffChart');
-            const tooltip = document.getElementById('chartTooltip');
-            const container = document.querySelector('.canvas-container');
+        // View switching functions
+        function switchToGraphView() {
+            document.getElementById('graphView').style.display = 'block';
+            document.getElementById('tableView').style.display = 'none';
+            document.getElementById('graphViewBtn').classList.add('active');
+            document.getElementById('tableViewBtn').classList.remove('active');
+            if (contracts.length > 0) {
+                generatePlot();
+            }
+        }
 
-            canvas.addEventListener('mousemove', function(e) {
-                if (plotData.prices.length === 0) return;
+        function switchToTableView() {
+            document.getElementById('graphView').style.display = 'none';
+            document.getElementById('tableView').style.display = 'block';
+            document.getElementById('graphViewBtn').classList.remove('active');
+            document.getElementById('tableViewBtn').classList.add('active');
+            if (contracts.length > 0) {
+                generateTable();
+            }
+        }
 
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+        // Table generation functions
+        function generateTable() {
+            if (contracts.length === 0) {
+                alert('Please add at least one contract');
+                return;
+            }
 
-                // Check if mouse is within plot area
-                const padding = plotData.padding;
-                const plotWidth = canvas.width - 2 * padding;
-                const plotHeight = canvas.height - 2 * padding;
+            const minPrice = parseFloat(document.getElementById('tableMinPrice').value);
+            const maxPrice = parseFloat(document.getElementById('tableMaxPrice').value);
+            const priceStep = parseFloat(document.getElementById('tablePriceStep').value);
 
-                if (x < padding || x > canvas.width - padding ||
-                    y < padding || y > canvas.height - padding) {
-                    tooltip.classList.remove('visible');
-                    return;
-                }
+            if (minPrice >= maxPrice) {
+                alert('End price must be greater than start price');
+                return;
+            }
 
-                // Calculate stock price at cursor position
-                const priceRatio = (x - padding) / plotWidth;
-                const stockPrice = plotData.minPrice + priceRatio * (plotData.maxPrice - plotData.minPrice);
+            const prices = [];
+            for (let price = minPrice; price <= maxPrice; price += priceStep) {
+                prices.push(price);
+            }
 
-                // Find closest data point
-                let closestIndex = 0;
-                let minDiff = Math.abs(plotData.prices[0] - stockPrice);
-                for (let i = 1; i < plotData.prices.length; i++) {
-                    const diff = Math.abs(plotData.prices[i] - stockPrice);
-                    if (diff < minDiff) {
-                        minDiff = diff;
-                        closestIndex = i;
-                    }
-                }
+            buildPayoffTable(prices);
+        }
 
-                // Build tooltip content
-                let tooltipHTML = `<div class="tooltip-header">Stock Price: $${stockPrice.toFixed(2)}</div>`;
+        function generateCustomTable() {
+            if (contracts.length === 0) {
+                alert('Please add at least one contract');
+                return;
+            }
 
-                // Add individual contract values
-                contracts.forEach((contract, index) => {
-                    if (contract.visible) {
-                        const payoff = plotData.individualPayoffs[index][closestIndex];
-                        const colorClass = payoff >= 0 ? 'tooltip-positive' : 'tooltip-negative';
-                        tooltipHTML += `
-                            <div class="tooltip-row">
-                                <span class="tooltip-label" style="color: ${contract.color};">
-                                    ${formatContractType(contract.type)} (K=$${contract.strike})
-                                </span>
-                                <span class="tooltip-value ${colorClass}">
-                                    $${payoff.toFixed(2)}
-                                </span>
-                            </div>
-                        `;
-                    }
+            const customPricesInput = document.getElementById('customPrices').value;
+            if (!customPricesInput.trim()) {
+                alert('Please enter custom prices');
+                return;
+            }
+
+            const prices = customPricesInput.split(',').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+            if (prices.length === 0) {
+                alert('Please enter valid numeric prices');
+                return;
+            }
+
+            prices.sort((a, b) => a - b);
+            buildPayoffTable(prices);
+        }
+
+        function buildPayoffTable(prices) {
+            const header = document.getElementById('tableHeader');
+            const body = document.getElementById('tableBody');
+            
+            // Build header
+            let headerHTML = '<th>Stock Price</th>';
+            
+            // Add columns for visible contracts
+            const visibleContracts = contracts.filter(c => c.visible);
+            visibleContracts.forEach(contract => {
+                headerHTML += `<th style="color: ${contract.color};">${formatContractType(contract.type)}<br>(K=$${contract.strike}, Q=${contract.quantity})</th>`;
+            });
+            
+            // Add combined column if enabled
+            if (document.getElementById('showCombined').checked) {
+                headerHTML += '<th style="font-weight: bold;">Combined</th>';
+            }
+            
+            header.innerHTML = headerHTML;
+            
+            // Build table body
+            let bodyHTML = '';
+            
+            prices.forEach(price => {
+                bodyHTML += '<tr>';
+                bodyHTML += `<td style="font-weight: bold;">$${price.toFixed(2)}</td>`;
+                
+                let combinedPayoff = 0;
+                
+                // Calculate payoffs for visible contracts
+                visibleContracts.forEach(contract => {
+                    const payoff = calculatePayoff(contract, price);
+                    combinedPayoff += payoff;
+                    const colorClass = payoff >= 0 ? 'positive' : 'negative';
+                    bodyHTML += `<td class="${colorClass}">$${payoff.toFixed(2)}</td>`;
                 });
-
-                // Add combined payoff
+                
+                // Add combined payoff if enabled
                 if (document.getElementById('showCombined').checked) {
-                    const combinedPayoff = plotData.combinedPayoffs[closestIndex];
-                    const colorClass = combinedPayoff >= 0 ? 'tooltip-positive' : 'tooltip-negative';
-                    tooltipHTML += `
-                        <div class="tooltip-combined">
-                            <div class="tooltip-row">
-                                <span class="tooltip-label">Combined</span>
-                                <span class="tooltip-value ${colorClass}">
-                                    $${combinedPayoff.toFixed(2)}
-                                </span>
-                            </div>
-                        </div>
-                    `;
+                    const colorClass = combinedPayoff >= 0 ? 'positive' : 'negative';
+                    bodyHTML += `<td class="${colorClass}" style="font-weight: bold;">$${combinedPayoff.toFixed(2)}</td>`;
                 }
-
-                tooltip.innerHTML = tooltipHTML;
-                tooltip.classList.add('visible');
-
-                // Position tooltip
-                const tooltipRect = tooltip.getBoundingClientRect();
-                let tooltipX = e.clientX - rect.left + 15;
-                let tooltipY = e.clientY - rect.top - 15;
-
-                // Adjust if tooltip would go off screen
-                if (tooltipX + tooltipRect.width > canvas.width) {
-                    tooltipX = e.clientX - rect.left - tooltipRect.width - 15;
-                }
-                if (tooltipY + tooltipRect.height > canvas.height) {
-                    tooltipY = e.clientY - rect.top - tooltipRect.height - 15;
-                }
-
-                tooltip.style.left = tooltipX + 'px';
-                tooltip.style.top = tooltipY + 'px';
+                
+                bodyHTML += '</tr>';
             });
-
-            canvas.addEventListener('mouseleave', function() {
-                tooltip.classList.remove('visible');
-            });
+            
+            body.innerHTML = bodyHTML;
         }
 
         // Initialize with example from the problem
         window.addEventListener('DOMContentLoaded', function() {
-            // Setup hover functionality
-            setupCanvasHover();
-
             // Add event listeners for plot settings changes
-            document.getElementById('showCombined').addEventListener('change', generatePlot);
+            document.getElementById('showCombined').addEventListener('change', function() {
+                const currentView = document.getElementById('tableView').style.display;
+                if (currentView === 'block') {
+                    generateTable();
+                } else {
+                    generatePlot();
+                }
+            });
             document.getElementById('showIndividual').addEventListener('change', generatePlot);
 
             // Add the three contracts from the example problem
@@ -675,6 +864,11 @@
             // Set appropriate price range
             document.getElementById('minPrice').value = 0;
             document.getElementById('maxPrice').value = 30;
+            
+            // Set default table values
+            document.getElementById('tableMinPrice').value = 0;
+            document.getElementById('tableMaxPrice').value = 30;
+            document.getElementById('tablePriceStep').value = 2;
 
             // Generate the initial plot
             generatePlot();
