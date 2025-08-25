@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forward & Options Payoff Plotter - Derivatives Course</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .plotter-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .contracts-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .contracts-table th {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .contracts-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e8ecef;
+        }
+        
+        .contracts-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .contracts-table tr:nth-child(even) td {
+            background-color: #fafbfc;
+        }
+        
+        .contracts-table tr:hover td {
+            background-color: #f0f4f8;
+            transition: background-color 0.2s ease;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-family: 'Georgia', serif;
+            transition: background-color 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        canvas {
+            border: 1px solid #ddd;
+            margin: 2rem 0;
+            display: block;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .legend {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .legend h3 {
+            color: #e74c3c;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            margin-right: 1rem;
+            border-radius: 2px;
+        }
+        
+        .info-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        
+        .info-note h3 {
+            color: #856404;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .plot-controls {
+            background: #f0f7ff;
+            border: 1px solid #d1e7fd;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .plot-controls h2 {
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95em;
+            background: white;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-header">
+            <h1>Forward & Options Payoff Plotter</h1>
+            <p>Interactive tool for visualizing derivative payoff diagrams</p>
+            
+            <!-- Navigation tabs -->
+            <div class="nav-tabs">
+                <a href="../index.html" class="nav-tab">Study Materials</a>
+                <a href="../problem-sets.html" class="nav-tab">Problem Sets</a>
+                <a href="../solvers.html" class="nav-tab active">Solvers</a>
+            </div>
+        </div>
+
+        <a href="../solvers.html" class="back-to-main">← Back to Solvers</a>
+
+        <div class="info-note">
+            <h3>📊 Interactive Payoff Diagram Generator</h3>
+            <p>Create payoff diagrams for combinations of forwards and options. Add multiple contracts to visualize their combined payoff at maturity.</p>
+        </div>
+        
+        <!-- Contract Input Section -->
+        <div class="plotter-section">
+            <h2>Add Contract</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="contractType">Contract Type</label>
+                    <select id="contractType">
+                        <option value="long-forward">Long Forward</option>
+                        <option value="short-forward">Short Forward</option>
+                        <option value="long-call">Long Call</option>
+                        <option value="short-call">Short Call</option>
+                        <option value="long-put">Long Put</option>
+                        <option value="short-put">Short Put</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="strikePrice">Strike/Forward Price (K)</label>
+                    <input type="number" id="strikePrice" value="100" step="1" min="0">
+                </div>
+                
+                <div class="input-group">
+                    <label for="quantity">Quantity/Multiplier</label>
+                    <input type="number" id="quantity" value="1" step="0.1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="premium">Premium (for options)</label>
+                    <input type="number" id="premium" value="0" step="0.1" placeholder="0 for forwards">
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="addContract()">Add Contract</button>
+                <button class="btn-secondary" onclick="clearAllContracts()">Clear All</button>
+            </div>
+        </div>
+        
+        <!-- Contracts List -->
+        <div class="plotter-section">
+            <h2>Current Contracts</h2>
+            <table class="contracts-table" id="contractsTable">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Strike/Forward Price</th>
+                        <th>Quantity</th>
+                        <th>Premium</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="contractsList">
+                    <tr>
+                        <td colspan="5" class="empty-state">No contracts added yet</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Plot Controls -->
+        <div class="plot-controls">
+            <h2>Plot Settings</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="minPrice">Min Stock Price</label>
+                    <input type="number" id="minPrice" value="50" step="10">
+                </div>
+                
+                <div class="input-group">
+                    <label for="maxPrice">Max Stock Price</label>
+                    <input type="number" id="maxPrice" value="150" step="10">
+                </div>
+                
+                <div class="input-group">
+                    <label for="showIndividual">Show Individual Payoffs</label>
+                    <select id="showIndividual">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button onclick="generatePlot()" style="margin-top: 1.5rem;">Generate Plot</button>
+        </div>
+        
+        <!-- Plot Display -->
+        <div class="plotter-section">
+            <h2>Payoff Diagram</h2>
+            <canvas id="payoffChart" width="800" height="500"></canvas>
+            <div id="legend" class="legend" style="display: none;"></div>
+        </div>
+        
+        <div class="section">
+            <h2>About Payoff Diagrams</h2>
+            <p>
+                Payoff diagrams are essential tools for understanding the profit and loss profiles of derivative positions. 
+                They show the value of a position at expiration as a function of the underlying asset's price.
+            </p>
+            
+            <h3>Contract Types</h3>
+            
+            <div class="example">
+                <h4>Forward Contracts</h4>
+                <p><strong>Long Forward:</strong> Payoff = S<sub>T</sub> - K</p>
+                <p><strong>Short Forward:</strong> Payoff = K - S<sub>T</sub></p>
+            </div>
+            
+            <div class="example">
+                <h4>Option Contracts</h4>
+                <p><strong>Long Call:</strong> Payoff = max(S<sub>T</sub> - K, 0) - Premium</p>
+                <p><strong>Short Call:</strong> Payoff = Premium - max(S<sub>T</sub> - K, 0)</p>
+                <p><strong>Long Put:</strong> Payoff = max(K - S<sub>T</sub>, 0) - Premium</p>
+                <p><strong>Short Put:</strong> Payoff = Premium - max(K - S<sub>T</sub>, 0)</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let contracts = [];
+        const colors = ['#e74c3c', '#27ae60', '#f39c12', '#8e44ad', '#c0392b', '#16a085', '#d35400', '#2c3e50'];
+        
+        // Contract management functions
+        function addContract() {
+            const type = document.getElementById('contractType').value;
+            const strike = parseFloat(document.getElementById('strikePrice').value);
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            const premium = parseFloat(document.getElementById('premium').value) || 0;
+            
+            if (isNaN(strike) || strike <= 0) {
+                alert('Please enter a valid strike/forward price');
+                return;
+            }
+            
+            if (isNaN(quantity) || quantity === 0) {
+                alert('Please enter a valid quantity');
+                return;
+            }
+            
+            contracts.push({
+                type: type,
+                strike: strike,
+                quantity: quantity,
+                premium: premium,
+                color: colors[contracts.length % colors.length]
+            });
+            
+            updateContractsList();
+        }
+        
+        function removeContract(index) {
+            contracts.splice(index, 1);
+            updateContractsList();
+        }
+        
+        function clearAllContracts() {
+            contracts = [];
+            updateContractsList();
+            clearCanvas();
+        }
+        
+        function updateContractsList() {
+            const tbody = document.getElementById('contractsList');
+            
+            if (contracts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No contracts added yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = contracts.map((contract, index) => `
+                <tr>
+                    <td>${formatContractType(contract.type)}</td>
+                    <td>$${contract.strike.toFixed(2)}</td>
+                    <td>${contract.quantity}</td>
+                    <td>$${contract.premium.toFixed(2)}</td>
+                    <td><button class="delete-btn" onclick="removeContract(${index})">Remove</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function formatContractType(type) {
+            return type.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        // Payoff calculation functions
+        function calculatePayoff(contract, stockPrice) {
+            const S = stockPrice;
+            const K = contract.strike;
+            const Q = contract.quantity;
+            const premium = contract.premium;
+            
+            let payoff = 0;
+            
+            switch(contract.type) {
+                case 'long-forward':
+                    payoff = Q * (S - K);
+                    break;
+                case 'short-forward':
+                    payoff = Q * (K - S);
+                    break;
+                case 'long-call':
+                    payoff = Q * (Math.max(S - K, 0) - premium);
+                    break;
+                case 'short-call':
+                    payoff = Q * (-Math.max(S - K, 0) + premium);
+                    break;
+                case 'long-put':
+                    payoff = Q * (Math.max(K - S, 0) - premium);
+                    break;
+                case 'short-put':
+                    payoff = Q * (-Math.max(K - S, 0) + premium);
+                    break;
+            }
+            
+            return payoff;
+        }
+        
+        // Plotting functions
+        function generatePlot() {
+            if (contracts.length === 0) {
+                alert('Please add at least one contract');
+                return;
+            }
+            
+            const canvas = document.getElementById('payoffChart');
+            const ctx = canvas.getContext('2d');
+            
+            const minPrice = parseFloat(document.getElementById('minPrice').value);
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+            const showIndividual = document.getElementById('showIndividual').value === 'yes';
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Generate data points
+            const priceStep = (maxPrice - minPrice) / 200;
+            const prices = [];
+            const combinedPayoffs = [];
+            const individualPayoffs = contracts.map(() => []);
+            
+            for (let price = minPrice; price <= maxPrice; price += priceStep) {
+                prices.push(price);
+                
+                let combinedPayoff = 0;
+                contracts.forEach((contract, index) => {
+                    const payoff = calculatePayoff(contract, price);
+                    individualPayoffs[index].push(payoff);
+                    combinedPayoff += payoff;
+                });
+                
+                combinedPayoffs.push(combinedPayoff);
+            }
+            
+            // Find y-axis range
+            let yMin = Math.min(...combinedPayoffs);
+            let yMax = Math.max(...combinedPayoffs);
+            
+            if (showIndividual) {
+                individualPayoffs.forEach(payoffs => {
+                    yMin = Math.min(yMin, ...payoffs);
+                    yMax = Math.max(yMax, ...payoffs);
+                });
+            }
+            
+            // Add padding
+            const yPadding = (yMax - yMin) * 0.1 || 10;
+            yMin -= yPadding;
+            yMax += yPadding;
+            
+            // Set up dimensions
+            const padding = 60;
+            const plotWidth = canvas.width - 2 * padding;
+            const plotHeight = canvas.height - 2 * padding;
+            
+            // Draw axes
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Draw grid lines
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 0.5;
+            
+            // Horizontal grid lines
+            for (let i = 0; i <= 10; i++) {
+                const y = padding + (plotHeight * i / 10);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+            }
+            
+            // Vertical grid lines
+            for (let i = 0; i <= 10; i++) {
+                const x = padding + (plotWidth * i / 10);
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, canvas.height - padding);
+                ctx.stroke();
+            }
+            
+            // Draw zero line
+            const zeroY = canvas.height - padding - ((0 - yMin) / (yMax - yMin)) * plotHeight;
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding, zeroY);
+            ctx.lineTo(canvas.width - padding, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Transform functions
+            const toX = (price) => padding + ((price - minPrice) / (maxPrice - minPrice)) * plotWidth;
+            const toY = (payoff) => canvas.height - padding - ((payoff - yMin) / (yMax - yMin)) * plotHeight;
+            
+            // Draw individual payoffs if requested
+            if (showIndividual) {
+                contracts.forEach((contract, index) => {
+                    ctx.strokeStyle = contract.color;
+                    ctx.lineWidth = 1;
+                    ctx.globalAlpha = 0.6;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(toX(prices[0]), toY(individualPayoffs[index][0]));
+                    
+                    for (let i = 1; i < prices.length; i++) {
+                        ctx.lineTo(toX(prices[i]), toY(individualPayoffs[index][i]));
+                    }
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                });
+            }
+            
+            // Draw combined payoff
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(toX(prices[0]), toY(combinedPayoffs[0]));
+            
+            for (let i = 1; i < prices.length; i++) {
+                ctx.lineTo(toX(prices[i]), toY(combinedPayoffs[i]));
+            }
+            ctx.stroke();
+            
+            // Mark strike prices
+            const strikes = [...new Set(contracts.map(c => c.strike))];
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            
+            strikes.forEach(strike => {
+                if (strike >= minPrice && strike <= maxPrice) {
+                    const x = toX(strike);
+                    ctx.beginPath();
+                    ctx.moveTo(x, padding);
+                    ctx.lineTo(x, canvas.height - padding);
+                    ctx.stroke();
+                    
+                    // Label
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.font = '12px Georgia, serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`K=${strike}`, x, canvas.height - padding + 20);
+                }
+            });
+            ctx.setLineDash([]);
+            
+            // Add labels
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Georgia, serif';
+            
+            // X-axis label
+            ctx.textAlign = 'center';
+            ctx.fillText('Stock Price at Maturity (S)', canvas.width / 2, canvas.height - 10);
+            
+            // Y-axis label
+            ctx.save();
+            ctx.translate(15, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Payoff ($)', 0, 0);
+            ctx.restore();
+            
+            // Title
+            ctx.font = 'bold 16px Georgia, serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Combined Payoff Diagram', canvas.width / 2, 30);
+            
+            // X-axis values
+            ctx.font = '11px Georgia, serif';
+            for (let i = 0; i <= 5; i++) {
+                const price = minPrice + (maxPrice - minPrice) * i / 5;
+                const x = toX(price);
+                ctx.fillText(`$${price.toFixed(0)}`, x, canvas.height - padding + 35);
+            }
+            
+            // Y-axis values
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const payoff = yMin + (yMax - yMin) * i / 5;
+                const y = toY(payoff);
+                ctx.fillText(`$${payoff.toFixed(0)}`, padding - 10, y + 4);
+            }
+            
+            // Update legend
+            updateLegend();
+        }
+        
+        function updateLegend() {
+            const legendDiv = document.getElementById('legend');
+            
+            if (contracts.length === 0) {
+                legendDiv.style.display = 'none';
+                return;
+            }
+            
+            legendDiv.style.display = 'block';
+            legendDiv.innerHTML = '<h3>Legend</h3>';
+            
+            // Combined payoff
+            legendDiv.innerHTML += `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #333; height: 4px;"></div>
+                    <span><strong>Combined Payoff</strong></span>
+                </div>
+            `;
+            
+            // Individual contracts
+            if (document.getElementById('showIndividual').value === 'yes') {
+                contracts.forEach((contract) => {
+                    legendDiv.innerHTML += `
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: ${contract.color};"></div>
+                            <span>${formatContractType(contract.type)} (K=$${contract.strike}, Q=${contract.quantity})</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+        
+        function clearCanvas() {
+            const canvas = document.getElementById('payoffChart');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('legend').style.display = 'none';
+        }
+        
+        // Initialize with example from the problem
+        window.addEventListener('DOMContentLoaded', function() {
+            // Add the three contracts from the example problem
+            contracts = [
+                { type: 'long-forward', strike: 12, quantity: 1, premium: 0, color: colors[0] },
+                { type: 'short-forward', strike: 15, quantity: 1, premium: 0, color: colors[1] },
+                { type: 'long-call', strike: 20, quantity: 0.3, premium: 0, color: colors[2] }
+            ];
+            
+            // Update the display
+            updateContractsList();
+            
+            // Set appropriate price range
+            document.getElementById('minPrice').value = 0;
+            document.getElementById('maxPrice').value = 30;
+            
+            // Generate the initial plot
+            generatePlot();
+        });
+    </script>
+</body>
+</html>

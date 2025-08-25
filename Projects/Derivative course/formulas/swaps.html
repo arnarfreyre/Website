@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swaps - Formula Sheet</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });"></script>
+</head>
+<body>
+    <a href="../formulas.html" class="back-to-main">← Back to Formulas</a>
+    
+    <div class="container">
+        <div class="formula-page-header">
+            <h1>Swaps</h1>
+            <p class="formula-subtitle">Interest rate and currency swap valuation</p>
+        </div>
+
+        <div class="formula-section">
+            <h2>Interest Rate Swap Valuation</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$V_{swap} = B_{fixed} - B_{floating}$$
+                </div>
+                <div class="formula-note">
+                    <strong>Note:</strong> At inception, swap value = 0 (par swap rate)
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Swap Rate</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$r_{swap} = \frac{1 - P(0,T_n)}{\sum_{i=1}^{n} P(0,T_i) \Delta t_i}$$
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-footer">
+            <p>All formulas verified using Python calculations</p>
+            <p><a href="../formulas.html">← Return to Formula Sheets</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

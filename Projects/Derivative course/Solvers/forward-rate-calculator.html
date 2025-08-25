@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forward Rate Calculator - Derivatives Course</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-header">
+            <h1>Forward Rate Calculator</h1>
+            <p>Calculate forward prices for various asset types</p>
+            
+            <!-- Navigation tabs -->
+            <div class="nav-tabs">
+                <a href="../index.html" class="nav-tab">Study Materials</a>
+                <a href="../problem-sets.html" class="nav-tab">Problem Sets</a>
+                <a href="../solvers.html" class="nav-tab active">Solvers</a>
+            </div>
+        </div>
+
+        <a href="../solvers.html" class="back-to-main">← Back to Solvers</a>
+
+        <div class="calculator">
+            <h2>Forward Price Calculator</h2>
+            
+            <div class="input-group">
+                <label for="spotPrice">Spot Price (S₀)</label>
+                <input type="number" id="spotPrice" placeholder="100" step="0.01" value="100">
+            </div>
+
+            <div class="input-group">
+                <label for="riskFreeRate">Risk-Free Rate (r) %</label>
+                <input type="number" id="riskFreeRate" placeholder="5" step="0.01" value="5">
+            </div>
+
+            <div class="input-group">
+                <label for="timeToMaturity">Time to Maturity (T) in years</label>
+                <input type="number" id="timeToMaturity" placeholder="1" step="0.01" value="1">
+            </div>
+
+            <div class="input-group">
+                <label for="assetType">Asset Type</label>
+                <select id="assetType" onchange="updateInputFields()">
+                    <option value="noIncome">No Income Asset</option>
+                    <option value="knownIncome">Known Cash Income</option>
+                    <option value="knownYield">Known Dividend Yield</option>
+                    <option value="commodity">Commodity</option>
+                    <option value="currency">Currency</option>
+                </select>
+            </div>
+
+            <div id="additionalInputs"></div>
+
+            <button onclick="calculateForward()">Calculate Forward Price</button>
+
+            <div id="results" style="margin-top: 2rem; display: none;">
+                <h3>Results</h3>
+                <div class="success-box" id="resultBox">
+                    <p><strong>Forward Price:</strong> <span id="forwardPrice"></span></p>
+                    <p><strong>Formula Used:</strong></p>
+                    <div id="formulaDisplay" class="math"></div>
+                    <p><strong>Calculation:</strong></p>
+                    <div id="calculationDisplay" class="math"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>About Forward Pricing</h2>
+            <p>
+                The forward price is the agreed upon price of an asset in a forward contract. 
+                Using the no-arbitrage principle, the forward price can be calculated based on 
+                the spot price, risk-free rate, and any income or costs associated with holding the asset.
+            </p>
+            
+            <h3>Formulas by Asset Type</h3>
+            
+            <div class="example">
+                <h4>No Income Asset</h4>
+                <div class="math">F = S₀ × e^(rT)</div>
+            </div>
+
+            <div class="example">
+                <h4>Known Cash Income</h4>
+                <div class="math">F = (S₀ - I) × e^(rT)</div>
+                <p>Where I is the present value of income</p>
+            </div>
+
+            <div class="example">
+                <h4>Known Dividend Yield</h4>
+                <div class="math">F = S₀ × e^((r-q)T)</div>
+                <p>Where q is the dividend yield</p>
+            </div>
+
+            <div class="example">
+                <h4>Commodity</h4>
+                <div class="math">F = S₀ × e^((r+u-y)T)</div>
+                <p>Where u is storage cost and y is convenience yield</p>
+            </div>
+
+            <div class="example">
+                <h4>Currency</h4>
+                <div class="math">F = S₀ × e^((r-r_f)T)</div>
+                <p>Where r_f is the foreign risk-free rate</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateInputFields() {
+            const assetType = document.getElementById('assetType').value;
+            const additionalInputs = document.getElementById('additionalInputs');
+            
+            let html = '';
+            
+            switch(assetType) {
+                case 'knownIncome':
+                    html = `
+                        <div class="input-group">
+                            <label for="income">Present Value of Income (I)</label>
+                            <input type="number" id="income" placeholder="0" step="0.01" value="0">
+                        </div>
+                    `;
+                    break;
+                case 'knownYield':
+                    html = `
+                        <div class="input-group">
+                            <label for="dividendYield">Dividend Yield (q) %</label>
+                            <input type="number" id="dividendYield" placeholder="2" step="0.01" value="2">
+                        </div>
+                    `;
+                    break;
+                case 'commodity':
+                    html = `
+                        <div class="input-group">
+                            <label for="storageCost">Storage Cost (u) %</label>
+                            <input type="number" id="storageCost" placeholder="1" step="0.01" value="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="convenienceYield">Convenience Yield (y) %</label>
+                            <input type="number" id="convenienceYield" placeholder="0.5" step="0.01" value="0.5">
+                        </div>
+                    `;
+                    break;
+                case 'currency':
+                    html = `
+                        <div class="input-group">
+                            <label for="foreignRate">Foreign Risk-Free Rate (r_f) %</label>
+                            <input type="number" id="foreignRate" placeholder="3" step="0.01" value="3">
+                        </div>
+                    `;
+                    break;
+            }
+            
+            additionalInputs.innerHTML = html;
+        }
+
+        function calculateForward() {
+            const S0 = parseFloat(document.getElementById('spotPrice').value);
+            const r = parseFloat(document.getElementById('riskFreeRate').value) / 100;
+            const T = parseFloat(document.getElementById('timeToMaturity').value);
+            const assetType = document.getElementById('assetType').value;
+            
+            let F, formula, calculation;
+            
+            switch(assetType) {
+                case 'noIncome':
+                    F = S0 * Math.exp(r * T);
+                    formula = 'F = S₀ × e^(rT)';
+                    calculation = `F = ${S0} × e^(${r.toFixed(4)} × ${T}) = ${F.toFixed(2)}`;
+                    break;
+                    
+                case 'knownIncome':
+                    const I = parseFloat(document.getElementById('income').value) || 0;
+                    F = (S0 - I) * Math.exp(r * T);
+                    formula = 'F = (S₀ - I) × e^(rT)';
+                    calculation = `F = (${S0} - ${I}) × e^(${r.toFixed(4)} × ${T}) = ${F.toFixed(2)}`;
+                    break;
+                    
+                case 'knownYield':
+                    const q = parseFloat(document.getElementById('dividendYield').value) / 100 || 0;
+                    F = S0 * Math.exp((r - q) * T);
+                    formula = 'F = S₀ × e^((r-q)T)';
+                    calculation = `F = ${S0} × e^((${r.toFixed(4)} - ${q.toFixed(4)}) × ${T}) = ${F.toFixed(2)}`;
+                    break;
+                    
+                case 'commodity':
+                    const u = parseFloat(document.getElementById('storageCost').value) / 100 || 0;
+                    const y = parseFloat(document.getElementById('convenienceYield').value) / 100 || 0;
+                    F = S0 * Math.exp((r + u - y) * T);
+                    formula = 'F = S₀ × e^((r+u-y)T)';
+                    calculation = `F = ${S0} × e^((${r.toFixed(4)} + ${u.toFixed(4)} - ${y.toFixed(4)}) × ${T}) = ${F.toFixed(2)}`;
+                    break;
+                    
+                case 'currency':
+                    const rf = parseFloat(document.getElementById('foreignRate').value) / 100 || 0;
+                    F = S0 * Math.exp((r - rf) * T);
+                    formula = 'F = S₀ × e^((r-r_f)T)';
+                    calculation = `F = ${S0} × e^((${r.toFixed(4)} - ${rf.toFixed(4)}) × ${T}) = ${F.toFixed(2)}`;
+                    break;
+            }
+            
+            // Display results
+            document.getElementById('forwardPrice').textContent = F.toFixed(4);
+            document.getElementById('formulaDisplay').textContent = formula;
+            document.getElementById('calculationDisplay').textContent = calculation;
+            document.getElementById('results').style.display = 'block';
+            
+            // Render math with KaTeX
+            renderMathInElement(document.getElementById('formulaDisplay'));
+            renderMathInElement(document.getElementById('calculationDisplay'));
+        }
+
+        function renderMathInElement(element) {
+            const text = element.textContent;
+            element.innerHTML = '';
+            katex.render(text, element, {
+                displayMode: true,
+                throwOnError: false
+            });
+        }
+
+        // Initialize with default asset type
+        updateInputFields();
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Rate Structures - Formula Sheet</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });"></script>
+</head>
+<body>
+    <a href="../formulas.html" class="back-to-main">← Back to Formulas</a>
+    
+    <div class="container">
+        <div class="formula-page-header">
+            <h1>Interest Rate Structures</h1>
+            <p class="formula-subtitle">Term structure and forward rate calculations</p>
+        </div>
+
+        <div class="formula-section">
+            <h2>Forward Rate</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$f(t_1, t_2) = \frac{(1 + r_2)^{t_2}}{(1 + r_1)^{t_1}} - 1$$
+                </div>
+                <div class="formula-note">
+                    <strong>Usage:</strong> Calculate forward rates from spot rates
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Term Structure Interpolation</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$r(t) = r_0 + \text{slope} \times (t - t_0)$$
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-footer">
+            <p>All formulas verified using Python calculations</p>
+            <p><a href="../formulas.html">← Return to Formula Sheets</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

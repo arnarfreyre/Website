@@ -13,10 +13,10 @@ const problemSets = [
     },
     {
         id: 2,
-        title: "Problem Set II - Hedging with Futures",
+        title: "Problem Set II - Forwards and Futures",
         chapter: "futures-forwards",
         description: "Optimal hedge ratios, basis risk, and hedging strategies using futures contracts.",
-        pdfFile: null, // To be created
+        pdfFile: "Problem set II - Forwards.pdf", // To be created
         solutionFile: null
     },
     {

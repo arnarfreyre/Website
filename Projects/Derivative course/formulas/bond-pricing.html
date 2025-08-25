@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Pricing - Formula Sheet</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });"></script>
+</head>
+<body>
+    <a href="../formulas.html" class="back-to-main">← Back to Formulas</a>
+    
+    <div class="container">
+        <div class="formula-page-header">
+            <h1>Bond Pricing</h1>
+            <p class="formula-subtitle">Valuation formulas for fixed income securities</p>
+        </div>
+
+        <div class="formula-section">
+            <h2>Bond Price with Semi-Annual Coupons</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$P = \sum_{t=1}^{n} \frac{C/2}{(1 + r/2)^t} + \frac{F}{(1 + r/2)^n}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$P$</strong> = Bond price</li>
+                        <li><strong>$C$</strong> = Annual coupon payment</li>
+                        <li><strong>$r$</strong> = Annual yield (with semi-annual compounding)</li>
+                        <li><strong>$n$</strong> = Number of semi-annual periods</li>
+                        <li><strong>$F$</strong> = Face value (par value)</li>
+                    </ul>
+                </div>
+                <div class="formula-warning">
+                    <strong>⚠️ Important:</strong> For bonds with semi-annual coupons, always use semi-annual compounding!
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Bond Price with Annual Coupons</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$P = \sum_{t=1}^{n} \frac{C}{(1 + r)^t} + \frac{F}{(1 + r)^n}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$P$</strong> = Bond price</li>
+                        <li><strong>$C$</strong> = Annual coupon payment</li>
+                        <li><strong>$r$</strong> = Annual yield</li>
+                        <li><strong>$n$</strong> = Number of years to maturity</li>
+                        <li><strong>$F$</strong> = Face value</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Usage:</strong> Common for European government bonds
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Bond Price with Varying Term Structure</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$P = \sum_{i=1}^{n} \frac{CF_i}{(1 + r_i/2)^{2t_i}}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$CF_i$</strong> = Cash flow at period $i$</li>
+                        <li><strong>$r_i$</strong> = Annual spot rate for period $i$</li>
+                        <li><strong>$t_i$</strong> = Time in years to period $i$</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Note:</strong> Each cash flow is discounted at its corresponding spot rate
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Clean vs. Dirty Price</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$\text{Dirty Price} = \text{Clean Price} + \text{Accrued Interest}$$
+                </div>
+                <div class="math">
+                    $$\text{Accrued Interest} = C \times \frac{\text{Days since last coupon}}{\text{Days in coupon period}}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Definitions:</h4>
+                    <ul>
+                        <li><strong>Clean Price</strong> = Quoted bond price (excludes accrued interest)</li>
+                        <li><strong>Dirty Price</strong> = Invoice price (includes accrued interest)</li>
+                        <li><strong>$C$</strong> = Coupon payment for the period</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Yield to Maturity (YTM)</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$P = \sum_{t=1}^{n} \frac{C}{(1 + YTM)^t} + \frac{F}{(1 + YTM)^n}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Definition:</h4>
+                    <p>YTM is the internal rate of return that equates the bond price to the present value of all future cash flows</p>
+                </div>
+                <div class="formula-warning">
+                    <strong>⚠️ Note:</strong> No closed-form solution - must be solved iteratively (e.g., Newton-Raphson method)
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Current Yield</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$\text{Current Yield} = \frac{C}{P}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$C$</strong> = Annual coupon payment</li>
+                        <li><strong>$P$</strong> = Current bond price</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Limitation:</strong> Ignores capital gains/losses and time value of money
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Zero-Coupon Bond Price</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$P = \frac{F}{(1 + r)^n}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$F$</strong> = Face value at maturity</li>
+                        <li><strong>$r$</strong> = Yield per period</li>
+                        <li><strong>$n$</strong> = Number of periods to maturity</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Application:</strong> Treasury STRIPS, zero-coupon corporate bonds
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-footer">
+            <p>All formulas verified using Python calculations</p>
+            <p><a href="../formulas.html">← Return to Formula Sheets</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

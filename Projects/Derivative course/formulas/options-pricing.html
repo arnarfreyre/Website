@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options Pricing - Formula Sheet</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });"></script>
+</head>
+<body>
+    <a href="../formulas.html" class="back-to-main">← Back to Formulas</a>
+    
+    <div class="container">
+        <div class="formula-page-header">
+            <h1>Options Pricing</h1>
+            <p class="formula-subtitle">Black-Scholes model and option Greeks</p>
+        </div>
+
+        <div class="formula-section">
+            <h2>Black-Scholes Call Option</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$C = S_0 N(d_1) - Ke^{-rT} N(d_2)$$
+                </div>
+                <div class="math">
+                    $$d_1 = \frac{\ln(S_0/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}$$
+                </div>
+                <div class="math">
+                    $$d_2 = d_1 - \sigma\sqrt{T}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$C$</strong> = Call option price</li>
+                        <li><strong>$S_0$</strong> = Current stock price</li>
+                        <li><strong>$K$</strong> = Strike price</li>
+                        <li><strong>$r$</strong> = Risk-free rate</li>
+                        <li><strong>$T$</strong> = Time to maturity</li>
+                        <li><strong>$\sigma$</strong> = Volatility</li>
+                        <li><strong>$N(x)$</strong> = Cumulative standard normal distribution</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Black-Scholes Put Option</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$P = Ke^{-rT} N(-d_2) - S_0 N(-d_1)$$
+                </div>
+                <div class="formula-note">
+                    <strong>Put-Call Parity:</strong> $C - P = S_0 - Ke^{-rT}$
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Option Greeks</h2>
+            <div class="formula-box">
+                <h3>Delta (Δ)</h3>
+                <div class="math">
+                    $$\Delta_{call} = N(d_1), \quad \Delta_{put} = -N(-d_1)$$
+                </div>
+                
+                <h3>Gamma (Γ)</h3>
+                <div class="math">
+                    $$\Gamma = \frac{\phi(d_1)}{S_0 \sigma \sqrt{T}}$$
+                </div>
+                
+                <h3>Theta (Θ)</h3>
+                <div class="math">
+                    $$\Theta_{call} = -\frac{S_0 \phi(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2)$$
+                </div>
+                
+                <h3>Vega (ν)</h3>
+                <div class="math">
+                    $$\nu = S_0 \phi(d_1) \sqrt{T}$$
+                </div>
+                
+                <h3>Rho (ρ)</h3>
+                <div class="math">
+                    $$\rho_{call} = KTe^{-rT}N(d_2), \quad \rho_{put} = -KTe^{-rT}N(-d_2)$$
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-footer">
+            <p>All formulas verified using Python calculations</p>
+            <p><a href="../formulas.html">← Return to Formula Sheets</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

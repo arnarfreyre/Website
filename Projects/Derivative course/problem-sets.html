@@ -17,6 +17,8 @@
             <div class="nav-tabs">
                 <a href="index.html" class="nav-tab">Study Materials</a>
                 <a href="problem-sets.html" class="nav-tab active">Problem Sets</a>
+                <a href="solvers.html" class="nav-tab">Solvers</a>
+                <a href="formulas.html" class="nav-tab">Formulas</a>
             </div>
         </div>
 
@@ -27,8 +29,8 @@
         <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #ddd;">
             <h2 style="border-bottom: none; font-size: 1.4em; color: #666;">Problem Set Information</h2>
             <p style="color: #666;">
-                Problem sets are released weekly and cover the material from lectures and readings. 
-                Solutions will be made available after the due date. Practice problems for midterm 
+                Problem sets are released weekly and cover the material from lectures and readings.
+                Solutions will be made available after the due date. Practice problems for midterm
                 and final exams are also provided.
             </p>
             <p style="color: #666;">
@@ -48,123 +50,12 @@
         </div>
     </div>
 
-    <!-- Load configuration and problem sets data -->
+    <!-- Load configuration, problem sets data, and render utilities -->
     <script src="js/config.js"></script>
     <script src="js/problemSets.js"></script>
-    
+    <script src="js/render-utils.js"></script>
+
     <script>
-        // Function to check if problem set is available
-        function isAvailable(problemSet) {
-            return problemSet.pdfFile !== null;
-        }
-
-        // Function to create problem set card
-        function createProblemSetCard(ps) {
-            const available = isAvailable(ps);
-            const hasSolution = ps.solutionFile !== null;
-            
-            const card = document.createElement('div');
-            card.className = 'problem-set-card';
-            if (!available) {
-                card.style.opacity = '0.7';
-                card.style.cursor = 'not-allowed';
-            }
-            
-            // Title
-            const title = document.createElement('h3');
-            title.textContent = ps.title;
-            card.appendChild(title);
-            
-            // Description
-            const description = document.createElement('p');
-            description.textContent = ps.description;
-            card.appendChild(description);
-            
-            // Action buttons
-            const actions = document.createElement('div');
-            actions.className = 'problem-set-actions';
-            actions.onclick = function(e) {
-                e.stopPropagation(); // Prevent card click when clicking buttons
-            };
-            
-            // Open PDF button
-            const pdfButton = document.createElement('button');
-            pdfButton.className = available ? 'btn-primary' : 'btn-primary btn-disabled';
-            pdfButton.textContent = 'Open PDF';
-            pdfButton.disabled = !available;
-            if (available) {
-                pdfButton.onclick = function() {
-                    // Add "Problem sets/" prefix to the path
-                    const pdfPath = 'Problem sets/' + ps.pdfFile;
-                    openPdfViewer(pdfPath, ps.title + ' - PDF');
-                };
-            }
-            actions.appendChild(pdfButton);
-            
-            // Solutions button
-            const solutionsButton = document.createElement('button');
-            solutionsButton.className = hasSolution ? 'btn-secondary' : 'btn-secondary btn-disabled';
-            solutionsButton.textContent = 'View Solutions';
-            solutionsButton.disabled = !hasSolution;
-            if (hasSolution) {
-                solutionsButton.onclick = function() {
-                    // Add "Solutions/" prefix to the path
-                    const solutionPath = 'Solutions/' + ps.solutionFile;
-                    // Check if it's an HTML file or PDF
-                    if (ps.solutionFile.endsWith('.html')) {
-                        // For HTML files, navigate directly
-                        window.location.href = solutionPath;
-                    } else {
-                        // For PDF files, use the viewer
-                        openPdfViewer(solutionPath, ps.title + ' - Solutions');
-                    }
-                };
-            }
-            actions.appendChild(solutionsButton);
-            
-            card.appendChild(actions);
-            
-            // Make entire card clickable to open PDF (if available)
-            if (available) {
-                card.style.cursor = 'pointer';
-                card.onclick = function(e) {
-                    // Don't trigger if clicking on buttons
-                    if (e.target.tagName !== 'BUTTON') {
-                        const pdfPath = 'Problem sets/' + ps.pdfFile;
-                        openPdfViewer(pdfPath, ps.title + ' - PDF');
-                    }
-                };
-            }
-            
-            return card;
-        }
-
-        // Function to render problem sets
-        function renderProblemSets() {
-            const container = document.getElementById('problemSetsContainer');
-            container.innerHTML = ''; // Clear existing content
-            
-            // Create cards for each problem set
-            problemSetAPI.problemSets.forEach(ps => {
-                const card = createProblemSetCard(ps);
-                container.appendChild(card);
-            });
-            
-            // Add fade-in animation
-            const cards = container.querySelectorAll('.problem-set-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'all 0.5s ease';
-                    
-                    setTimeout(() => {
-                        card.style.opacity = isAvailable(problemSetAPI.problemSets[index]) ? '1' : '0.7';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
-                }, index * 100);
-            });
-        }
 
         // Function to open PDF viewer
         function openPdfViewer(pdfPath, title) {
@@ -172,39 +63,47 @@
             const pdfViewerContainer = document.getElementById('pdfViewerContainer');
             const pdfFrame = document.getElementById('pdfFrame');
             const pdfTitle = document.getElementById('pdfTitle');
-            
+
             // Hide main content and show PDF viewer
             mainContent.style.display = 'none';
             pdfViewerContainer.style.display = 'block';
-            
+
             // Set PDF source and title
             pdfFrame.src = pdfPath;
             pdfTitle.textContent = title;
-            
+
             // Scroll to top
             window.scrollTo(0, 0);
         }
-        
+
         // Function to close PDF viewer and return to main content
         function closePdfViewer() {
             const mainContent = document.getElementById('mainContent');
             const pdfViewerContainer = document.getElementById('pdfViewerContainer');
             const pdfFrame = document.getElementById('pdfFrame');
-            
+
             // Show main content and hide PDF viewer
             mainContent.style.display = 'block';
             pdfViewerContainer.style.display = 'none';
-            
+
             // Clear the iframe source
             pdfFrame.src = '';
-            
+
             // Scroll to top
             window.scrollTo(0, 0);
         }
-        
+
         // Initialize page when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            renderProblemSets();
+            // Make openPdfViewer available globally for render-utils
+            window.openPdfViewer = openPdfViewer;
+
+            // Render problem sets using shared utilities
+            if (window.renderUtils && window.problemSetAPI) {
+                renderUtils.renderProblemSets('problemSetsContainer', problemSetAPI.problemSets);
+            } else {
+                console.error('Failed to load configuration or render utilities');
+            }
         });
     </script>
 </body>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions Template - T-503-AFLE Derivatives</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '\\(', right: '\\)', display: false}
+                ]
+            });
+        });
+    </script>
+    
+    <!-- ========================================= -->
+    <!-- MODULAR PLOTTING LIBRARY                 -->
+    <!-- ========================================= -->
+    <script>
+        // Plotting utility functions for derivatives visualizations
+        
+        /**
+         * Initialize a canvas with proper scaling and axes
+         * @param {string} canvasId - ID of the canvas element
+         * @param {Object} config - Configuration object
+         * @returns {Object} - Context and dimensions
+         */
+        function initCanvas(canvasId, config = {}) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = config.width || 600;
+            canvas.height = config.height || 400;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set default styles
+            ctx.strokeStyle = config.strokeColor || '#333';
+            ctx.fillStyle = config.fillColor || '#333';
+            ctx.lineWidth = config.lineWidth || 2;
+            
+            return {
+                ctx: ctx,
+                width: canvas.width,
+                height: canvas.height,
+                padding: config.padding || 50
+            };
+        }
+        
+        /**
+         * Draw axes with labels
+         */
+        function drawAxes(ctx, width, height, padding, labels = {}) {
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.stroke();
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            
+            // X-axis label
+            ctx.fillText(labels.x || 'Stock Price', width/2, height - 10);
+            
+            // Y-axis label
+            ctx.save();
+            ctx.translate(15, height/2);
+            ctx.rotate(-Math.PI/2);
+            ctx.fillText(labels.y || 'Payoff', 0, 0);
+            ctx.restore();
+        }
+        
+        /**
+         * Plot option payoff diagram
+         * @param {string} canvasId - Canvas element ID
+         * @param {Object} options - Option parameters
+         */
+        function plotPayoffDiagram(canvasId, options) {
+            const {ctx, width, height, padding} = initCanvas(canvasId, options.canvas || {});
+            
+            // Draw axes
+            drawAxes(ctx, width, height, padding, {
+                x: options.xLabel || 'Stock Price (S)',
+                y: options.yLabel || 'Payoff ($)'
+            });
+            
+            // Calculate scale
+            const xMin = options.xMin || 0;
+            const xMax = options.xMax || 200;
+            const yMin = options.yMin || -50;
+            const yMax = options.yMax || 50;
+            
+            const xScale = (width - 2*padding) / (xMax - xMin);
+            const yScale = (height - 2*padding) / (yMax - yMin);
+            
+            // Transform functions
+            const toX = (x) => padding + (x - xMin) * xScale;
+            const toY = (y) => height - padding - (y - yMin) * yScale;
+            
+            // Draw zero line
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(toX(xMin), toY(0));
+            ctx.lineTo(toX(xMax), toY(0));
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Plot payoff line(s)
+            ctx.strokeStyle = options.color || '#2196F3';
+            ctx.lineWidth = 2;
+            
+            if (options.data && options.data.length > 0) {
+                ctx.beginPath();
+                ctx.moveTo(toX(options.data[0].x), toY(options.data[0].y));
+                
+                for (let i = 1; i < options.data.length; i++) {
+                    ctx.lineTo(toX(options.data[i].x), toY(options.data[i].y));
+                }
+                ctx.stroke();
+            }
+            
+            // Mark strike price(s)
+            if (options.strikes) {
+                ctx.strokeStyle = '#F44336';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+                
+                options.strikes.forEach(strike => {
+                    ctx.beginPath();
+                    ctx.moveTo(toX(strike), toY(yMin));
+                    ctx.lineTo(toX(strike), toY(yMax));
+                    ctx.stroke();
+                    
+                    // Label
+                    ctx.fillStyle = '#F44336';
+                    ctx.font = '12px Arial';
+                    ctx.fillText(`K=${strike}`, toX(strike), height - padding + 20);
+                });
+                ctx.setLineDash([]);
+            }
+            
+            // Add title
+            if (options.title) {
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(options.title, width/2, 30);
+            }
+        }
+        
+        /**
+         * Plot general function
+         * @param {string} canvasId - Canvas element ID
+         * @param {Function} func - Function to plot
+         * @param {Object} options - Plot options
+         */
+        function plotFunction(canvasId, func, options = {}) {
+            const {ctx, width, height, padding} = initCanvas(canvasId, options.canvas || {});
+            
+            // Draw axes
+            drawAxes(ctx, width, height, padding, {
+                x: options.xLabel || 'x',
+                y: options.yLabel || 'f(x)'
+            });
+            
+            const xMin = options.xMin || -10;
+            const xMax = options.xMax || 10;
+            const steps = options.steps || 200;
+            
+            // Calculate y range
+            const data = [];
+            let yMin = Infinity, yMax = -Infinity;
+            
+            for (let i = 0; i <= steps; i++) {
+                const x = xMin + (xMax - xMin) * i / steps;
+                const y = func(x);
+                data.push({x, y});
+                yMin = Math.min(yMin, y);
+                yMax = Math.max(yMax, y);
+            }
+            
+            // Add padding to y range
+            const yPadding = (yMax - yMin) * 0.1;
+            yMin -= yPadding;
+            yMax += yPadding;
+            
+            const xScale = (width - 2*padding) / (xMax - xMin);
+            const yScale = (height - 2*padding) / (yMax - yMin);
+            
+            const toX = (x) => padding + (x - xMin) * xScale;
+            const toY = (y) => height - padding - (y - yMin) * yScale;
+            
+            // Draw grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 0.5;
+            
+            // Vertical grid lines
+            for (let x = Math.ceil(xMin); x <= xMax; x++) {
+                ctx.beginPath();
+                ctx.moveTo(toX(x), padding);
+                ctx.lineTo(toX(x), height - padding);
+                ctx.stroke();
+            }
+            
+            // Horizontal grid lines
+            const yStep = Math.pow(10, Math.floor(Math.log10(yMax - yMin)));
+            for (let y = Math.ceil(yMin/yStep)*yStep; y <= yMax; y += yStep) {
+                ctx.beginPath();
+                ctx.moveTo(padding, toY(y));
+                ctx.lineTo(width - padding, toY(y));
+                ctx.stroke();
+            }
+            
+            // Draw function
+            ctx.strokeStyle = options.color || '#4CAF50';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(toX(data[0].x), toY(data[0].y));
+            
+            for (let i = 1; i < data.length; i++) {
+                ctx.lineTo(toX(data[i].x), toY(data[i].y));
+            }
+            ctx.stroke();
+            
+            // Add title
+            if (options.title) {
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(options.title, width/2, 30);
+            }
+        }
+        
+        /**
+         * Plot time series data
+         * @param {string} canvasId - Canvas element ID
+         * @param {Array} data - Array of {x, y} objects
+         * @param {Object} options - Plot options
+         */
+        function plotTimeSeries(canvasId, data, options = {}) {
+            const {ctx, width, height, padding} = initCanvas(canvasId, options.canvas || {});
+            
+            // Draw axes
+            drawAxes(ctx, width, height, padding, {
+                x: options.xLabel || 'Time',
+                y: options.yLabel || 'Value'
+            });
+            
+            if (!data || data.length === 0) return;
+            
+            // Find data range
+            let xMin = Infinity, xMax = -Infinity;
+            let yMin = Infinity, yMax = -Infinity;
+            
+            data.forEach(point => {
+                xMin = Math.min(xMin, point.x);
+                xMax = Math.max(xMax, point.x);
+                yMin = Math.min(yMin, point.y);
+                yMax = Math.max(yMax, point.y);
+            });
+            
+            // Add padding to ranges
+            const yPadding = (yMax - yMin) * 0.1 || 1;
+            yMin -= yPadding;
+            yMax += yPadding;
+            
+            const xScale = (width - 2*padding) / (xMax - xMin);
+            const yScale = (height - 2*padding) / (yMax - yMin);
+            
+            const toX = (x) => padding + (x - xMin) * xScale;
+            const toY = (y) => height - padding - (y - yMin) * yScale;
+            
+            // Plot line
+            ctx.strokeStyle = options.color || '#FF9800';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(toX(data[0].x), toY(data[0].y));
+            
+            for (let i = 1; i < data.length; i++) {
+                ctx.lineTo(toX(data[i].x), toY(data[i].y));
+            }
+            ctx.stroke();
+            
+            // Plot points if requested
+            if (options.showPoints) {
+                ctx.fillStyle = options.pointColor || '#FF5722';
+                data.forEach(point => {
+                    ctx.beginPath();
+                    ctx.arc(toX(point.x), toY(point.y), 3, 0, 2*Math.PI);
+                    ctx.fill();
+                });
+            }
+            
+            // Add title
+            if (options.title) {
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(options.title, width/2, 30);
+            }
+        }
+        
+        /**
+         * Plot bar chart
+         * @param {string} canvasId - Canvas element ID
+         * @param {Array} data - Array of {label, value} objects
+         * @param {Object} options - Plot options
+         */
+        function plotBarChart(canvasId, data, options = {}) {
+            const {ctx, width, height, padding} = initCanvas(canvasId, options.canvas || {});
+            
+            if (!data || data.length === 0) return;
+            
+            const barWidth = (width - 2*padding) / (data.length * 1.5);
+            const barSpacing = barWidth * 0.5;
+            
+            // Find y range
+            let yMin = 0;
+            let yMax = Math.max(...data.map(d => d.value));
+            yMax *= 1.1; // Add 10% padding
+            
+            const yScale = (height - 2*padding) / yMax;
+            const baseY = height - padding;
+            
+            // Draw axes
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, baseY);
+            ctx.lineTo(width - padding, baseY);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, baseY);
+            ctx.stroke();
+            
+            // Draw bars
+            ctx.fillStyle = options.color || '#9C27B0';
+            
+            data.forEach((item, index) => {
+                const x = padding + barSpacing + index * (barWidth + barSpacing);
+                const barHeight = item.value * yScale;
+                const y = baseY - barHeight;
+                
+                ctx.fillRect(x, y, barWidth, barHeight);
+                
+                // Label
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.label, x + barWidth/2, baseY + 20);
+                
+                // Value
+                ctx.fillText(item.value.toFixed(2), x + barWidth/2, y - 5);
+                
+                ctx.fillStyle = options.color || '#9C27B0';
+            });
+            
+            // Add title
+            if (options.title) {
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(options.title, width/2, 30);
+            }
+        }
+    </script>
+    
+    <style>
+        /* Additional styles for template components */
+        .template-section {
+            border: 2px dashed #e0e0e0;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .template-label {
+            background-color: #2196F3;
+            color: white;
+            padding: 5px 10px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .usage-instructions {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .formula-box {
+            background-color: #f0f7ff;
+            border: 1px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .final-answer {
+            background-color: #e8f5e9;
+            border: 2px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .python-reference {
+            background-color: #263238;
+            color: #aed581;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        canvas {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html">← Back to Main</a> |
+            <a href="../formulas.html">Formula Sheet</a>
+        </nav>
+        <h1>Solution Template - T-503-AFLE Derivatives</h1>
+    </header>
+    
+    <main>
+        <!-- ========================================= -->
+        <!-- USAGE INSTRUCTIONS                       -->
+        <!-- ========================================= -->
+        <div class="usage-instructions">
+            <h2>📋 How to Use This Template</h2>
+            <ol>
+                <li><strong>Copy the sections you need</strong> - Each problem type has its own template section below</li>
+                <li><strong>Replace placeholder content</strong> - Update problem numbers, text, and calculations</li>
+                <li><strong>Use Python verification</strong> - Always verify calculations in Python-Fact-Checking/ first</li>
+                <li><strong>Update navigation</strong> - Modify the header links for your specific solution file</li>
+                <li><strong>For plots</strong> - Use the provided JavaScript functions with your data</li>
+                <li><strong>Delete unused sections</strong> - Remove template sections you don't need</li>
+                <li><strong>Save as Solutions-[number].html</strong> - Follow the naming convention</li>
+            </ol>
+        </div>
+        
+        <!-- ========================================= -->
+        <!-- WORD QUESTION TEMPLATE                   -->
+        <!-- Copy this entire section for word-based problems -->
+        <!-- ========================================= -->
+        <div class="template-section">
+            <span class="template-label">WORD QUESTION TEMPLATE</span>
+            
+            <section class="problem">
+                <h2>Question 1: Conceptual Understanding</h2>
+                
+                <div class="problem-statement">
+                    <h3>Problem Statement</h3>
+                    <p>
+                        Explain the difference between European and American options, and discuss 
+                        why American options are never worth less than their European counterparts.
+                    </p>
+                </div>
+                
+                <div class="key-concepts">
+                    <h3>Key Concepts</h3>
+                    <ul>
+                        <li><strong>European Option:</strong> Can only be exercised at maturity</li>
+                        <li><strong>American Option:</strong> Can be exercised at any time before maturity</li>
+                        <li><strong>Early Exercise Premium:</strong> Additional value from flexibility</li>
+                    </ul>
+                </div>
+                
+                <div class="detailed-explanation">
+                    <h3>Detailed Explanation</h3>
+                    <p>
+                        European options can only be exercised at maturity (time T), while American 
+                        options can be exercised at any time up to and including maturity. This 
+                        additional flexibility gives American options more value.
+                    </p>
+                    
+                    <p>
+                        <strong>Mathematical Relationship:</strong>
+                        \[C_{American} \geq C_{European}\]
+                        \[P_{American} \geq P_{European}\]
+                    </p>
+                    
+                    <p>
+                        The early exercise feature is particularly valuable for:
+                    </p>
+                    <ul>
+                        <li>American put options when the stock price is very low</li>
+                        <li>American call options on dividend-paying stocks before ex-dividend dates</li>
+                    </ul>
+                </div>
+                
+                <div class="final-answer">
+                    <strong>Answer:</strong> American options have all the rights of European options 
+                    plus the additional right to exercise early. This optionality can never have 
+                    negative value, therefore American options are always worth at least as much 
+                    as their European counterparts.
+                </div>
+            </section>
+        </div>
+        
+        <!-- ========================================= -->
+        <!-- CALCULATION PROBLEM TEMPLATE             -->
+        <!-- Copy this entire section for numerical problems -->
+        <!-- ========================================= -->
+        <div class="template-section">
+            <span class="template-label">CALCULATION PROBLEM TEMPLATE</span>
+            
+            <section class="problem">
+                <h2>Question 2: Bond Pricing Calculation</h2>
+                
+                <div class="problem-statement">
+                    <h3>Problem Statement</h3>
+                    <p>
+                        Calculate the price of a 3-year bond with a face value of $1,000, 
+                        annual coupon rate of 5%, and yield to maturity of 6%.
+                    </p>
+                </div>
+                
+                <div class="given-data">
+                    <h3>Given Data</h3>
+                    <ul>
+                        <li>Face Value (FV) = $1,000</li>
+                        <li>Coupon Rate = 5% annual</li>
+                        <li>Annual Coupon (C) = $50</li>
+                        <li>Yield to Maturity (y) = 6%</li>
+                        <li>Time to Maturity (T) = 3 years</li>
+                    </ul>
+                </div>
+                
+                <div class="formula-box">
+                    <h3>Formula</h3>
+                    <p>Bond Price formula:</p>
+                    \[P = \sum_{t=1}^{T} \frac{C}{(1+y)^t} + \frac{FV}{(1+y)^T}\]
+                </div>
+                
+                <div class="calculation-steps">
+                    <h3>Step-by-Step Calculation</h3>
+                    
+                    <p><strong>Step 1:</strong> Calculate present value of coupons</p>
+                    \[PV_{coupons} = \frac{50}{1.06^1} + \frac{50}{1.06^2} + \frac{50}{1.06^3}\]
+                    \[PV_{coupons} = 47.17 + 44.50 + 41.98 = 133.65\]
+                    
+                    <p><strong>Step 2:</strong> Calculate present value of face value</p>
+                    \[PV_{face} = \frac{1000}{1.06^3} = \frac{1000}{1.191016} = 839.62\]
+                    
+                    <p><strong>Step 3:</strong> Sum the present values</p>
+                    \[P = PV_{coupons} + PV_{face} = 133.65 + 839.62 = 973.27\]
+                </div>
+                
+                <div class="python-reference">
+                    <strong>Python Verification:</strong> Python-Fact-Checking/bond_pricing_corrected.py
+                    <br>Status: ✓ VERIFIED
+                </div>
+                
+                <div class="final-answer">
+                    <strong>Final Answer:</strong> The bond price is $973.27
+                </div>
+            </section>
+        </div>
+        
+        <!-- ========================================= -->
+        <!-- DERIVATION PROBLEM TEMPLATE              -->
+        <!-- Copy this entire section for proof/derivation problems -->
+        <!-- ========================================= -->
+        <div class="template-section">
+            <span class="template-label">DERIVATION PROBLEM TEMPLATE</span>
+            
+            <section class="problem">
+                <h2>Question 3: Derive Put-Call Parity</h2>
+                
+                <div class="problem-statement">
+                    <h3>Problem Statement</h3>
+                    <p>
+                        Derive the put-call parity relationship for European options on 
+                        non-dividend paying stocks.
+                    </p>
+                </div>
+                
+                <div class="derivation">
+                    <h3>Derivation</h3>
+                    
+                    <p><strong>Starting Point:</strong> Consider two portfolios:</p>
+                    
+                    <div class="formula-box">
+                        <p><strong>Portfolio A:</strong> One European call option + Cash amount \(Ke^{-rT}\)</p>
+                        <p><strong>Portfolio B:</strong> One European put option + One share of stock</p>
+                    </div>
+                    
+                    <p><strong>Step 1:</strong> Analyze payoffs at maturity T</p>
+                    
+                    <p>If \(S_T > K\):</p>
+                    <ul>
+                        <li>Portfolio A: \((S_T - K) + K = S_T\)</li>
+                        <li>Portfolio B: \(0 + S_T = S_T\)</li>
+                    </ul>
+                    
+                    <p>If \(S_T < K\):</p>
+                    <ul>
+                        <li>Portfolio A: \(0 + K = K\)</li>
+                        <li>Portfolio B: \((K - S_T) + S_T = K\)</li>
+                    </ul>
+                    
+                    <p><strong>Step 2:</strong> Since payoffs are identical, portfolios must have same value today</p>
+                    
+                    \[C + Ke^{-rT} = P + S_0\]
+                    
+                    <p><strong>Step 3:</strong> Rearrange to get put-call parity</p>
+                    
+                    <div class="formula-box">
+                        \[C - P = S_0 - Ke^{-rT}\]
+                    </div>
+                </div>
+                
+                <div class="final-answer">
+                    <strong>Result:</strong> Put-Call Parity: \(C - P = S_0 - Ke^{-rT}\)
+                    <br>This fundamental relationship links European call and put prices.
+                </div>
+            </section>
+        </div>
+        
+        <!-- ========================================= -->
+        <!-- PLOTTING PROBLEM TEMPLATE                -->
+        <!-- Copy this entire section for visualization problems -->
+        <!-- ========================================= -->
+        <div class="template-section">
+            <span class="template-label">PLOTTING PROBLEM TEMPLATE</span>
+            
+            <section class="problem">
+                <h2>Question 4: Option Payoff Visualization</h2>
+                
+                <div class="problem-statement">
+                    <h3>Problem Statement</h3>
+                    <p>
+                        Plot the payoff diagram for a bull call spread using calls with 
+                        strikes at $100 and $110. The premium for the $100 call is $5 
+                        and for the $110 call is $2.
+                    </p>
+                </div>
+                
+                <div class="strategy-setup">
+                    <h3>Strategy Setup</h3>
+                    <ul>
+                        <li>Buy call with K₁ = $100, premium = $5</li>
+                        <li>Sell call with K₂ = $110, premium = $2</li>
+                        <li>Net cost = $5 - $2 = $3</li>
+                    </ul>
+                </div>
+                
+                <div class="plot-container">
+                    <h3>Payoff Diagram</h3>
+                    <canvas id="bullCallSpread" width="600" height="400"></canvas>
+                </div>
+                
+                <script>
+                    // Calculate and plot bull call spread payoff
+                    document.addEventListener("DOMContentLoaded", function() {
+                        // Generate payoff data
+                        const data = [];
+                        const K1 = 100, K2 = 110;
+                        const premium1 = 5, premium2 = 2;
+                        const netCost = premium1 - premium2;
+                        
+                        for (let S = 80; S <= 130; S += 1) {
+                            let payoff;
+                            if (S <= K1) {
+                                payoff = -netCost;
+                            } else if (S > K1 && S <= K2) {
+                                payoff = S - K1 - netCost;
+                            } else {
+                                payoff = K2 - K1 - netCost;
+                            }
+                            data.push({x: S, y: payoff});
+                        }
+                        
+                        // Plot the payoff diagram
+                        plotPayoffDiagram('bullCallSpread', {
+                            data: data,
+                            title: 'Bull Call Spread Payoff',
+                            xLabel: 'Stock Price at Expiry ($)',
+                            yLabel: 'Profit/Loss ($)',
+                            xMin: 80,
+                            xMax: 130,
+                            yMin: -5,
+                            yMax: 10,
+                            strikes: [100, 110],
+                            color: '#4CAF50'
+                        });
+                    });
+                </script>
+                
+                <div class="analysis">
+                    <h3>Analysis</h3>
+                    <ul>
+                        <li><strong>Maximum Loss:</strong> $3 (net premium paid)</li>
+                        <li><strong>Maximum Profit:</strong> $7 (K₂ - K₁ - net cost)</li>
+                        <li><strong>Break-even Point:</strong> $103 (K₁ + net cost)</li>
+                        <li><strong>Strategy Type:</strong> Bullish with limited risk and reward</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        
+        <!-- ========================================= -->
+        <!-- ADDITIONAL PLOTTING EXAMPLES              -->
+        <!-- ========================================= -->
+        <div class="template-section">
+            <span class="template-label">MORE PLOTTING EXAMPLES</span>
+            
+            <h2>Additional Visualization Examples</h2>
+            
+            <!-- Example: Function Plot -->
+            <div class="example">
+                <h3>Example 1: Black-Scholes Delta Function</h3>
+                <canvas id="deltaPlot" width="600" height="400"></canvas>
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        // Normal CDF approximation for delta calculation
+                        function normCDF(x) {
+                            const t = 1 / (1 + 0.2316419 * Math.abs(x));
+                            const d = 0.3989423 * Math.exp(-x * x / 2);
+                            const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+                            return x > 0 ? 1 - p : p;
+                        }
+                        
+                        // Delta as a function of stock price
+                        const K = 100, r = 0.05, sigma = 0.25, T = 0.25;
+                        
+                        plotFunction('deltaPlot', 
+                            function(S) {
+                                if (S <= 0) return 0;
+                                const d1 = (Math.log(S/K) + (r + sigma*sigma/2)*T) / (sigma * Math.sqrt(T));
+                                return normCDF(d1);
+                            },
+                            {
+                                title: 'Call Option Delta vs Stock Price',
+                                xLabel: 'Stock Price ($)',
+                                yLabel: 'Delta',
+                                xMin: 50,
+                                xMax: 150,
+                                color: '#FF5722'
+                            }
+                        );
+                    });
+                </script>
+            </div>
+            
+            <!-- Example: Time Series -->
+            <div class="example">
+                <h3>Example 2: Yield Curve</h3>
+                <canvas id="yieldCurve" width="600" height="400"></canvas>
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        // Sample yield curve data
+                        const yieldData = [
+                            {x: 0.25, y: 2.1},
+                            {x: 0.5, y: 2.3},
+                            {x: 1, y: 2.5},
+                            {x: 2, y: 2.8},
+                            {x: 3, y: 3.0},
+                            {x: 5, y: 3.3},
+                            {x: 7, y: 3.5},
+                            {x: 10, y: 3.7},
+                            {x: 20, y: 3.9},
+                            {x: 30, y: 4.0}
+                        ];
+                        
+                        plotTimeSeries('yieldCurve', yieldData, {
+                            title: 'Yield Curve',
+                            xLabel: 'Maturity (Years)',
+                            yLabel: 'Yield (%)',
+                            color: '#9C27B0',
+                            showPoints: true
+                        });
+                    });
+                </script>
+            </div>
+            
+            <!-- Example: Bar Chart -->
+            <div class="example">
+                <h3>Example 3: Option Greeks Comparison</h3>
+                <canvas id="greeksBar" width="600" height="400"></canvas>
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const greeksData = [
+                            {label: 'Delta', value: 0.55},
+                            {label: 'Gamma', value: 0.02},
+                            {label: 'Theta', value: -0.05},
+                            {label: 'Vega', value: 0.15},
+                            {label: 'Rho', value: 0.08}
+                        ];
+                        
+                        plotBarChart('greeksBar', greeksData, {
+                            title: 'Option Greeks for ATM Call',
+                            color: '#00BCD4'
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        
+        <!-- ========================================= -->
+        <!-- FOOTER TEMPLATE                          -->
+        <!-- ========================================= -->
+        <footer style="margin-top: 50px; padding: 20px; background-color: #f5f5f5; text-align: center;">
+            <p><strong>Template Instructions:</strong></p>
+            <p>Delete this footer and all template sections you don't need before saving your solution file.</p>
+            <p>Remember to verify all calculations in Python-Fact-Checking/ before including them!</p>
+        </footer>
+    </main>
+</body>
+</html>

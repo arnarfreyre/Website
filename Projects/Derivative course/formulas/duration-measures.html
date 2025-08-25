@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duration & Convexity - Formula Sheet</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });"></script>
+</head>
+<body>
+    <a href="../formulas.html" class="back-to-main">← Back to Formulas</a>
+    
+    <div class="container">
+        <div class="formula-page-header">
+            <h1>Duration & Convexity</h1>
+            <p class="formula-subtitle">Interest rate sensitivity measures for fixed income securities</p>
+        </div>
+
+        <div class="formula-section">
+            <h2>Macaulay Duration</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$D_{Mac} = \frac{\sum_{t=1}^{n} t \times \frac{CF_t}{(1+r)^t}}{P}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$t$</strong> = Time to cash flow (in years)</li>
+                        <li><strong>$CF_t$</strong> = Cash flow at time $t$</li>
+                        <li><strong>$r$</strong> = Yield per period</li>
+                        <li><strong>$P$</strong> = Current bond price</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Interpretation:</strong> Weighted average time to receive cash flows
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Modified Duration</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$D_{Mod} = \frac{D_{Mac}}{1 + r/m}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$D_{Mac}$</strong> = Macaulay duration</li>
+                        <li><strong>$r$</strong> = Annual yield</li>
+                        <li><strong>$m$</strong> = Compounding frequency per year</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Note:</strong> For semi-annual bonds: $m = 2$
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Effective Duration</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$D_{eff} = \frac{PV_{-} - PV_{+}}{2 \times PV_0 \times \Delta r}$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$PV_{-}$</strong> = Bond price when rate decreases by $\Delta r$</li>
+                        <li><strong>$PV_{+}$</strong> = Bond price when rate increases by $\Delta r$</li>
+                        <li><strong>$PV_0$</strong> = Initial bond price</li>
+                        <li><strong>$\Delta r$</strong> = Change in interest rate (typically 1 basis point)</li>
+                    </ul>
+                </div>
+                <div class="formula-note">
+                    <strong>Usage:</strong> Best for bonds with embedded options
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Duration-Based Price Change</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$\frac{\Delta P}{P} \approx -D_{Mod} \times \Delta y$$
+                </div>
+                <div class="formula-variables">
+                    <h4>Variables:</h4>
+                    <ul>
+                        <li><strong>$\Delta P$</strong> = Change in bond price</li>
+                        <li><strong>$P$</strong> = Initial bond price</li>
+                        <li><strong>$D_{Mod}$</strong> = Modified duration</li>
+                        <li><strong>$\Delta y$</strong> = Change in yield</li>
+                    </ul>
+                </div>
+                <div class="formula-warning">
+                    <strong>⚠️ Limitation:</strong> Linear approximation - less accurate for large yield changes
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Convexity</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$C = \frac{1}{P} \times \frac{\partial^2 P}{\partial y^2}$$
+                </div>
+                <div class="formula-note">
+                    <strong>Purpose:</strong> Measures the curvature of the price-yield relationship
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Price Change with Convexity</h2>
+            <div class="formula-box">
+                <div class="math">
+                    $$\frac{\Delta P}{P} \approx -D_{Mod} \times \Delta y + \frac{1}{2} \times C \times (\Delta y)^2$$
+                </div>
+                <div class="formula-note">
+                    <strong>Advantage:</strong> More accurate for large yield changes than duration alone
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-footer">
+            <p>All formulas verified using Python calculations</p>
+            <p><a href="../formulas.html">← Return to Formula Sheets</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

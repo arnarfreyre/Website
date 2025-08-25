@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Reference - Formula Sheet</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });"></script>
+</head>
+<body>
+    <a href="../formulas.html" class="back-to-main">← Back to Formulas</a>
+    
+    <div class="container">
+        <div class="formula-page-header">
+            <h1>Quick Reference</h1>
+            <p class="formula-subtitle">Common constants and conventions</p>
+        </div>
+
+        <div class="formula-section">
+            <h2>Compounding Conventions</h2>
+            <div class="formula-box">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #e74c3c; color: white;">
+                        <th style="padding: 1rem; text-align: left;">Bond Type</th>
+                        <th style="padding: 1rem; text-align: left;">Frequency</th>
+                        <th style="padding: 1rem; text-align: left;">Periods/Year</th>
+                    </tr>
+                    <tr style="background: white;">
+                        <td style="padding: 1rem; border-bottom: 1px solid #eee;">US Treasury</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid #eee;">Semi-annual</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid #eee;">2</td>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td style="padding: 1rem; border-bottom: 1px solid #eee;">European Govt</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid #eee;">Annual</td>
+                        <td style="padding: 1rem; border-bottom: 1px solid #eee;">1</td>
+                    </tr>
+                    <tr style="background: white;">
+                        <td style="padding: 1rem;">Zero-Coupon</td>
+                        <td style="padding: 1rem;">None</td>
+                        <td style="padding: 1rem;">Varies</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Important Constants</h2>
+            <div class="formula-box">
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;"><strong>1 basis point</strong> = 0.01% = 0.0001</li>
+                    <li style="padding: 0.5rem 0;"><strong>Euler's number (e)</strong> ≈ 2.71828</li>
+                    <li style="padding: 0.5rem 0;"><strong>Days in year</strong> = 360 (30/360) or 365 (Actual/365)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h2>Duration Rules of Thumb</h2>
+            <div class="formula-box">
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;"><strong>Zero-coupon bond:</strong> Duration = Maturity</li>
+                    <li style="padding: 0.5rem 0;"><strong>10-year coupon bond:</strong> Duration ≈ 7-9 years</li>
+                    <li style="padding: 0.5rem 0;"><strong>Perpetuity:</strong> Duration = $(1+y)/y$ years</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="formula-footer">
+            <p>All formulas verified using Python calculations</p>
+            <p><a href="../formulas.html">← Return to Formula Sheets</a></p>
+        </div>
+    </div>
+
+</body>
+</html>
