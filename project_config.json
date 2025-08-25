@@ -35,8 +35,8 @@
       "main_file": "index.html"
     },
     "Derivative course": {
-      "needs_main": true,
-      "displayed": true,
+      "needs_main": false,
+      "displayed": false,
       "description": "Course with multiple components"
     }
   },

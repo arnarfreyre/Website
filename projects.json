@@ -36,25 +36,6 @@
       "icon": "folder"
     },
     {
-      "id": "derivative-course",
-      "title": "Derivative Course",
-      "description": "Educational materials and interactive tools for Derivative Course.",
-      "tags": [
-        "Math",
-        "Education"
-      ],
-      "categories": [
-        "education"
-      ],
-      "path": "Projects/Derivative course/index.html",
-      "featured": false,
-      "technologies": [
-        "Education",
-        "Mathematics"
-      ],
-      "icon": "chart"
-    },
-    {
       "id": "math-visuals",
       "title": "Math Visuals Collection",
       "description": "Interactive mathematical visualizations including differentials, integrals, Fourier transforms, and Laplace transforms. Perfect for learning and exploring mathematical concepts.",
