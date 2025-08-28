@@ -23,10 +23,10 @@ const solversConfig = [
     },
     {
         id: 4,
-        title: "Binomial Option Model",
-        description: "Interactive binomial tree for pricing American and European options. Visualize the option price evolution and early exercise decisions.",
-        path: null,
-        status: "coming-soon"
+        title: "Expected Credit Loss (ECL) Calculator",
+        description: "Calculate ECL components (EAD, PD, LGD) using the IFRS 9 formula. Solve for any missing variable when the other three are known.",
+        path: "Solvers/ecl-calculator.html",
+        status: "available"
     },
     {
         id: 5,

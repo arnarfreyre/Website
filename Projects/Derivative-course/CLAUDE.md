@@ -49,7 +49,7 @@ Afleiður/
 │   ├── problem-sets.html            # Problem sets overview page
 │   ├── solvers.html                 # Interactive calculators page
 │   ├── formulas.html                # Formula reference navigation
-│   ├── styles.css                   # Shared styles for all HTML pages
+│   ├── styles.css                   # Shared styles for all HTML pages where ALL styles will be stored and sectioned
 │   └── CLAUDE.md                    # This file - project guidelines
 │
 ├── 📚 Chapters/                     # Course content organized by topic

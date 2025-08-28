@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- Math.js for safe mathematical expression evaluation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
     <style>
         /* Additional styles for Effective Duration section */
         .effective-duration-section {
@@ -111,6 +113,119 @@
             border-left: 4px solid #2196F3;
             border-radius: 4px;
         }
+
+        /* Variable Rate Function Styles */
+        .rate-function-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .rate-type-toggle {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .rate-type-toggle label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .rate-type-toggle input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .variable-rate-inputs {
+            display: none;
+        }
+
+        .variable-rate-inputs.show {
+            display: block;
+        }
+
+        .function-input-group {
+            margin-bottom: 15px;
+        }
+
+        .function-input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .function-examples {
+            margin: 10px 0;
+        }
+
+        .function-examples select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .validation-status {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .validation-status.valid {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .validation-status.invalid {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .rate-preview-canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 250px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .function-help {
+            background: #e8f4ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+
+        .function-help h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .function-help ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .function-help code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
     </style>
 </head>
 <body>
@@ -204,6 +319,62 @@
                         </label>
                         <input type="number" id="yieldRate" value="4" step="0.01" min="0" max="100">
                         <small>Annual yield for pricing (e.g., 4 for 4%)</small>
+                    </div>
+
+                    <!-- Variable Rate Function Section -->
+                    <div class="rate-function-section">
+                        <h3>Interest Rate Type</h3>
+                        <div class="rate-type-toggle">
+                            <label>
+                                <input type="radio" name="rateType" value="fixed" checked onchange="toggleRateType()">
+                                Fixed Rate
+                            </label>
+                            <label>
+                                <input type="radio" name="rateType" value="variable" onchange="toggleRateType()">
+                                Variable Rate Function
+                            </label>
+                        </div>
+
+                        <div class="variable-rate-inputs" id="variableRateInputs">
+                            <div class="function-input-group">
+                                <label for="rateFunction">
+                                    Rate Function Expression
+                                    <span class="info-tooltip" data-tooltip="Enter a mathematical expression using 't' for time in years">?</span>
+                                </label>
+                                <textarea id="rateFunction" placeholder="e.g., 0.04 + 0.001 * t" oninput="validateRateFunction()">0.04 + 0.000352 * (t - 0.5) * 2 * (t < 7) + 0.05 * (t >= 7)</textarea>
+                            </div>
+
+                            <div class="function-examples">
+                                <label for="exampleFunctions">Example Functions:</label>
+                                <select id="exampleFunctions" onchange="loadExampleFunction()">
+                                    <option value="">-- Select an example --</option>
+                                    <option value="0.04">Constant 4%</option>
+                                    <option value="0.04 + 0.001 * t">Linear increase: 4% + 0.1% per year</option>
+                                    <option value="0.04 * exp(-0.05 * t)">Exponential decay: 4% * e^(-0.05t)</option>
+                                    <option value="t < 5 ? 0.04 : 0.05">Step function: 4% for 5 years, then 5%</option>
+                                    <option value="0.04 + 0.000352 * (t - 0.5) * 2 * (t < 7) + 0.05 * (t >= 7)">Complex: Variable until year 7, then 5%</option>
+                                    <option value="0.035 + 0.015 * sin(t * pi / 2)">Cyclical: 3.5% + 1.5% sin(πt/2)</option>
+                                    <option value="min(0.08, 0.03 + 0.01 * t)">Capped linear: 3% + 1% per year, max 8%</option>
+                                </select>
+                            </div>
+
+                            <div class="validation-status" id="validationStatus"></div>
+
+                            <div class="function-help">
+                                <h4>How to write rate functions:</h4>
+                                <ul>
+                                    <li>Use <code>t</code> for time in years from valuation date</li>
+                                    <li>Express rates as decimals (0.04 for 4%)</li>
+                                    <li>Basic operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>^</code></li>
+                                    <li>Comparisons: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>==</code></li>
+                                    <li>Conditional: <code>condition ? true_value : false_value</code></li>
+                                    <li>Math functions: <code>sqrt()</code>, <code>exp()</code>, <code>log()</code>, <code>sin()</code>, <code>cos()</code>, <code>min()</code>, <code>max()</code></li>
+                                    <li>Constants: <code>pi</code>, <code>e</code></li>
+                                </ul>
+                            </div>
+
+                            <canvas id="ratePreviewCanvas" class="rate-preview-canvas"></canvas>
+                        </div>
                     </div>
 
                     <div class="input-group">
@@ -433,6 +604,7 @@
                                 <th>Period</th>
                                 <th>Date</th>
                                 <th>Cash Flow</th>
+                                <th id="rateHeader" style="display: none;">Rate</th>
                                 <th>Discount Factor</th>
                                 <th>Present Value</th>
                             </tr>
@@ -449,7 +621,8 @@
                 <h3>Key Formulas</h3>
                 <div class="math">
                     <p><strong>Bond Price:</strong></p>
-                    $$P = \sum_{t=1}^{n} \frac{C}{(1+r)^t} + \frac{FV}{(1+r)^n}$$
+                    $$P = \sum_{t=1}^{n} \frac{C}{(1+r)^{t/m}} + \frac{FV}{(1+r)^{n/m}}$$
+                    <p><small>Where: C = coupon payment, r = annual yield, t = period number, m = payments per year, n = total periods, FV = face value</small></p>
 
                     <p><strong>Current Yield:</strong></p>
                     $$CY = \frac{\text{Annual Coupon}}{\text{Current Price}}$$
@@ -473,6 +646,8 @@
     <script>
         // Store bond calculation results globally for effective duration
         let bondCalculationResults = null;
+        let currentRateFunction = null;
+        let isVariableRate = false;
 
         // Initialize KaTeX
         document.addEventListener("DOMContentLoaded", function() {
@@ -491,7 +666,7 @@
 
             document.getElementById('issueDate').value = defaultIssueDate.toISOString().split('T')[0];
             document.getElementById('maturityDate').value = defaultMaturityDate.toISOString().split('T')[0];
-            document.getElementById('valuationDate').value = today.toISOString().split('T')[0];
+            document.getElementById('valuationDate').value = defaultIssueDate.toISOString().split('T')[0];
 
             // Toggle callable options
             document.getElementById('callableToggle').addEventListener('change', function() {
@@ -513,6 +688,238 @@
             }
         }
 
+        // Toggle between fixed and variable rate
+        function toggleRateType() {
+            const rateType = document.querySelector('input[name="rateType"]:checked').value;
+            const variableInputs = document.getElementById('variableRateInputs');
+            const yieldRateInput = document.getElementById('yieldRate');
+            
+            isVariableRate = rateType === 'variable';
+            
+            if (isVariableRate) {
+                variableInputs.classList.add('show');
+                yieldRateInput.disabled = true;
+                validateRateFunction();
+                plotRateFunction();
+            } else {
+                variableInputs.classList.remove('show');
+                yieldRateInput.disabled = false;
+                currentRateFunction = null;
+            }
+        }
+
+        // Load example function
+        function loadExampleFunction() {
+            const select = document.getElementById('exampleFunctions');
+            const textarea = document.getElementById('rateFunction');
+            
+            if (select.value) {
+                textarea.value = select.value;
+                validateRateFunction();
+                plotRateFunction();
+            }
+        }
+
+        // Validate the rate function expression
+        function validateRateFunction() {
+            const expression = document.getElementById('rateFunction').value;
+            const statusDiv = document.getElementById('validationStatus');
+            
+            if (!expression.trim()) {
+                statusDiv.className = 'validation-status invalid';
+                statusDiv.textContent = 'Please enter a rate function';
+                currentRateFunction = null;
+                return false;
+            }
+            
+            try {
+                // Test the expression with sample values
+                const testValues = [0, 1, 5, 10, 20, 30];
+                for (const t of testValues) {
+                    const rate = math.evaluate(expression, {t: t});
+                    if (typeof rate !== 'number' || isNaN(rate)) {
+                        throw new Error(`Invalid result at t=${t}`);
+                    }
+                    if (rate < -0.5 || rate > 1) {
+                        statusDiv.className = 'validation-status invalid';
+                        statusDiv.textContent = `Warning: Rate at t=${t} is ${(rate*100).toFixed(2)}% (outside typical range)`;
+                    }
+                }
+                
+                currentRateFunction = expression;
+                statusDiv.className = 'validation-status valid';
+                statusDiv.textContent = '✓ Valid rate function';
+                plotRateFunction();
+                return true;
+            } catch (error) {
+                statusDiv.className = 'validation-status invalid';
+                statusDiv.textContent = 'Invalid expression: ' + error.message;
+                currentRateFunction = null;
+                return false;
+            }
+        }
+
+        // Plot the rate function
+        function plotRateFunction() {
+            const canvas = document.getElementById('ratePreviewCanvas');
+            if (!canvas || !currentRateFunction) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = canvas.offsetHeight;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Get maturity date for x-axis range
+            const maturityDate = new Date(document.getElementById('maturityDate').value);
+            const valuationDate = new Date(document.getElementById('valuationDate').value);
+            const maxYears = Math.min(30, Math.max(10, (maturityDate - valuationDate) / (365.25 * 24 * 60 * 60 * 1000)));
+            
+            // Calculate rates for plotting
+            const points = [];
+            let minRate = Infinity, maxRate = -Infinity;
+            
+            for (let i = 0; i <= 100; i++) {
+                const t = (i / 100) * maxYears;
+                try {
+                    const rate = math.evaluate(currentRateFunction, {t: t});
+                    points.push({t, rate});
+                    minRate = Math.min(minRate, rate);
+                    maxRate = Math.max(maxRate, rate);
+                } catch (e) {
+                    // Skip invalid points
+                }
+            }
+            
+            if (points.length === 0) return;
+            
+            // Add padding to rate range
+            const rateRange = maxRate - minRate;
+            minRate -= rateRange * 0.1;
+            maxRate += rateRange * 0.1;
+            
+            // Drawing parameters
+            const padding = 40;
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Draw grid lines and labels
+            ctx.fillStyle = '#666';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'center';
+            
+            // X-axis labels (years)
+            for (let i = 0; i <= 5; i++) {
+                const x = padding + (i / 5) * plotWidth;
+                const year = (i / 5) * maxYears;
+                
+                // Grid line
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+                
+                // Label
+                ctx.fillText(year.toFixed(1) + 'y', x, height - padding + 20);
+            }
+            
+            // Y-axis labels (rates)
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (i / 5) * plotHeight;
+                const rate = maxRate - (i / 5) * (maxRate - minRate);
+                
+                // Grid line
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+                
+                // Label
+                ctx.fillText((rate * 100).toFixed(1) + '%', padding - 5, y + 4);
+            }
+            
+            // Plot the function
+            ctx.strokeStyle = '#2196F3';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            points.forEach((point, i) => {
+                const x = padding + (point.t / maxYears) * plotWidth;
+                const y = padding + ((maxRate - point.rate) / (maxRate - minRate)) * plotHeight;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // Add title
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Interest Rate Function', width / 2, 20);
+        }
+
+        // Evaluate rate function at time t
+        function evaluateRateFunction(expression, t) {
+            try {
+                return math.evaluate(expression, {t: t});
+            } catch (error) {
+                console.error('Error evaluating rate function:', error);
+                return null;
+            }
+        }
+
+        // Calculate bond price with variable rates
+        function calculateBondPriceWithVariableRate(nominal, couponRate, frequency, years, rateExpression) {
+            const couponPayment = (nominal * couponRate) / frequency;
+            const periods = Math.max(0, Math.floor(years * frequency));
+            
+            if (periods === 0) {
+                const rate = evaluateRateFunction(rateExpression, years);
+                if (rate === null) return null;
+                return nominal / Math.pow(1 + rate, years);
+            }
+            
+            let price = 0;
+            
+            // Calculate present value of coupon payments using df = 1/(1+r(t))^t
+            for (let period = 1; period <= periods; period++) {
+                const t = period / frequency;
+                const rate = evaluateRateFunction(rateExpression, t);
+                if (rate === null) return null;
+                
+                // Use the correct discount factor formula: df = 1/(1+r(t))^t
+                const discountFactor = Math.pow(1 + rate, -t);
+                price += couponPayment * discountFactor;
+            }
+            
+            // Add present value of principal at maturity
+            const finalTime = periods / frequency;
+            const finalRate = evaluateRateFunction(rateExpression, finalTime);
+            if (finalRate === null) return null;
+            const principalDiscountFactor = Math.pow(1 + finalRate, -finalTime);
+            price += nominal * principalDiscountFactor;
+            
+            return price;
+        }
+
         function calculateEffectiveDuration() {
             if (!bondCalculationResults) {
                 alert('Please calculate the bond first before calculating effective duration.');
@@ -528,13 +935,24 @@
 
             const { nominal, couponRate, paymentFrequency, yearsToMaturity, yieldRate, cleanPrice, currency } = bondCalculationResults;
 
-            // Calculate PV- (rate decreases)
-            const yieldMinus = yieldRate - rateChange;
-            const pvMinus = calculateBondPrice(nominal, couponRate, paymentFrequency, yearsToMaturity, yieldMinus);
+            let pvMinus, pvPlus;
 
-            // Calculate PV+ (rate increases)
-            const yieldPlus = yieldRate + rateChange;
-            const pvPlus = calculateBondPrice(nominal, couponRate, paymentFrequency, yearsToMaturity, yieldPlus);
+            if (isVariableRate && currentRateFunction) {
+                // For variable rates, shift the entire function up and down
+                const rateExpressionMinus = `(${currentRateFunction}) - ${rateChange}`;
+                const rateExpressionPlus = `(${currentRateFunction}) + ${rateChange}`;
+                
+                pvMinus = calculateBondPriceWithVariableRate(nominal, couponRate, paymentFrequency, yearsToMaturity, rateExpressionMinus);
+                pvPlus = calculateBondPriceWithVariableRate(nominal, couponRate, paymentFrequency, yearsToMaturity, rateExpressionPlus);
+            } else {
+                // Calculate PV- (rate decreases)
+                const yieldMinus = yieldRate - rateChange;
+                pvMinus = calculateBondPrice(nominal, couponRate, paymentFrequency, yearsToMaturity, yieldMinus);
+
+                // Calculate PV+ (rate increases)
+                const yieldPlus = yieldRate + rateChange;
+                pvPlus = calculateBondPrice(nominal, couponRate, paymentFrequency, yearsToMaturity, yieldPlus);
+            }
 
             // Calculate effective duration
             const effectiveDuration = (pvMinus - pvPlus) / (2 * cleanPrice * rateChange);
@@ -550,12 +968,24 @@
 
             // Display results
             document.getElementById('edPV0').textContent = formatCurrency(cleanPrice, currency);
-            document.getElementById('edInitialYield').textContent = formatPercent(yieldRate);
+            
+            if (isVariableRate && currentRateFunction) {
+                document.getElementById('edInitialYield').textContent = 'Variable (see function)';
+                document.getElementById('edPVMinus').textContent = formatCurrency(pvMinus, currency) +
+                    ' (rate function - ' + (rateChange * 100).toFixed(2) + '%)';
+                document.getElementById('edPVPlus').textContent = formatCurrency(pvPlus, currency) +
+                    ' (rate function + ' + (rateChange * 100).toFixed(2) + '%)';
+            } else {
+                const yieldMinus = yieldRate - rateChange;
+                const yieldPlus = yieldRate + rateChange;
+                document.getElementById('edInitialYield').textContent = formatPercent(yieldRate);
+                document.getElementById('edPVMinus').textContent = formatCurrency(pvMinus, currency) +
+                    ` (yield: ${formatPercent(yieldMinus)})`;
+                document.getElementById('edPVPlus').textContent = formatCurrency(pvPlus, currency) +
+                    ` (yield: ${formatPercent(yieldPlus)})`;
+            }
+            
             document.getElementById('edDeltaR').textContent = formatPercent(rateChange);
-            document.getElementById('edPVMinus').textContent = formatCurrency(pvMinus, currency) +
-                ` (yield: ${formatPercent(yieldMinus)})`;
-            document.getElementById('edPVPlus').textContent = formatCurrency(pvPlus, currency) +
-                ` (yield: ${formatPercent(yieldPlus)})`;
             document.getElementById('edChangeDown').textContent = formatCurrency(changeDown, currency) +
                 ` (${changeDownPercent.toFixed(3)}%)`;
             document.getElementById('edChangeUp').textContent = formatCurrency(changeUp, currency) +
@@ -672,53 +1102,116 @@
             let convexity = 0;
             const cashFlows = [];
 
-            if (periods === 0) {
-                cleanPrice = nominal / Math.pow(1 + yieldRate, yearsToMaturity);
-                cashFlows.push({
-                    period: 0,
-                    date: maturityDate,
-                    cashFlow: nominal,
-                    discountFactor: Math.pow(1 + yieldRate, -yearsToMaturity),
-                    presentValue: cleanPrice
-                });
-                macaulayDuration = yearsToMaturity * cleanPrice;
-                convexity = yearsToMaturity * (yearsToMaturity + 1/paymentFrequency) * cleanPrice;
-            } else {
-                let pvCoupons = 0;
-                if (periodYield === 0) {
-                    pvCoupons = couponPayment * periods;
-                } else {
-                    pvCoupons = couponPayment * ((1 - Math.pow(1 + periodYield, -periods)) / periodYield);
-                }
-
-                const principalDiscountFactor = Math.pow(1 + periodYield, -periods);
-                const principalPV = nominal * principalDiscountFactor;
-
-                cleanPrice = pvCoupons + principalPV;
-
-                for (let t = 1; t <= periods; t++) {
-                    const discountFactor = Math.pow(1 + periodYield, -t);
-                    const pv = couponPayment * discountFactor;
-                    macaulayDuration += t * pv;
-                    convexity += t * (t + 1) * pv;
-
-                    const periodDate = new Date(valuationDate);
-                    periodDate.setMonth(periodDate.getMonth() + (t * 12 / paymentFrequency));
+            if (isVariableRate && currentRateFunction) {
+                // Variable rate calculation with correct formula: df = 1/(1+r(t))^t
+                if (periods === 0) {
+                    const rate = evaluateRateFunction(currentRateFunction, yearsToMaturity);
+                    cleanPrice = nominal / Math.pow(1 + rate, yearsToMaturity);
                     cashFlows.push({
-                        period: t,
-                        date: periodDate,
-                        cashFlow: couponPayment,
-                        discountFactor: discountFactor,
-                        presentValue: pv
+                        period: 0,
+                        date: maturityDate,
+                        cashFlow: nominal,
+                        discountFactor: Math.pow(1 + rate, -yearsToMaturity),
+                        presentValue: cleanPrice
                     });
+                    macaulayDuration = yearsToMaturity * cleanPrice;
+                    convexity = yearsToMaturity * (yearsToMaturity + 1/paymentFrequency) * cleanPrice;
+                } else {
+                    // For variable rates, evaluate the function at each payment time
+                    for (let t = 1; t <= periods; t++) {
+                        const timeInYears = t / paymentFrequency;
+                        // Evaluate the rate function at time t
+                        const rate = evaluateRateFunction(currentRateFunction, timeInYears);
+                        
+                        // Use the correct discount factor formula: df = 1/(1+r(t))^t
+                        const discountFactor = Math.pow(1 + rate, -timeInYears);
+                        const pv = couponPayment * discountFactor;
+                        cleanPrice += pv;
+                        macaulayDuration += t * pv;
+                        convexity += t * (t + 1) * pv;
+                        
+                        const periodDate = new Date(valuationDate);
+                        periodDate.setMonth(periodDate.getMonth() + (t * 12 / paymentFrequency));
+                        cashFlows.push({
+                            period: t,
+                            date: periodDate,
+                            cashFlow: couponPayment,
+                            discountFactor: discountFactor,
+                            presentValue: pv,
+                            rate: rate * 100  // Store rate as percentage for display
+                        });
+                    }
+                    
+                    // Add the principal payment at maturity
+                    const finalTime = periods / paymentFrequency;
+                    const finalRate = evaluateRateFunction(currentRateFunction, finalTime);
+                    const principalDiscountFactor = Math.pow(1 + finalRate, -finalTime);
+                    const principalPV = nominal * principalDiscountFactor;
+                    
+                    cleanPrice += principalPV;
+                    macaulayDuration += periods * principalPV;
+                    convexity += periods * (periods + 1) * principalPV;
+                    
+                    if (cashFlows.length > 0) {
+                        cashFlows[cashFlows.length - 1].cashFlow += nominal;
+                        cashFlows[cashFlows.length - 1].presentValue += principalPV;
+                    }
                 }
+            } else {
+                // Fixed rate calculation (original code)
+                if (periods === 0) {
+                    cleanPrice = nominal / Math.pow(1 + yieldRate, yearsToMaturity);
+                    cashFlows.push({
+                        period: 0,
+                        date: maturityDate,
+                        cashFlow: nominal,
+                        discountFactor: Math.pow(1 + yieldRate, -yearsToMaturity),
+                        presentValue: cleanPrice
+                    });
+                    macaulayDuration = yearsToMaturity * cleanPrice;
+                    convexity = yearsToMaturity * (yearsToMaturity + 1/paymentFrequency) * cleanPrice;
+                } else {
+                    let pvCoupons = 0;
+                    // Calculate present value of coupons using correct discount factors
+                    for (let t = 1; t <= periods; t++) {
+                        const timeInYears = t / paymentFrequency;
+                        const discountFactor = Math.pow(1 + yieldRate, -timeInYears);
+                        pvCoupons += couponPayment * discountFactor;
+                    }
 
-                macaulayDuration += periods * principalPV;
-                convexity += periods * (periods + 1) * principalPV;
+                    // Calculate principal discount factor using correct formula: df = 1/(1+r)^(n/m)
+                    const timeToMaturity = periods / paymentFrequency;
+                    const principalDiscountFactor = Math.pow(1 + yieldRate, -timeToMaturity);
+                    const principalPV = nominal * principalDiscountFactor;
 
-                if (cashFlows.length > 0) {
-                    cashFlows[cashFlows.length - 1].cashFlow += nominal;
-                    cashFlows[cashFlows.length - 1].presentValue += principalPV;
+                    cleanPrice = pvCoupons + principalPV;
+
+                    for (let t = 1; t <= periods; t++) {
+                        // Correct formula: df = 1/(1+r)^(t/m) where t is period and m is payment frequency
+                        const timeInYears = t / paymentFrequency;
+                        const discountFactor = Math.pow(1 + yieldRate, -timeInYears);
+                        const pv = couponPayment * discountFactor;
+                        macaulayDuration += t * pv;
+                        convexity += t * (t + 1) * pv;
+
+                        const periodDate = new Date(valuationDate);
+                        periodDate.setMonth(periodDate.getMonth() + (t * 12 / paymentFrequency));
+                        cashFlows.push({
+                            period: t,
+                            date: periodDate,
+                            cashFlow: couponPayment,
+                            discountFactor: discountFactor,
+                            presentValue: pv
+                        });
+                    }
+
+                    macaulayDuration += periods * principalPV;
+                    convexity += periods * (periods + 1) * principalPV;
+
+                    if (cashFlows.length > 0) {
+                        cashFlows[cashFlows.length - 1].cashFlow += nominal;
+                        cashFlows[cashFlows.length - 1].presentValue += principalPV;
+                    }
                 }
             }
 
@@ -769,7 +1262,9 @@
                 paymentFrequency,
                 yearsToMaturity,
                 yieldRate,
-                cleanPrice
+                cleanPrice,
+                rateFunction: currentRateFunction,
+                isVariableRate: isVariableRate
             };
 
             // Update output displays
@@ -805,15 +1300,18 @@
                 let pv = 0;
                 let dpv = 0;
 
+                // Use correct discount factor formula: df = 1/(1+r)^(t/m)
                 for (let t = 1; t <= periods; t++) {
-                    const df = Math.pow(1 + ytm / frequency, -t);
+                    const timeInYears = t / frequency;
+                    const df = Math.pow(1 + ytm, -timeInYears);
                     pv += couponPayment * df;
-                    dpv -= t * couponPayment * df / (1 + ytm / frequency) / frequency;
+                    dpv -= timeInYears * couponPayment * df / (1 + ytm);
                 }
 
-                const finalDF = Math.pow(1 + ytm / frequency, -periods);
+                const timeToMaturity = periods / frequency;
+                const finalDF = Math.pow(1 + ytm, -timeToMaturity);
                 pv += faceValue * finalDF;
-                dpv -= periods * faceValue * finalDF / (1 + ytm / frequency) / frequency;
+                dpv -= timeToMaturity * faceValue * finalDF / (1 + ytm);
 
                 const diff = pv - price;
                 if (Math.abs(diff) < tolerance) {
@@ -853,9 +1351,14 @@
         }
 
         function calculateBondPrice(nominal, couponRate, frequency, years, yieldRate) {
+            // If variable rate is active, use the variable rate function
+            if (isVariableRate && currentRateFunction) {
+                return calculateBondPriceWithVariableRate(nominal, couponRate, frequency, years, currentRateFunction);
+            }
+            
+            // Otherwise use fixed rate calculation with correct discount factors
             const periods = Math.floor(years * frequency);
             const couponPayment = (nominal * couponRate) / frequency;
-            const periodYield = yieldRate / frequency;
 
             if (periods === 0) {
                 return nominal / Math.pow(1 + yieldRate, years);
@@ -863,20 +1366,32 @@
 
             let price = 0;
 
-            if (periodYield === 0) {
-                price = couponPayment * periods + nominal;
-            } else {
-                const pvCoupons = couponPayment * ((1 - Math.pow(1 + periodYield, -periods)) / periodYield);
-                const pvFaceValue = nominal * Math.pow(1 + periodYield, -periods);
-                price = pvCoupons + pvFaceValue;
+            // Calculate present value of coupons using correct formula: df = 1/(1+r)^(t/m)
+            for (let t = 1; t <= periods; t++) {
+                const timeInYears = t / frequency;
+                const discountFactor = Math.pow(1 + yieldRate, -timeInYears);
+                price += couponPayment * discountFactor;
             }
+            
+            // Add present value of principal using correct formula
+            const timeToMaturity = periods / frequency;
+            const principalDiscountFactor = Math.pow(1 + yieldRate, -timeToMaturity);
+            price += nominal * principalDiscountFactor;
 
             return price;
         }
 
         function displayCashFlows(cashFlows, currency) {
             const tbody = document.getElementById('cashFlowTableBody');
+            const rateHeader = document.getElementById('rateHeader');
             tbody.innerHTML = '';
+
+            // Show rate column if using variable rates
+            if (isVariableRate && currentRateFunction) {
+                rateHeader.style.display = '';
+            } else {
+                rateHeader.style.display = 'none';
+            }
 
             let totalPV = 0;
             cashFlows.forEach(cf => {
@@ -884,8 +1399,15 @@
                 row.insertCell(0).textContent = cf.period;
                 row.insertCell(1).textContent = cf.date.toLocaleDateString();
                 row.insertCell(2).textContent = formatCurrency(cf.cashFlow, currency);
-                row.insertCell(3).textContent = cf.discountFactor.toFixed(6);
-                row.insertCell(4).textContent = formatCurrency(cf.presentValue, currency);
+                
+                if (isVariableRate && currentRateFunction) {
+                    row.insertCell(3).textContent = cf.rate ? cf.rate.toFixed(2) + '%' : '-';
+                    row.insertCell(4).textContent = cf.discountFactor.toFixed(6);
+                    row.insertCell(5).textContent = formatCurrency(cf.presentValue, currency);
+                } else {
+                    row.insertCell(3).textContent = cf.discountFactor.toFixed(6);
+                    row.insertCell(4).textContent = formatCurrency(cf.presentValue, currency);
+                }
                 totalPV += cf.presentValue;
             });
 
@@ -895,8 +1417,15 @@
             totalRow.insertCell(0).textContent = 'Total';
             totalRow.insertCell(1).textContent = '';
             totalRow.insertCell(2).textContent = '';
-            totalRow.insertCell(3).textContent = '';
-            totalRow.insertCell(4).textContent = formatCurrency(totalPV, currency);
+            
+            if (isVariableRate && currentRateFunction) {
+                totalRow.insertCell(3).textContent = '';
+                totalRow.insertCell(4).textContent = '';
+                totalRow.insertCell(5).textContent = formatCurrency(totalPV, currency);
+            } else {
+                totalRow.insertCell(3).textContent = '';
+                totalRow.insertCell(4).textContent = formatCurrency(totalPV, currency);
+            }
         }
 
         function updateSummary(nominal, price, couponRate, currentYield, currency) {
