@@ -36,6 +36,25 @@
       "icon": "folder"
     },
     {
+      "id": "derivative-course",
+      "title": "Derivative-course",
+      "description": "Educational materials and interactive tools for Derivative-course.",
+      "tags": [
+        "Math",
+        "Education"
+      ],
+      "categories": [
+        "education"
+      ],
+      "path": "Projects/Derivative-course/Main.html",
+      "featured": false,
+      "technologies": [
+        "Education",
+        "Mathematics"
+      ],
+      "icon": "chart"
+    },
+    {
       "id": "math-visuals",
       "title": "Math Visuals Collection",
       "description": "Interactive mathematical visualizations including differentials, integrals, Fourier transforms, and Laplace transforms. Perfect for learning and exploring mathematical concepts.",
@@ -72,6 +91,23 @@
         "Web"
       ],
       "icon": "gamepad"
+    },
+    {
+      "id": "rottman",
+      "title": "Rottman",
+      "description": "Explore Rottman with interactive features and modern design.",
+      "tags": [
+        "Interactive"
+      ],
+      "categories": [
+        "interactive"
+      ],
+      "path": "Projects/Rottman/quiz1.html",
+      "featured": false,
+      "technologies": [
+        "Web"
+      ],
+      "icon": "folder"
     },
     {
       "id": "tree-website",

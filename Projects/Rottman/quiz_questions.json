@@ -1,0 +1,771 @@
+{
+  "quiz_title": "Financial Markets Comprehensive Quiz - Rotman Trading Competition",
+  "total_questions": 50,
+  "instructions": "Select the best answer(s) for each question. Some questions may have multiple correct answers.",
+  "questions": [
+    {
+      "id": 1,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Stock Types",
+      "question": "Which of the following statements about stock types are TRUE? (Select all that apply)",
+      "options": [
+        "Growth stocks rarely pay dividends",
+        "Income stocks pay dividends consistently",
+        "Value stocks always have high P/E ratios",
+        "Blue-chip stocks are shares in large, well-known companies"
+      ],
+      "correctAnswers": [0, 1, 3],
+      "multiSelect": true,
+      "explanation": "Growth stocks focus on capital appreciation and rarely pay dividends. Income stocks provide consistent dividends. Value stocks have LOW P/E ratios (not high). Blue-chip stocks are from established companies."
+    },
+    {
+      "id": 2,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Market Structure",
+      "question": "What is the PRIMARY market (frummarkaður) for stocks?",
+      "options": [
+        "Where ongoing trading between investors occurs",
+        "Where companies raise capital through IPO, SEO, or venture capital",
+        "Only for trading on exchanges",
+        "Where market makers provide liquidity"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "The primary market (frummarkaður) is where companies raise capital directly through IPOs, SEOs, or venture capital. The secondary market (eftirmarkaður) is for ongoing trading."
+    },
+    {
+      "id": 3,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Analysis Methods",
+      "question": "What distinguishes fundamental analysis from technical analysis?",
+      "options": [
+        "Fundamental analysis uses financial statements, technical uses price patterns",
+        "Technical analysis is more accurate than fundamental",
+        "Fundamental analysis only looks at P/E ratios",
+        "Technical analysis examines company management"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "Fundamental analysis examines earnings, dividends, and financial statements. Technical analysis uses market data like price and volume patterns."
+    },
+    {
+      "id": 4,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Trading Strategies",
+      "question": "What happens in a short sale (skortsala)?",
+      "options": [
+        "You buy stocks at a low price",
+        "You sell borrowed stocks hoping the price will fall",
+        "You hold stocks for a short period",
+        "You buy stocks on margin"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "In a short sale, you sell borrowed stocks and profit if the price falls (sell high, buy low to close position). Theoretical loss is unlimited."
+    },
+    {
+      "id": 5,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Shareholder Rights",
+      "question": "Which characteristics apply to stockholders? (Select all that apply)",
+      "options": [
+        "Limited liability (takmörkuð ábyrgð)",
+        "First in line for bankruptcy claims",
+        "Voting rights at shareholder meetings",
+        "Right to dividends (if declared)"
+      ],
+      "correctAnswers": [0, 2, 3],
+      "multiSelect": true,
+      "explanation": "Stockholders have limited liability, voting rights, and dividend rights. They are LAST (not first) in bankruptcy claims."
+    },
+    {
+      "id": 6,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Bond Pricing",
+      "question": "When is a bond trading at a premium?",
+      "options": [
+        "When yield to maturity equals coupon rate",
+        "When yield to maturity is higher than coupon rate",
+        "When yield to maturity is lower than coupon rate",
+        "When the clean price is below 100"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "A bond trades at premium when yield is lower than coupon rate (price > 100), at par when equal (price = 100), and at discount when yield is higher (price < 100)."
+    },
+    {
+      "id": 7,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Yield Curve",
+      "question": "What does the yield curve typically show?",
+      "options": [
+        "Stock prices over time",
+        "The relationship between interest rates and loan maturity",
+        "Company earnings growth",
+        "Trading volume patterns"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "The yield curve shows the relationship between interest rates and loan maturity. It's typically upward sloping (longer loans = higher rates) but can invert."
+    },
+    {
+      "id": 8,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Callable Bonds",
+      "question": "Which statements about callable bonds are TRUE? (Select all that apply)",
+      "options": [
+        "Issuer can repay before maturity",
+        "Price should be higher than non-callable bonds",
+        "Beneficial to issuer if interest rates fall",
+        "Formula: Callable price = Non-callable price - Call option value"
+      ],
+      "correctAnswers": [0, 2, 3],
+      "multiSelect": true,
+      "explanation": "Callable bonds can be repaid early, beneficial when rates fall. Price should be LOWER than non-callable (not higher) due to the call option value."
+    },
+    {
+      "id": 9,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Interest Rates",
+      "question": "What is the relationship between nominal and real interest rates?",
+      "options": [
+        "(1+i) = (1+r)(1+v) where i=nominal, r=real, v=inflation",
+        "i = r + v where i=nominal, r=real, v=inflation",
+        "Real rates are always higher than nominal rates",
+        "Nominal rates exclude inflation effects"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "The Fisher equation: (1+i) = (1+r)(1+v) shows the relationship between nominal rates, real rates, and inflation."
+    },
+    {
+      "id": 10,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Convertible Bonds",
+      "question": "What is a convertible bond?",
+      "options": [
+        "A bond with floating interest rates",
+        "A bond that can be called by the issuer",
+        "A bond that can be converted to stocks at a predetermined price",
+        "A bond that changes currency denomination"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Convertible bonds can be converted to stocks at maturity at a predetermined price, typically issued by companies with poor credit but high growth potential."
+    },
+    {
+      "id": 11,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Derivative Purpose",
+      "question": "What are the main purposes of derivatives? (Select all that apply)",
+      "options": [
+        "Speculation (spákaupmennska)",
+        "Hedging (áhættuvarnir)",
+        "Leverage (skuldsetning)",
+        "Guaranteed profits"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Derivatives are used for speculation, hedging against risk, and leverage. They do NOT guarantee profits."
+    },
+    {
+      "id": 12,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Forward Pricing",
+      "question": "What is the formula for forward contract pricing?",
+      "options": [
+        "F₀ = S₀ × r × T",
+        "F₀ = S₀ + r^T",
+        "F₀ = S₀ × e^(rT)",
+        "F₀ = S₀ / e^(rT)"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Forward price F₀ = S₀ × e^(rT) where S₀ is spot price, r is interest rate, and T is time to maturity."
+    },
+    {
+      "id": 13,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Option Greeks",
+      "question": "What does Delta represent for options?",
+      "options": [
+        "Time decay of option value",
+        "Change in option price relative to underlying asset price (∂V/∂S)",
+        "Volatility sensitivity",
+        "Interest rate sensitivity"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Delta is the first derivative of option price with respect to underlying price (∂V/∂S). For calls: Δ = N(d₁)."
+    },
+    {
+      "id": 14,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Option Moneyness",
+      "question": "Which statements about option moneyness are correct? (Select all that apply)",
+      "options": [
+        "ITM call: underlying price > strike price",
+        "ATM: underlying price = strike price",
+        "OTM put: underlying price > strike price",
+        "ITM options are always exercised"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "ITM (in-the-money) means profitable if exercised. ATM (at-the-money) means equal prices. OTM (out-of-the-money) won't be exercised."
+    },
+    {
+      "id": 15,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Margin Calls",
+      "question": "What happens during a margin call (veðkall)?",
+      "options": [
+        "You receive dividends from your position",
+        "Additional collateral is required due to adverse price movement",
+        "Your profits are automatically withdrawn",
+        "The contract term is extended"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "A margin call requires additional collateral when your position moves adversely. If not met, the position is closed."
+    },
+    {
+      "id": 16,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Book Mechanics",
+      "question": "What happens when you place a market order to buy 100 XYZ with order book showing: Bid 50.10 (1000), Ask 50.20 (500)?",
+      "options": [
+        "Buy at 50.10",
+        "Buy at 50.20",
+        "Buy at 50.15 (average)",
+        "Order waits in the book"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Market orders execute immediately at the best available price. To buy, you take the ask price (50.20)."
+    },
+    {
+      "id": 17,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Types",
+      "question": "Which order types are removed from the order book if not immediately filled? (Select all that apply)",
+      "options": [
+        "IOC (Immediate or Cancel)",
+        "Day order",
+        "AON (All or None)",
+        "FOK (Fill or Kill)"
+      ],
+      "correctAnswers": [0, 2, 3],
+      "multiSelect": true,
+      "explanation": "IOC, AON, and FOK orders are not added to the order book. Day orders and GTC orders remain in the book."
+    },
+    {
+      "id": 18,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Marketable Orders",
+      "question": "What is a 'marketable' order?",
+      "options": [
+        "An order that can be sold to another trader",
+        "An order that matches immediately upon submission",
+        "An order with the best price",
+        "An order from a market maker"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "A marketable order is one that matches and executes immediately when submitted to the market."
+    },
+    {
+      "id": 19,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Market Makers",
+      "question": "What is the role of market makers (viðskiptavakar)?",
+      "options": [
+        "Only to buy securities",
+        "To increase liquidity by maintaining bid and ask quotes",
+        "To set official prices",
+        "To prevent all price movements"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Market makers increase liquidity by continuously maintaining bid and ask quotes, typically with maximum spread requirements."
+    },
+    {
+      "id": 20,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Execution",
+      "question": "To execute an immediate sale, you would:",
+      "options": [
+        "Place a limit sell order above market",
+        "'Hit the bid' - accept the bid price",
+        "'Lift the ask' - accept the ask price",
+        "Wait for a better price"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "To sell immediately, you 'hit the bid' (accept bid price). To buy immediately, you 'lift the ask' (accept ask price)."
+    },
+    {
+      "id": 21,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Portfolio Diversification",
+      "question": "What are the key principles of portfolio diversification? (Select all that apply)",
+      "options": [
+        "Reduces risk by investing in multiple assets",
+        "Portfolio volatility is lower than weighted average of individual volatilities",
+        "All assets should have perfect positive correlation",
+        "Based on Modern Portfolio Theory by Markowitz"
+      ],
+      "correctAnswers": [0, 1, 3],
+      "multiSelect": true,
+      "explanation": "Diversification reduces risk through multiple assets with imperfect correlation. Portfolio volatility is lower than weighted average due to correlation effects."
+    },
+    {
+      "id": 22,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Risk-Return Tradeoff",
+      "question": "What is the fundamental principle of the risk-return tradeoff?",
+      "options": [
+        "Lower risk always means lower returns",
+        "Higher expected returns generally come with higher volatility",
+        "Risk and return are unrelated",
+        "All investments have the same risk-adjusted returns"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "The risk-return tradeoff states that higher expected returns generally come with higher volatility (risk)."
+    },
+    {
+      "id": 23,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Portfolio Construction",
+      "question": "When constructing a portfolio, what factors should be considered?",
+      "options": [
+        "Only expected returns",
+        "Only volatility of assets",
+        "Expected returns, volatility, and correlation between assets",
+        "Only historical prices"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Portfolio construction requires considering expected returns, volatility (risk), and correlations between assets to optimize risk-adjusted returns."
+    },
+    {
+      "id": 24,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Correlation Impact",
+      "question": "According to portfolio theory, why is correlation important?",
+      "options": [
+        "It determines transaction costs",
+        "Assets with low/negative correlation provide better diversification benefits",
+        "High correlation guarantees higher returns",
+        "Correlation is not relevant to portfolio construction"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Low or negative correlation between assets provides diversification benefits, reducing overall portfolio risk."
+    },
+    {
+      "id": 25,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Portfolio Management Goals",
+      "question": "Which statement best describes the goal of portfolio management?",
+      "options": [
+        "Maximize returns regardless of risk",
+        "Minimize all risk",
+        "Achieve the best possible return for a given level of risk",
+        "Only invest in risk-free assets"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Portfolio management aims to optimize risk-adjusted returns - achieving the best possible return for a given risk level."
+    },
+    {
+      "id": 26,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Black-Scholes Model",
+      "question": "In the Black-Scholes formula, what does N(d₁) represent?",
+      "options": [
+        "The strike price",
+        "The cumulative normal distribution function",
+        "The volatility",
+        "The time to maturity"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "N(d₁) is the cumulative standard normal distribution function, representing the probability that the option will be exercised."
+    },
+    {
+      "id": 27,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Priority",
+      "question": "How are orders prioritized in most limit order books?",
+      "options": [
+        "By size only",
+        "First by price, then by time",
+        "By trader reputation",
+        "Randomly"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Most markets use price-time priority: best prices first (higher bids, lower asks), then earlier submission time."
+    },
+    {
+      "id": 28,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Credit Spread",
+      "question": "What does credit spread (skuldaraálag) measure?",
+      "options": [
+        "The difference between bid and ask prices",
+        "The additional yield required for credit risk compared to risk-free bonds",
+        "The time between coupon payments",
+        "The difference between nominal and real rates"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Credit spread measures the additional yield investors demand for taking credit risk compared to risk-free government bonds."
+    },
+    {
+      "id": 29,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Forward Hedging",
+      "question": "When hedging a forward contract, why does the issuer buy the underlying immediately?",
+      "options": [
+        "To speculate on price increases",
+        "To eliminate market risk from price movements",
+        "Because it's legally required",
+        "To receive dividends"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "The issuer buys immediately to hedge against market risk, ensuring they can deliver regardless of price movements."
+    },
+    {
+      "id": 30,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Shareholder Benefits",
+      "question": "Why would an investor choose stocks over bonds? (Select all that apply)",
+      "options": [
+        "Potential for capital appreciation (virðisaukning)",
+        "Voting rights in company decisions",
+        "Guaranteed returns",
+        "Priority in bankruptcy proceedings"
+      ],
+      "correctAnswers": [0, 1],
+      "multiSelect": true,
+      "explanation": "Stocks offer capital appreciation potential and voting rights. They don't guarantee returns and are last in bankruptcy claims."
+    },
+    {
+      "id": 31,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Hidden Orders",
+      "question": "How are hidden orders prioritized in the order book?",
+      "options": [
+        "They have highest priority",
+        "Visible orders at the same price have priority over hidden orders",
+        "They are executed randomly",
+        "Hidden orders cannot be executed"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "At the same price level, visible orders have priority over hidden orders, then time priority applies within each visibility category."
+    },
+    {
+      "id": 32,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Option Types",
+      "question": "What distinguishes American options from European options?",
+      "options": [
+        "American options are only traded in the USA",
+        "American options can be exercised at any time before expiry",
+        "European options are more expensive",
+        "American options have no strike price"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "American options can be exercised at any time during their life, while European options can only be exercised at maturity."
+    },
+    {
+      "id": 33,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Bond Trading",
+      "question": "What's the difference between clean price and dirty price?",
+      "options": [
+        "Clean price includes accrued interest, dirty doesn't",
+        "Clean price excludes accrued interest, dirty includes it",
+        "There is no difference",
+        "Clean price is for government bonds only"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Clean price is the quoted bond price excluding accrued interest. Dirty price includes accrued interest since last coupon payment."
+    },
+    {
+      "id": 34,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Delta Hedging",
+      "question": "Why must delta hedging be adjusted regularly?",
+      "options": [
+        "Because regulations require it",
+        "Because delta changes as the underlying price and time change",
+        "To increase profits",
+        "Delta hedging doesn't need adjustment"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Delta is not constant - it changes with underlying price movements and time decay, requiring regular rebalancing of the hedge."
+    },
+    {
+      "id": 35,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Duration",
+      "question": "What's the difference between a Day order and GTC (Good-Till-Cancelled)?",
+      "options": [
+        "Day orders expire at market close, GTC remains until cancelled",
+        "GTC orders expire at market close",
+        "Day orders remain for 30 days",
+        "There is no difference"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "Day orders expire at the end of the trading day if unfilled. GTC orders remain active until executed or manually cancelled."
+    },
+    {
+      "id": 36,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Stock Exchanges",
+      "question": "What distinguishes an exchange from OTC (over-the-counter) trading?",
+      "options": [
+        "Exchanges are unregulated",
+        "OTC trades occur on centralized platforms",
+        "Exchanges provide standardized trading with central order books",
+        "OTC is only for bonds"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Exchanges offer standardized, regulated trading with central order books. OTC is bilateral trading between parties."
+    },
+    {
+      "id": 37,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Oil Futures",
+      "question": "What are the two most well-known crude oil benchmarks?",
+      "options": [
+        "Light Sweet and Heavy Sour",
+        "WTI (West Texas Intermediate) and Brent Crude",
+        "OPEC and Non-OPEC",
+        "Gasoline and Diesel"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "WTI and Brent Crude are the primary global oil benchmarks used for pricing and derivatives trading."
+    },
+    {
+      "id": 38,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Bond Issuers",
+      "question": "Which entities commonly issue bonds? (Select all that apply)",
+      "options": [
+        "Governments (ríki)",
+        "Municipalities (sveitarfélög)",
+        "Banks and corporations",
+        "Individual investors"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Governments, municipalities, banks, and corporations issue bonds. Individual investors typically buy bonds, not issue them."
+    },
+    {
+      "id": 39,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Market Structure",
+      "question": "What service does a stock exchange (kauphöll) provide?",
+      "options": [
+        "Guaranteed profits for traders",
+        "Listing service, trading service, and information dissemination",
+        "Only stock trading",
+        "Free money to companies"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Exchanges provide listing services (skráningarþjónusta), trading services (viðskiptaþjónusta), and information dissemination (upplýsingar)."
+    },
+    {
+      "id": 40,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Forward vs Future",
+      "question": "What's a key difference between forward and futures contracts?",
+      "options": [
+        "Forwards are standardized and exchange-traded",
+        "Futures are standardized and exchange-traded",
+        "They are exactly the same",
+        "Futures have no expiration date"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Futures are standardized contracts traded on exchanges. Forwards are customized OTC contracts between two parties."
+    },
+    {
+      "id": 41,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Volatility Impact",
+      "question": "How does correlation affect portfolio volatility?",
+      "options": [
+        "Perfect positive correlation eliminates all risk",
+        "Perfect negative correlation can eliminate volatility",
+        "Correlation doesn't affect volatility",
+        "Higher correlation always reduces volatility"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "With perfect negative correlation (-1), it's theoretically possible to construct a portfolio with zero volatility by proper weighting."
+    },
+    {
+      "id": 42,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Interest Rate Risk",
+      "question": "What happens to bond prices when interest rates rise?",
+      "options": [
+        "Bond prices increase",
+        "Bond prices decrease",
+        "Bond prices remain unchanged",
+        "It depends on the issuer"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Bond prices move inversely to interest rates. When rates rise, existing bonds with lower coupons become less attractive, causing prices to fall."
+    },
+    {
+      "id": 43,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Spread Components",
+      "question": "What creates the bid-ask spread?",
+      "options": [
+        "Government regulation",
+        "Market maker compensation and inventory risk",
+        "Random computer errors",
+        "Exchange fees only"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "The bid-ask spread compensates market makers for providing liquidity and bearing inventory risk."
+    },
+    {
+      "id": 44,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Option Value",
+      "question": "What factors increase the value of a call option? (Select all that apply)",
+      "options": [
+        "Higher underlying price",
+        "Longer time to expiration",
+        "Higher volatility",
+        "Higher strike price"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Call value increases with higher spot price, more time, and higher volatility. Higher strike price decreases call value."
+    },
+    {
+      "id": 45,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "P/E Ratio",
+      "question": "What does a low P/E ratio typically indicate?",
+      "options": [
+        "The stock is overvalued",
+        "The stock might be undervalued or a value stock",
+        "The company has no earnings",
+        "High growth expectations"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Low P/E ratios often indicate value stocks that may be undervalued, though it could also signal problems with the company."
+    },
+    {
+      "id": 46,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Flow",
+      "question": "What is 'order flow' (flæði) in market context?",
+      "options": [
+        "The speed of internet connection",
+        "Orders held by brokers not yet in the order book",
+        "Completed trades only",
+        "Cancelled orders"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Order flow represents orders that brokers have from clients but haven't yet submitted to the exchange order book."
+    },
+    {
+      "id": 47,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Contingent Convertibles",
+      "question": "What are contingent convertible bonds (CoCo)?",
+      "options": [
+        "Bonds that always convert to stock",
+        "Bonds that convert when specific triggers are met",
+        "Bonds denominated in cocoa",
+        "Bonds that cannot be converted"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "CoCo bonds automatically convert to equity when predetermined triggers occur, often used by banks for capital requirements."
+    },
+    {
+      "id": 48,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Leverage Risk",
+      "question": "Why do derivatives provide leverage (gírun)?",
+      "options": [
+        "They require full payment upfront",
+        "They allow controlling large positions with small initial capital",
+        "They eliminate all risk",
+        "They are government subsidized"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Derivatives provide leverage by allowing traders to control large notional amounts with relatively small margin requirements."
+    },
+    {
+      "id": 49,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Markowitz Theory",
+      "question": "What is the main contribution of Markowitz's Modern Portfolio Theory?",
+      "options": [
+        "Stocks always outperform bonds",
+        "Diversification can reduce risk without sacrificing returns",
+        "All investors should buy the same portfolio",
+        "Risk should be avoided at all costs"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Markowitz showed that through proper diversification, investors can reduce portfolio risk without proportionally reducing expected returns."
+    },
+    {
+      "id": 50,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Icelandic Market",
+      "question": "What is the Icelandic stock exchange called?",
+      "options": [
+        "Reykjavik Stock Exchange",
+        "Iceland MTF",
+        "Nasdaq OMX Iceland",
+        "Nordic Exchange Iceland"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "The Icelandic stock exchange is Nasdaq OMX Iceland, part of the Nasdaq Nordic exchange group."
+    }
+  ],
+  "metadata": {
+    "created_date": "2025-01-10",
+    "course": "V-505-ROTM - Financial Markets for Rotman Trading Competition",
+    "university": "Reykjavik University",
+    "exam_format": "60 minutes, 25 questions from this pool",
+    "passing_score": "60%",
+    "topics_covered": [
+      "Stocks (Hlutabréf)",
+      "Bonds (Skuldabréf)",
+      "Derivatives (Afleiður)",
+      "Market Structure (Markaðurinn)",
+      "Portfolio Management (Eignastýring)"
+    ]
+  }
+}
