@@ -111,6 +111,16 @@
             padding: 5px 12px;
             border-radius: 15px;
             font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .seminar-tag:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
         }
 
         .question-text {
@@ -503,6 +513,7 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
         // Global variables
         let allQuestions = []; // Will be loaded from JSON
@@ -788,7 +799,7 @@
                 <div class="question-container active">
                     <div class="question-header">
                         <span class="question-number">Question ${currentQuestion + 1} of ${selectedQuestions.length}</span>
-                        <span class="seminar-tag">${question.seminar}</span>
+                        <span class="seminar-tag" onclick="openSeminarPDF('${question.seminar}')" title="Click to view seminar PDF">${question.seminar}</span>
                     </div>
                     <div class="question-text">${question.question}</div>
                     ${question.multiSelect ? '<div class="multi-select-note">⚠️ Multiple answers may be correct. Select all that apply.</div>' : ''}

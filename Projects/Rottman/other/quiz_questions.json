@@ -1,6 +1,6 @@
 {
   "quiz_title": "Financial Markets Comprehensive Quiz - Rotman Trading Competition",
-  "total_questions": 50,
+  "total_questions": 60,
   "instructions": "Select the best answer(s) for each question. Some questions may have multiple correct answers.",
   "questions": [
     {
@@ -752,6 +752,156 @@
       "correctAnswers": [2],
       "multiSelect": false,
       "explanation": "The Icelandic stock exchange is Nasdaq OMX Iceland, part of the Nasdaq Nordic exchange group."
+    },
+    {
+      "id": 51,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Retail Trading Platforms",
+      "question": "Which of the following are mentioned as specialized apps/platforms for retail traders? (Select all that apply)",
+      "options": [
+        "Robinhood",
+        "eToro",
+        "Interactive Brokers",
+        "Microsoft Excel"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "The seminar mentions Robinhood, eToro, and Interactive Brokers as specialized platforms offering access to various markets and financial instruments for retail traders."
+    },
+    {
+      "id": 52,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Hidden Orders",
+      "question": "What is the Icelandic term for hidden orders?",
+      "options": [
+        "Faldar pantanir",
+        "Leynipantanir",
+        "Duldar pantanir",
+        "Óséðar pantanir"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "The seminar uses 'leynipantanir' as the Icelandic term for hidden orders in the order book."
+    },
+    {
+      "id": 53,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Investment Policy",
+      "question": "What does an investment policy (fjárfestingarstefna) define?",
+      "options": [
+        "Daily trading limits only",
+        "Framework for portfolio investments including objectives and risk distribution",
+        "Only the maximum loss allowed",
+        "Employee compensation packages"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Investment policy defines the framework for portfolio investments, including objectives, risk distribution, and allocation percentages with tolerance limits."
+    },
+    {
+      "id": 54,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Fund Types",
+      "question": "Which of the following are types of investment funds mentioned? (Select all that apply)",
+      "options": [
+        "UCITS (Verðbréfasjóðir)",
+        "ETF (Kauphallarsjóðir)",
+        "Hedge funds (Vogunarsjóðir)",
+        "Cryptocurrency funds"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "The seminar mentions UCITS, ETFs, and hedge funds as types of investment funds. Cryptocurrency funds are not specifically mentioned."
+    },
+    {
+      "id": 55,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Book Matching",
+      "question": "When a new order arrives at the exchange, what determines if a trade occurs?",
+      "options": [
+        "Random selection of counterparties",
+        "The order is compared against the order book for compatible opposite orders",
+        "The exchange decides based on trader reputation",
+        "Orders always wait 5 minutes before matching"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "New orders are compared against the order book, and if there's a compatible order from a counterparty, matching (trade) occurs."
+    },
+    {
+      "id": 56,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Portfolio Managers",
+      "question": "Which entities are mentioned as portfolio management organizations? (Select all that apply)",
+      "options": [
+        "Pension funds (Lífeyrissjóðir)",
+        "Family offices",
+        "Private equity funds (Framtakssjóðir)",
+        "Grocery stores"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "The seminar lists pension funds, family offices, and private equity funds among portfolio management entities. Grocery stores are not financial management organizations."
+    },
+    {
+      "id": 57,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Exchange Services",
+      "question": "According to the seminar, what three main services does a stock exchange provide?",
+      "options": [
+        "Banking, insurance, and trading",
+        "Listing service, trading service, and information dissemination",
+        "Lending, borrowing, and investing",
+        "Accounting, auditing, and compliance"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Exchanges provide listing service (skráningarþjónusta), trading service (viðskiptaþjónusta), and information dissemination (upplýsingar)."
+    },
+    {
+      "id": 58,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "AON Orders",
+      "question": "What does AON (All or None) mean for an order?",
+      "options": [
+        "The order can be partially filled",
+        "The order must be completely filled or not at all",
+        "The order expires after one minute",
+        "The order has priority over all others"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "AON (All or None) orders must be completely filled in their entirety or they won't execute at all - no partial fills allowed."
+    },
+    {
+      "id": 59,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Stockholder Liability",
+      "question": "What does 'takmörkuð ábyrgð' (limited liability) mean for stockholders?",
+      "options": [
+        "They are responsible for all company debts",
+        "Their loss is limited to their investment amount",
+        "They have limited voting rights",
+        "They can only own a limited number of shares"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Limited liability (takmörkuð ábyrgð) means stockholders can only lose the amount they invested, not more, even if the company fails."
+    },
+    {
+      "id": 60,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Order Matching",
+      "question": "When orders match in the order book, what determines the execution price?",
+      "options": [
+        "The average of both order prices",
+        "The price of the incoming order",
+        "The price of the existing order in the book",
+        "The market maker sets the price"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "When orders match, the execution price is the price of the existing (passive) order that was already in the order book."
     }
   ],
   "metadata": {
