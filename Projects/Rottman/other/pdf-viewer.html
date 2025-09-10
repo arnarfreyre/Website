@@ -26,23 +26,6 @@
             gap: 20px;
         }
 
-        .back-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: bold;
-        }
-
-        .back-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
 
         .title {
             font-size: 20px;
@@ -104,8 +87,7 @@
 </head>
 <body>
     <div class="header">
-        <button class="back-btn" onclick="goBack()">← Back to Quiz</button>
-        <div class="title" id="seminarTitle">Loading Seminar PDF...</div>
+        <div class="title" id="seminarTitle">Seminar PDF Viewer</div>
     </div>
 
     <div class="pdf-container">
@@ -197,21 +179,6 @@
             errorDiv.style.display = 'block';
         }
 
-        // Go back to quiz
-        function goBack() {
-            const returnUrl = getUrlParameter('return');
-            if (returnUrl) {
-                window.location.href = decodeURIComponent(returnUrl);
-            } else {
-                // Fallback to quiz.html
-                window.location.href = 'quiz.html';
-            }
-        }
-
-        // Handle browser back button
-        window.addEventListener('popstate', function() {
-            goBack();
-        });
 
         // Initialize when page loads
         window.onload = initPDFViewer;

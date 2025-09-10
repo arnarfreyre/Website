@@ -14,16 +14,12 @@ function getSeminarPDF(seminarName) {
     return SEMINAR_CONFIG[seminarName] || null;
 }
 
-// Function to open seminar PDF in same window with back functionality
+// Function to open seminar PDF in new window
 function openSeminarPDF(seminarName) {
     const pdfPath = getSeminarPDF(seminarName);
     if (pdfPath) {
-        // Create PDF viewer URL with current page as return URL
-        const returnUrl = window.location.href;
-        const viewerUrl = `pdf-viewer.html?pdf=${encodeURIComponent(pdfPath)}&return=${encodeURIComponent(returnUrl)}`;
-        
-        // Navigate to PDF viewer
-        window.location.href = viewerUrl;
+        // Open PDF directly in new window/tab
+        window.open(pdfPath, '_blank');
     } else {
         console.error('PDF not found for seminar:', seminarName);
         alert('PDF file not found for this seminar.');

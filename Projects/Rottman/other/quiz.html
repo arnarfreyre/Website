@@ -435,10 +435,10 @@
             <div class="seminar-selection">
                 <div class="seminar-card">
                     <div class="seminar-title">Seminar 2: Hlutabréf (Stocks)</div>
-                    <div class="seminar-info">Available: 6 questions</div>
+                    <div class="seminar-info">Available: 10 questions</div>
                     <div class="question-selector">
                         <label for="seminar2">Questions:</label>
-                        <input type="number" id="seminar2" min="0" max="6" value="2" step="1" oninput="updateTotal()" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        <input type="number" id="seminar2" min="0" max="10" value="3" step="1" oninput="updateTotal()" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                     </div>
                 </div>
 
@@ -462,25 +462,25 @@
 
                 <div class="seminar-card">
                     <div class="seminar-title">Seminar 5: Markaðurinn (The Market)</div>
-                    <div class="seminar-info">Available: 12 questions</div>
+                    <div class="seminar-info">Available: 17 questions</div>
                     <div class="question-selector">
                         <label for="seminar5">Questions:</label>
-                        <input type="number" id="seminar5" min="0" max="12" value="3" step="1" oninput="updateTotal()" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        <input type="number" id="seminar5" min="0" max="17" value="4" step="1" oninput="updateTotal()" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                     </div>
                 </div>
 
                 <div class="seminar-card">
                     <div class="seminar-title">Seminar 6: Eignastýring (Asset Management)</div>
-                    <div class="seminar-info">Available: 7 questions</div>
+                    <div class="seminar-info">Available: 10 questions</div>
                     <div class="question-selector">
                         <label for="seminar6">Questions:</label>
-                        <input type="number" id="seminar6" min="0" max="7" value="2" step="1" oninput="updateTotal()" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        <input type="number" id="seminar6" min="0" max="10" value="3" step="1" oninput="updateTotal()" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                     </div>
                 </div>
             </div>
 
             <div class="total-questions" id="totalQuestions">
-                Total Questions: <span id="totalCount">13</span>
+                Total Questions: <span id="totalCount">17</span>
             </div>
 
             <button class="start-quiz-btn" id="startQuizBtn" onclick="startCustomQuiz()">
@@ -525,11 +525,11 @@
 
         // Seminar question limits based on available questions in JSON
         const SEMINAR_LIMITS = {
-            'Seminar 2: Hlutabréf': 6,
+            'Seminar 2: Hlutabréf': 10,
             'Seminar 3: Skuldabréf': 10,
             'Seminar 4: Afleiður': 13,
-            'Seminar 5: Markaðurinn': 12,
-            'Seminar 6: Eignastýring': 7
+            'Seminar 5: Markaðurinn': 17,
+            'Seminar 6: Eignastýring': 10
         };
 
         // Load questions from JSON file with enhanced error handling
@@ -612,11 +612,11 @@
         // Update total question count in setup UI with enhanced validation
         function updateTotal() {
             const inputs = {
-                seminar2: { element: document.getElementById('seminar2'), max: 6 },
+                seminar2: { element: document.getElementById('seminar2'), max: 10 },
                 seminar3: { element: document.getElementById('seminar3'), max: 10 },
                 seminar4: { element: document.getElementById('seminar4'), max: 13 },
-                seminar5: { element: document.getElementById('seminar5'), max: 12 },
-                seminar6: { element: document.getElementById('seminar6'), max: 7 }
+                seminar5: { element: document.getElementById('seminar5'), max: 17 },
+                seminar6: { element: document.getElementById('seminar6'), max: 10 }
             };
             
             let total = 0;
@@ -657,12 +657,26 @@
             startBtn.disabled = total === 0;
         }
 
-        // Fisher-Yates shuffle algorithm for better randomization
+        // Enhanced Fisher-Yates shuffle algorithm with multiple passes for better randomization
         function shuffleArray(array) {
             const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            
+            // Perform multiple shuffle passes for better randomization
+            for (let pass = 0; pass < 3; pass++) {
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    // Use crypto.getRandomValues for better randomness if available
+                    let randomValue;
+                    if (window.crypto && window.crypto.getRandomValues) {
+                        const randomArray = new Uint32Array(1);
+                        window.crypto.getRandomValues(randomArray);
+                        randomValue = randomArray[0] / (0xFFFFFFFF + 1);
+                    } else {
+                        randomValue = Math.random();
+                    }
+                    
+                    const j = Math.floor(randomValue * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
             }
             return shuffled;
         }
@@ -678,7 +692,11 @@
                 'Seminar 6: Eignastýring': counts.seminar6
             };
 
-            Object.entries(seminars).forEach(([seminarName, count]) => {
+            // Randomize the order in which seminars are processed to avoid bias
+            const seminarEntries = Object.entries(seminars);
+            const shuffledSeminars = shuffleArray(seminarEntries);
+
+            shuffledSeminars.forEach(([seminarName, count]) => {
                 if (count > 0) {
                     // Get all questions for this seminar
                     const seminarQuestions = allQuestions.filter(q => q.seminar === seminarName);
@@ -691,8 +709,9 @@
                 }
             });
 
-            // Final shuffle to mix seminars using Fisher-Yates
+            // Multiple final shuffles to ensure truly random order
             selectedQuestions = shuffleArray(selectedQuestions);
+            selectedQuestions = shuffleArray(selectedQuestions); // Extra shuffle for good measure
         }
 
         // Start the custom quiz with enhanced UX
