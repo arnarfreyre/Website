@@ -574,21 +574,6 @@
       "explanation": "Núllvaxtabréf greiða enga reglulega vexti en seljast með afslætti frá nafnverði og greiða fullt nafnverð á gjalddaga."
     },
     {
-      "id": 39,
-      "seminar": "Seminar 4: Afleiður",
-      "topic": "Theta",
-      "question": "Hvað mælir Theta í valréttarverðlagningu?",
-      "options": [
-        "Verðnæmni fyrir breytingu á undirliggjandi",
-        "Tímarýrnun valréttarverðs",
-        "Næmni fyrir vaxtabreytingum",
-        "Næmni fyrir flöktsbreytingum"
-      ],
-      "correctAnswers": [1],
-      "multiSelect": false,
-      "explanation": "Theta mælir hversu hratt valréttarverð rýrnar með tímanum, sérstaklega mikilvægt þegar nálgast gjalddaga."
-    },
-    {
       "id": 40,
       "seminar": "Seminar 4: Afleiður",
       "topic": "Framvirkir vs Framtíðar",

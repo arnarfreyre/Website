@@ -886,8 +886,41 @@
             score = 0;
             answers = {};
             questionAnswered = {};
+            
+            // Randomize answer options for all questions
+            randomizeAnswerOptions();
+            
             document.getElementById('results').classList.remove('show');
             showQuestion();
+        }
+
+        // Randomize the order of answer options while preserving correctness
+        function randomizeAnswerOptions() {
+            selectedQuestions.forEach(question => {
+                // Create indexed options array for shuffling
+                const indexedOptions = question.options.map((option, index) => ({
+                    option: option,
+                    originalIndex: index
+                }));
+
+                // Shuffle the indexed options using enhanced Fisher-Yates
+                const shuffledOptions = shuffleArray(indexedOptions);
+
+                // Create mapping from old indices to new indices
+                const indexMapping = {};
+                shuffledOptions.forEach((item, newIndex) => {
+                    indexMapping[item.originalIndex] = newIndex;
+                });
+
+                // Update question with shuffled options
+                question.shuffledOptions = shuffledOptions.map(item => item.option);
+
+                // Update correctAnswers to reflect new positions
+                question.shuffledCorrectAnswers = question.correctAnswers.map(oldIndex => indexMapping[oldIndex]);
+
+                // Store the mapping for answer validation
+                question.indexMapping = indexMapping;
+            });
         }
 
         function showQuestion() {
@@ -902,7 +935,10 @@
             let optionsHTML = '';
             const inputType = question.multiSelect ? 'checkbox' : 'radio';
 
-            question.options.forEach((option, index) => {
+            // Use shuffled options if available, otherwise fall back to original
+            const displayOptions = question.shuffledOptions || question.options;
+
+            displayOptions.forEach((option, index) => {
                 const isChecked = answers[question.id] && answers[question.id].includes(index) ? 'checked' : '';
                 optionsHTML += `
                     <div class="option" id="option-${index}">
@@ -977,8 +1013,9 @@
             answers[question.id] = selectedAnswers;
             questionAnswered[question.id] = true;
 
-            // Check if answer is correct
-            const isCorrect = arraysEqual(selectedAnswers.sort(), question.correctAnswers.sort());
+            // Check if answer is correct using shuffled correct answers if available
+            const correctAnswerIndices = question.shuffledCorrectAnswers || question.correctAnswers;
+            const isCorrect = arraysEqual(selectedAnswers.sort(), correctAnswerIndices.sort());
 
             // Show feedback
             const feedbackDiv = document.getElementById('feedback');
@@ -993,10 +1030,13 @@
                 score++;
             }
 
-            // Highlight correct and incorrect options
-            question.options.forEach((option, index) => {
+            // Highlight correct and incorrect options using shuffled positions
+            const highlightCorrectIndices = question.shuffledCorrectAnswers || question.correctAnswers;
+            const displayOptions = question.shuffledOptions || question.options;
+            
+            displayOptions.forEach((option, index) => {
                 const optionDiv = document.getElementById(`option-${index}`);
-                if (question.correctAnswers.includes(index)) {
+                if (highlightCorrectIndices.includes(index)) {
                     optionDiv.classList.add('correct');
                 } else if (selectedAnswers.includes(index)) {
                     optionDiv.classList.add('incorrect');
