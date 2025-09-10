@@ -124,21 +124,6 @@
       "explanation": "Víkjandi skuldabréf eru neðar í kröfuhafaröð en almenn skuldabréf en ofar en hlutafé."
     },
     {
-      "id": 9,
-      "seminar": "Seminar 3: Skuldabréf",
-      "topic": "Verðtryggingarálag",
-      "question": "Hvað mælir verðtryggingarálag?",
-      "options": [
-        "Muninn á verðtryggðum og óverðtryggðum vöxtum",
-        "Kostnað við að tryggja skuldabréf",
-        "Muninn á kaup- og söluverði",
-        "Lánshæfismat útgefanda"
-      ],
-      "correctAnswers": [0],
-      "multiSelect": false,
-      "explanation": "Verðtryggingarálag er munurinn á ávöxtunarkröfu verðtryggðra og óverðtryggðra skuldabréfa með svipaða skilmála."
-    },
-    {
       "id": 10,
       "seminar": "Seminar 3: Skuldabréf",
       "topic": "Breytanleg skuldabréf",
@@ -542,21 +527,6 @@
       "correctAnswers": [0],
       "multiSelect": false,
       "explanation": "Virk stýring reynir að ná betri ávöxtun en markaðsvísitala með vali á eignum. Óvirk stýring fylgir vísitölu."
-    },
-    {
-      "id": 37,
-      "seminar": "Seminar 2: Hlutabréf",
-      "topic": "Arðgreiðslur",
-      "question": "Hvað gerist við verð hlutabréfa á arðleysisdegi (ex-dividend date)?",
-      "options": [
-        "Verðið hækkar um arðgreiðslu",
-        "Verðið lækkar venjulega um arðgreiðslu",
-        "Engin breyting",
-        "Viðskipti stöðvast"
-      ],
-      "correctAnswers": [1],
-      "multiSelect": false,
-      "explanation": "Á arðleysisdegi lækkar hlutabréfaverð venjulega um upphæð arðgreiðslunnar þar sem nýir kaupendur fá ekki arðinn."
     },
     {
       "id": 38,
