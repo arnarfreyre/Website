@@ -247,7 +247,7 @@
       "id": 17,
       "seminar": "Seminar 5: Markaðurinn",
       "topic": "Order Types",
-      "question": "Which order types are removed from the order book if not immediately filled? (Select all that apply)",
+      "question": "Which order types do not go to the order book? (Select all that apply)",
       "options": [
         "IOC (Immediate or Cancel)",
         "Day order",
@@ -442,7 +442,7 @@
       "id": 30,
       "seminar": "Seminar 2: Hlutabréf",
       "topic": "Shareholder Benefits",
-      "question": "Why would an investor choose stocks over bonds? (Select all that apply)",
+      "question": "For what reasons would an investor choose to invest in stocks? (Select all that apply)",
       "options": [
         "Potential for capital appreciation (virðisaukning)",
         "Voting rights in company decisions",
