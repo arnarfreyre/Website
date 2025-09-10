@@ -1,0 +1,921 @@
+{
+  "quiz_title": "Fjármálamarkaðir Heildarúttektarpróf - Rotman Trading Competition",
+  "total_questions": 60,
+  "instructions": "Veldu besta svar(ið) fyrir hverja spurningu. Sumar spurningar geta haft mörg rétt svör.",
+  "questions": [
+    {
+      "id": 1,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Tegundir hlutabréfa",
+      "question": "Hvaða fullyrðingar um tegundir hlutabréfa eru SANNAR? (Veldu allar sem eiga við)",
+      "options": [
+        "Vaxtarhlutabréf greiða sjaldan arð",
+        "Tekjuhlutabréf greiða arð reglulega",
+        "Virðishlutabréf hafa alltaf hátt V/H hlutfall",
+        "Traustir hlutir (blue-chip) eru hlutabréf í stórum, þekktum fyrirtækjum"
+      ],
+      "correctAnswers": [0, 1, 3],
+      "multiSelect": true,
+      "explanation": "Vaxtarhlutabréf einbeita sér að virðisaukningu og greiða sjaldan arð. Tekjuhlutabréf veita stöðugan arð. Virðishlutabréf hafa LÁGT V/H hlutfall (ekki hátt). Traustir hlutir eru frá rótgrónum fyrirtækjum."
+    },
+    {
+      "id": 2,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Markaðsskipulag",
+      "question": "Hvað er frummarkaður fyrir hlutabréf?",
+      "options": [
+        "Þar sem viðvarandi viðskipti milli fjárfesta eiga sér stað",
+        "Þar sem fyrirtæki safna fjármagni með IPO, SEO eða áhættufjármagni",
+        "Aðeins fyrir viðskipti í kauphöllum",
+        "Þar sem viðskiptavakar veita lausafjárstöðu"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Frummarkaðurinn er þar sem fyrirtæki afla fjármagns beint með hlutafjárskráningu (IPO), hlutafjáraukningu (SEO) eða áhættufjármagni. Eftirmarkaðurinn er fyrir viðvarandi viðskipti."
+    },
+    {
+      "id": 3,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Greiningaraðferðir",
+      "question": "Hvað aðgreinir grundvallargreiningu frá tæknigreiningu?",
+      "options": [
+        "Grundvallargreining notar ársreikninga, tæknigreining notar verðmynstur",
+        "Tæknigreining er nákvæmari en grundvallargreining",
+        "Grundvallargreining skoðar aðeins V/H hlutföll",
+        "Tæknigreining skoðar stjórnun fyrirtækja"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "Grundvallargreining skoðar tekjur, arðgreiðslur og ársreikninga. Tæknigreining notar markaðsgögn eins og verð- og magnmynstur."
+    },
+    {
+      "id": 4,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Viðskiptaaðferðir",
+      "question": "Hvað gerist í skortsölu?",
+      "options": [
+        "Þú kaupir hlutabréf á lágu verði",
+        "Þú selur lánuð bréf í von um að verðið lækki",
+        "Þú heldur hlutabréfum í stuttan tíma",
+        "Þú kaupir hlutabréf með álagi"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Í skortsölu selurðu lánuð bréf og hagnast ef verð lækkar (selur hátt, kaupir lágt til að loka stöðunni). Fræðilega séð er tap ótakmarkað."
+    },
+    {
+      "id": 5,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Tegundir skuldabréfa",
+      "question": "Hvaða útgefendur skuldabréfa eru nefndir í fyrirlestrum? (Veldu alla sem eiga við)",
+      "options": [
+        "Ríki",
+        "Sveitarfélög",
+        "Bankar og fyrirtæki",
+        "Alþjóðastofnanir"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Skuldabréf geta verið gefin út af ríkjum, sveitarfélögum, bönkum og fyrirtækjum með mismunandi lánshæfismati og skilmálum."
+    },
+    {
+      "id": 6,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Ávöxtunarkrafa",
+      "question": "Hvað er ávöxtunarkrafa til gjalddaga (YTM)?",
+      "options": [
+        "Núverandi ávöxtun skuldabréfs",
+        "Heildarvextir sem greiddir eru",
+        "Innri vextir ef haldið til gjalddaga",
+        "Árlegir vextir af nafnverði"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "YTM er innri vextir (IRR) sem þú færð ef þú heldur skuldabréfinu til gjalddaga, að teknu tilliti til kaupverðs, vaxtagreiðslna og endurgreiðslu höfuðstóls."
+    },
+    {
+      "id": 7,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Endingartími",
+      "question": "Hvað mælir endingartími (duration)?",
+      "options": [
+        "Hversu lengi skuldabréfið er útistandandi",
+        "Næmni verðs fyrir vaxtabreytingum",
+        "Meðaltími vaxtagreiðslna",
+        "Lánshæfismat útgefanda"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Endingartími mælir verðnæmni skuldabréfa fyrir vaxtabreytingum. Macaulay endingartími er veginn meðaltími sjóðstreymis."
+    },
+    {
+      "id": 8,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Skuldabréfategundir",
+      "question": "Hvað eru víkjandi skuldabréf?",
+      "options": [
+        "Skuldabréf með hæsta forgang í gjaldþroti",
+        "Skuldabréf sem eru aftast í kröfuhafaröð á undan hlutafé",
+        "Skuldabréf sem ekki þarf að endurgreiða",
+        "Skuldabréf með breytilega vexti"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Víkjandi skuldabréf eru neðar í kröfuhafaröð en almenn skuldabréf en ofar en hlutafé."
+    },
+    {
+      "id": 9,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Verðtryggingarálag",
+      "question": "Hvað mælir verðtryggingarálag?",
+      "options": [
+        "Muninn á verðtryggðum og óverðtryggðum vöxtum",
+        "Kostnað við að tryggja skuldabréf",
+        "Muninn á kaup- og söluverði",
+        "Lánshæfismat útgefanda"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "Verðtryggingarálag er munurinn á ávöxtunarkröfu verðtryggðra og óverðtryggðra skuldabréfa með svipaða skilmála."
+    },
+    {
+      "id": 10,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Breytanleg skuldabréf",
+      "question": "Hvað eru breytanleg skuldabréf (convertible bonds)?",
+      "options": [
+        "Skuldabréf með fasta vexti",
+        "Skuldabréf sem hægt er að breyta í hlutabréf á fyrirfram ákveðnu verði",
+        "Skuldabréf í erlendum gjaldmiðlum",
+        "Skuldabréf með breytilegum gjalddaga"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Breytanleg skuldabréf er hægt að breyta í hlutabréf á áður skilgreindu verði á lokagjalddaga ef hlutabréfaverð hefur hækkað yfir breytiverð."
+    },
+    {
+      "id": 11,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Afleiðunotkun",
+      "question": "Til hvers eru afleiður notaðar? (Veldu allar sem eiga við)",
+      "options": [
+        "Spákaupmennska",
+        "Áhættuvarnir",
+        "Skuldsetning (gírun)",
+        "Tryggð ávöxtun"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Afleiður eru notaðar fyrir spákaupmennsku, áhættuvarnir og skuldsetningu. Þær tryggja EKKI ávöxtun."
+    },
+    {
+      "id": 12,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Framvirk verðlagning",
+      "question": "Hver er formúlan fyrir verðlagningu framvirkra samninga?",
+      "options": [
+        "F₀ = S₀ × r × T",
+        "F₀ = S₀ + r^T",
+        "F₀ = S₀ × e^(rT)",
+        "F₀ = S₀ / e^(rT)"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Framvirkt verð F₀ = S₀ × e^(rT) þar sem S₀ er staðgengi, r eru vextir og T er tími til gjalddaga."
+    },
+    {
+      "id": 13,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Valréttir grikkir",
+      "question": "Hvað táknar Delta fyrir valrétti?",
+      "options": [
+        "Tímarýrnun valréttarverðs",
+        "Breyting valréttarverðs miðað við undirliggjandi eignaverð (∂V/∂S)",
+        "Næmni fyrir flökti",
+        "Vaxtanæmni"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Delta er fyrsta afleiða valréttarverðs með tilliti til undirliggjandi verðs (∂V/∂S). Fyrir kauprétti: Δ = N(d₁)."
+    },
+    {
+      "id": 14,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Valréttarstaða",
+      "question": "Hvaða fullyrðingar um valréttarstöðu eru réttar? (Veldu allar sem eiga við)",
+      "options": [
+        "ITM kaupréttur: undirliggjandi verð > verkfallsverð",
+        "ATM: undirliggjandi verð = verkfallsverð",
+        "OTM söluréttur: undirliggjandi verð > verkfallsverð",
+        "ITM valréttir eru alltaf nýttir"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "ITM (í peningum) þýðir arðbært ef nýtt. ATM (á peningum) þýðir jöfn verð. OTM (úr peningum) verður ekki nýtt."
+    },
+    {
+      "id": 15,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Veðköll",
+      "question": "Hvað gerist við veðkall?",
+      "options": [
+        "Þú færð arðgreiðslur frá stöðu þinni",
+        "Krafist er viðbótartrygginga vegna óhagstæðrar verðþróunar",
+        "Hagnaður þinn er sjálfkrafa tekinn út",
+        "Samningstími er framlengdur"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Veðkall krefst viðbótartrygginga þegar staða þín þróast óhagstætt. Ef ekki er brugðist við er stöðunni lokað."
+    },
+    {
+      "id": 16,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Tilboðsbók",
+      "question": "Hvað gerist þegar þú setur inn markaðstilboð að kaupa 100 XYZ með tilboðsbók: Kaup 50.10 (1000), Sala 50.20 (500)?",
+      "options": [
+        "Kaupa á 50.10",
+        "Kaupa á 50.20",
+        "Kaupa á 50.15 (meðaltal)",
+        "Tilboð bíður í bókinni"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Markaðstilboð framkvæmast strax á besta fáanlega verði. Til að kaupa ferðu á sölutilboðið (50.20)."
+    },
+    {
+      "id": 17,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Verðbil",
+      "question": "Hvað er kaup-sölu verðbil (bid-ask spread)?",
+      "options": [
+        "Munurinn á hæsta og lægsta verði dagsins",
+        "Munurinn á kauptilboði og sölutilboði",
+        "Þóknun kauphalla",
+        "Flökt verðs"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Verðbilið er munurinn á besta kauptilboði (bid) og besta sölutilboði (ask) í tilboðsbókinni."
+    },
+    {
+      "id": 18,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Viðskiptavakar",
+      "question": "Hvaða þjónustu veita viðskiptavakar?",
+      "options": [
+        "Setja opinbert verð hlutabréfa",
+        "Auka seljanleka með kaup- og sölutilboðum",
+        "Veita fjárfestingarráðgjöf",
+        "Stjórna kauphöllinni"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Viðskiptavakar auka seljanleka með því að halda úti kaup- og sölutilboðum með hámarksverðbili."
+    },
+    {
+      "id": 19,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Tilboðstegundir",
+      "question": "Hvað þýðir takmörkunartilboð (limit order)?",
+      "options": [
+        "Tilboð sem framkvæmist strax á hvaða verði sem er",
+        "Tilboð með ákveðnu hámarks- eða lágmarksverði",
+        "Tilboð sem gildir aðeins í einn dag",
+        "Tilboð sem ekki má afturkalla"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Takmörkunartilboð tilgreinir hámarksverð fyrir kaup eða lágmarksverð fyrir sölu."
+    },
+    {
+      "id": 20,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Viðskiptaframkvæmd",
+      "question": "Til að framkvæma tafarlausa sölu, myndirðu:",
+      "options": [
+        "Setja takmörkunarsölutilboð yfir markaði",
+        "'Slá biddið' - samþykkja kaupverð",
+        "'Fara á askið' - samþykkja söluverð",
+        "Bíða eftir betra verði"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Til að selja strax 'slærðu biddið' (samþykkir kaupverð). Til að kaupa strax 'ferðu á askið' (samþykkir söluverð)."
+    },
+    {
+      "id": 21,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Dreifing eigna",
+      "question": "Hverjir eru lykilþættir dreifingar eigna? (Veldu alla sem eiga við)",
+      "options": [
+        "Minnkar áhættu með því að fjárfesta í mörgum eignum",
+        "Flökt safns er lægra en vegið meðaltal flökts einstakra eigna",
+        "Allar eignir ættu að hafa fullkomna jákvæða samfylgni",
+        "Byggt á Modern Portfolio Theory eftir Markowitz"
+      ],
+      "correctAnswers": [0, 1, 3],
+      "multiSelect": true,
+      "explanation": "Dreifing minnkar áhættu með mörgum eignum með ófullkomna samfylgni. Flökt safns er lægra en vegið meðaltal vegna samfylgniáhrifa."
+    },
+    {
+      "id": 22,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Áhætta-ávöxtun samband",
+      "question": "Hver er grundvallarreglan um áhættu-ávöxtun sambandið?",
+      "options": [
+        "Lægri áhætta þýðir alltaf lægri ávöxtun",
+        "Hærri vænt ávöxtun fylgir yfirleitt hærra flökt",
+        "Áhætta og ávöxtun eru ótengd",
+        "Allar fjárfestingar hafa sömu áhættuleiðréttu ávöxtun"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Áhættu-ávöxtun sambandið segir að hærri vænt ávöxtun fylgi almennt hærra flökt (áhætta)."
+    },
+    {
+      "id": 23,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Safnbygging",
+      "question": "Þegar byggt er upp eignasafn, hvaða þættir ætti að hafa í huga?",
+      "options": [
+        "Aðeins vænt ávöxtun",
+        "Aðeins flökt eigna",
+        "Vænt ávöxtun, flökt og samfylgni milli eigna",
+        "Aðeins söguleg verð"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Safnbygging krefst þess að tekið sé tillit til væntrar ávöxtunar, flökts (áhættu) og samfylgni milli eigna til að hámarka áhættuleiðrétta ávöxtun."
+    },
+    {
+      "id": 24,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Samfylgniáhrif",
+      "question": "Samkvæmt kenningu um eignasöfn, hvers vegna er samfylgni mikilvæg?",
+      "options": [
+        "Hún ákvarðar viðskiptakostnað",
+        "Eignir með lága/neikvæða samfylgni veita betri dreifingu",
+        "Há samfylgni tryggir hærri ávöxtun",
+        "Samfylgni skiptir ekki máli fyrir safnbyggingu"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Lág eða neikvæð samfylgni milli eigna veitir ávinning af dreifingu og minnkar heildaráhættu safnsins."
+    },
+    {
+      "id": 25,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Markmið eignastýringar",
+      "question": "Hvaða fullyrðing lýsir best markmiði eignastýringar?",
+      "options": [
+        "Hámarka ávöxtun óháð áhættu",
+        "Lágmarka alla áhættu",
+        "Ná bestu mögulegu ávöxtun fyrir gefið áhættustig",
+        "Fjárfesta aðeins í áhættulausum eignum"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Eignastýring miðar að því að hámarka áhættuleiðrétta ávöxtun - að ná bestu mögulegu ávöxtun fyrir gefið áhættustig."
+    },
+    {
+      "id": 26,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Black-Scholes líkan",
+      "question": "Í Black-Scholes formúlunni, hvað táknar N(d₁)?",
+      "options": [
+        "Verkfallsverðið",
+        "Uppsafnaða normaldreifinguna",
+        "Flöktið",
+        "Tíma til gjalddaga"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "N(d₁) er uppsöfnuð stöðluð normaldreifing sem táknar líkurnar á að valrétturinn verði nýttur."
+    },
+    {
+      "id": 27,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Forgangsröðun tilboða",
+      "question": "Hvernig eru tilboðum forgangsraðað í flestum tilboðsbókum?",
+      "options": [
+        "Aðeins eftir stærð",
+        "Fyrst eftir verði, síðan eftir tíma",
+        "Eftir orðspori kaupmanns",
+        "Af handahófi"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Flestir markaðir nota verð-tíma forgang: bestu verðin fyrst (hærri kauptilboð, lægri sölutilboð), síðan fyrri innsendingartíma."
+    },
+    {
+      "id": 28,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Skuldarálag",
+      "question": "Hvað mælir skuldarálag?",
+      "options": [
+        "Muninn á kaup- og söluverði",
+        "Viðbótarávöxtun sem krafist er fyrir útlánaáhættu samanborið við áhættulaus skuldabréf",
+        "Tímann milli vaxtagreiðslna",
+        "Muninn á nafn- og raunvöxtum"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Skuldarálag mælir viðbótarávöxtun sem fjárfestar krefjast fyrir að taka útlánaáhættu samanborið við áhættulaus ríkisskuldabréf."
+    },
+    {
+      "id": 29,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Framvirkar varnir",
+      "question": "Þegar varið er framvirkan samning, hvers vegna kaupir útgefandi undirliggjandi eign strax?",
+      "options": [
+        "Til að spá í verðhækkanir",
+        "Til að útrýma markaðsáhættu vegna verðbreytinga",
+        "Vegna þess að það er lagalega skylt",
+        "Til að fá arðgreiðslur"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Útgefandi kaupir strax til að verja sig gegn markaðsáhættu og tryggja að hann geti afhent óháð verðbreytingum."
+    },
+    {
+      "id": 30,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Ávinningur hluthafa",
+      "question": "Afhverju myndi fjárfestir velja hlutabréf fram yfir skuldabréf? (Veldu allar sem eiga við)",
+      "options": [
+        "Möguleiki á virðisaukningu",
+        "Kosningaréttur í ákvörðunum fyrirtækis",
+        "Tryggð ávöxtun",
+        "Forgangur í gjaldþroti"
+      ],
+      "correctAnswers": [0, 1],
+      "multiSelect": true,
+      "explanation": "Hlutabréf bjóða möguleika á virðisaukningu og kosningarétt. Þau tryggja ekki ávöxtun og eru aftast í kröfuhafaröð."
+    },
+    {
+      "id": 31,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Leynipantanir",
+      "question": "Hvernig eru leynipantanir forgangsraðaðar í tilboðsbókinni?",
+      "options": [
+        "Þær hafa hæsta forgang",
+        "Sýnileg tilboð á sama verði hafa forgang fram yfir leynipantanir",
+        "Þær eru framkvæmdar af handahófi",
+        "Leynipantanir geta ekki verið framkvæmdar"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Á sama verðlagi hafa sýnileg tilboð forgang fram yfir falin tilboð, síðan gildir tímaforgangur innan hvers sýnileika flokks."
+    },
+    {
+      "id": 32,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Virðismat",
+      "question": "Hvað er V/H hlutfall (P/E ratio)?",
+      "options": [
+        "Verð deilt með hagnaði á hlut",
+        "Hagnaður deilt með verði",
+        "Verð deilt með sölu",
+        "Verð deilt með bókfærðu virði"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "V/H hlutfall er verð hlutabréfs deilt með hagnaði á hlut (EPS). Það sýnir hvað fjárfestar eru tilbúnir að borga fyrir hvern krónu af hagnaði."
+    },
+    {
+      "id": 33,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Innkallanleg skuldabréf",
+      "question": "Hvað eru innkallanleg skuldabréf?",
+      "options": [
+        "Skuldabréf sem fjárfestir getur selt til baka til útgefanda",
+        "Skuldabréf sem útgefandi getur greitt upp fyrir gjalddaga",
+        "Skuldabréf sem aldrei er hægt að selja",
+        "Skuldabréf með breytilega vexti"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Innkallanleg skuldabréf gefa útgefanda rétt til að greiða upp skuldabréfið fyrir gjalddaga, oft þegar vextir lækka."
+    },
+    {
+      "id": 34,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Swaps",
+      "question": "Hvað er vaxtaskiptasamningur (interest rate swap)?",
+      "options": [
+        "Skipti á höfuðstól lána",
+        "Skipti á föstum og breytilegum vaxtagreiðslum",
+        "Skipti á hlutabréfum",
+        "Skipti á gjaldmiðlum"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Vaxtaskiptasamningur er þegar tveir aðilar skiptast á vaxtagreiðslum, venjulega föstum vöxtum fyrir breytilega eða öfugt."
+    },
+    {
+      "id": 35,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Flæði",
+      "question": "Hvað er 'flæði' (order flow) í markaðssamhengi?",
+      "options": [
+        "Hraði nettengingar",
+        "Pantanir hjá miðlurum sem ekki eru enn í tilboðsbókinni",
+        "Aðeins lokaðar viðskipti",
+        "Afturkallaðar pantanir"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Flæði táknar pantanir sem miðlarar hafa frá viðskiptavinum en hafa ekki enn sent inn í tilboðsbók kauphallar."
+    },
+    {
+      "id": 36,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Sjóðir",
+      "question": "Hver er munurinn á virkri og óvirkri stýringu?",
+      "options": [
+        "Virk stýring reynir að slá vísitölu, óvirk fylgir vísitölu",
+        "Óvirk stýring er dýrari",
+        "Virk stýring kaupir aldrei eða selur",
+        "Enginn munur"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "Virk stýring reynir að ná betri ávöxtun en markaðsvísitala með vali á eignum. Óvirk stýring fylgir vísitölu."
+    },
+    {
+      "id": 37,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Arðgreiðslur",
+      "question": "Hvað gerist við verð hlutabréfa á arðleysisdegi (ex-dividend date)?",
+      "options": [
+        "Verðið hækkar um arðgreiðslu",
+        "Verðið lækkar venjulega um arðgreiðslu",
+        "Engin breyting",
+        "Viðskipti stöðvast"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Á arðleysisdegi lækkar hlutabréfaverð venjulega um upphæð arðgreiðslunnar þar sem nýir kaupendur fá ekki arðinn."
+    },
+    {
+      "id": 38,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Núllvaxtabréf",
+      "question": "Hvað einkennir núllvaxtabréf (zero-coupon bonds)?",
+      "options": [
+        "Þau greiða mjög háa vexti",
+        "Þau greiða enga vexti en seljast með afslætti",
+        "Þau hafa engan gjalddaga",
+        "Þau eru áhættulaus"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Núllvaxtabréf greiða enga reglulega vexti en seljast með afslætti frá nafnverði og greiða fullt nafnverð á gjalddaga."
+    },
+    {
+      "id": 39,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Theta",
+      "question": "Hvað mælir Theta í valréttarverðlagningu?",
+      "options": [
+        "Verðnæmni fyrir breytingu á undirliggjandi",
+        "Tímarýrnun valréttarverðs",
+        "Næmni fyrir vaxtabreytingum",
+        "Næmni fyrir flöktsbreytingum"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Theta mælir hversu hratt valréttarverð rýrnar með tímanum, sérstaklega mikilvægt þegar nálgast gjalddaga."
+    },
+    {
+      "id": 40,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Framvirkir vs Framtíðar",
+      "question": "Hver er lykilmunur á framvirkum og framtíðarsamningum?",
+      "options": [
+        "Framvirkir eru staðlaðir og í kauphöll",
+        "Framtíðarsamningar eru staðlaðir og í kauphöll",
+        "Þeir eru nákvæmlega eins",
+        "Framtíðarsamningar hafa engan lokadag"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Framtíðarsamningar eru staðlaðir samningar í kauphöllum. Framvirkir eru sérsniðnir OTC samningar milli tveggja aðila."
+    },
+    {
+      "id": 41,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Flöktsáhrif",
+      "question": "Hvernig hefur samfylgni áhrif á flökt safns?",
+      "options": [
+        "Fullkomin jákvæð samfylgni útrýmir allri áhættu",
+        "Fullkomin neikvæð samfylgni getur útrýmt flökti",
+        "Samfylgni hefur ekki áhrif á flökt",
+        "Hærri samfylgni minnkar alltaf flökt"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Með fullkominni neikvæðri samfylgni (-1) er fræðilega hægt að búa til safn með núll flökti með réttri vigtun."
+    },
+    {
+      "id": 42,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Vaxtaáhætta",
+      "question": "Hvað gerist við verð skuldabréfa þegar vextir hækka?",
+      "options": [
+        "Verð skuldabréfa hækkar",
+        "Verð skuldabréfa lækkar",
+        "Verð skuldabréfa helst óbreytt",
+        "Það fer eftir útgefanda"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Verð skuldabréfa hreyfist í öfuga átt við vexti. Þegar vextir hækka verða eldri bréf með lægri vexti óaðlaðandi og verð lækkar."
+    },
+    {
+      "id": 43,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Verðbilsþættir",
+      "question": "Hvað myndar kaup-sölu verðbilið?",
+      "options": [
+        "Reglugerð stjórnvalda",
+        "Þóknun viðskiptavaka og birgðaáhætta",
+        "Tilviljunarkenndar tölvuvillur",
+        "Aðeins kauphallargjöld"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Kaup-sölu verðbilið bætir viðskiptavökum fyrir að veita lausafjárstöðu og bera birgðaáhættu."
+    },
+    {
+      "id": 44,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Valréttarvirði",
+      "question": "Hvaða þættir auka virði kauprétta? (Veldu alla sem eiga við)",
+      "options": [
+        "Hærra undirliggjandi verð",
+        "Lengri tími til gjalddaga",
+        "Hærra flökt",
+        "Hærra verkfallsverð"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Virði kauprétta eykst með hærra staðgengi, meiri tíma og hærra flökt. Hærra verkfallsverð minnkar virði kauprétta."
+    },
+    {
+      "id": 45,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "V/H hlutfall",
+      "question": "Hvað gefur lágt V/H hlutfall venjulega til kynna?",
+      "options": [
+        "Hlutabréfið er ofmetið",
+        "Hlutabréfið gæti verið vanmetið eða virðishlutabréf",
+        "Fyrirtækið hefur engar tekjur",
+        "Miklar vaxtarvæntingar"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Lágt V/H hlutfall gefur oft til kynna virðishlutabréf sem gætu verið vanmetin, þó það gæti líka bent til vandamála."
+    },
+    {
+      "id": 46,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Flæði pantana",
+      "question": "Hvað er 'flæði' í markaðssamhengi?",
+      "options": [
+        "Hraði nettengingar",
+        "Pantanir hjá miðlurum sem ekki eru enn í tilboðsbókinni",
+        "Aðeins lokaðar viðskipti",
+        "Afturkallaðar pantanir"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Flæði táknar pantanir sem miðlarar hafa frá viðskiptavinum en hafa ekki enn sent inn í tilboðsbók kauphallar."
+    },
+    {
+      "id": 47,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Contingent Convertibles",
+      "question": "Hvað eru skilyrt breytanleg skuldabréf (CoCo)?",
+      "options": [
+        "Skuldabréf sem breytast alltaf í hlutabréf",
+        "Skuldabréf sem breytast þegar ákveðnir kveikjar virkjast",
+        "Skuldabréf í kakói",
+        "Skuldabréf sem ekki er hægt að breyta"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "CoCo skuldabréf breytast sjálfkrafa í eigið fé þegar fyrirfram ákveðnir kveikjar gerast, oft notað af bönkum fyrir eiginfjárkröfur."
+    },
+    {
+      "id": 48,
+      "seminar": "Seminar 4: Afleiður",
+      "topic": "Gírunaráhætta",
+      "question": "Hvers vegna veita afleiður gírun?",
+      "options": [
+        "Þær krefjast fullrar greiðslu fyrirfram",
+        "Þær leyfa stjórnun stórra staða með litlu upphafsfjármagni",
+        "Þær útrýma allri áhættu",
+        "Þær eru niðurgreiddar af ríkinu"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Afleiður veita gírun með því að leyfa kaupmönnum að stjórna stórum nafnvirðum með tiltölulega litlum tryggingarkröfum."
+    },
+    {
+      "id": 49,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Hlutafjárútboð",
+      "question": "Hvað þýðir IPO á íslensku?",
+      "options": [
+        "Hlutafjáraukning",
+        "Hlutafjárskráning",
+        "Hlutafjársöfnun",
+        "Hlutafjárkaup"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "IPO (Initial Public Offering) er hlutafjárskráning þar sem fyrirtæki býður hlutabréf sín til almennings í fyrsta skipti."
+    },
+    {
+      "id": 50,
+      "seminar": "Seminar 3: Skuldabréf",
+      "topic": "Lánshæfismat",
+      "question": "Hvað hefur áhrif á lánshæfismat skuldabréfaútgefanda?",
+      "options": [
+        "Fjárhagslegur styrkur og greiðslugeta",
+        "Litur á lógói fyrirtækis",
+        "Fjöldi starfsmanna",
+        "Staðsetning höfuðstöðva"
+      ],
+      "correctAnswers": [0],
+      "multiSelect": false,
+      "explanation": "Lánshæfismat byggir á fjárhagslegum styrk, greiðslugetu og líkum á vanskilum útgefanda."
+    },
+    {
+      "id": 51,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "AON pantanir",
+      "question": "Hvað þýðir AON (All or None) fyrir pöntun?",
+      "options": [
+        "Pöntunin getur verið fyllt að hluta",
+        "Pöntunin verður að vera alveg fyllt eða alls ekki",
+        "Pöntunin rennur út eftir eina mínútu",
+        "Pöntunin hefur forgang fram yfir allar aðrar"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "AON pantanir verða að vera alveg fylltar eða þær framkvæmast alls ekki - engar hlutalausnir leyfðar."
+    },
+    {
+      "id": 52,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Leynipantanir",
+      "question": "Hvað er íslenska orðið yfir 'hidden orders' í tilboðsbókinni?",
+      "options": [
+        "Faldar pantanir",
+        "Leynipantanir",
+        "Duldar pantanir",
+        "Ósæðar pantanir"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Fyrirlestrarnir nota 'leynipantanir' sem íslenska orðið yfir hidden orders í tilboðsbókinni."
+    },
+    {
+      "id": 53,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Fjárfestingarstefna",
+      "question": "Hvað skilgreinir fjárfestingarstefna?",
+      "options": [
+        "Aðeins daglegar viðskiptatakmarkanir",
+        "Ramma fyrir fjárfestingar safns með markmiðum og áhættudreifingu",
+        "Aðeins hámarkstap sem leyfilegt er",
+        "Launapakka starfsmanna"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Fjárfestingarstefna skilgreinir ramma fyrir fjárfestingar safns, þar með talið markmið, áhættudreifingu og úthlutun með vikmörkum."
+    },
+    {
+      "id": 54,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Tegundir sjóða",
+      "question": "Hvaða tegundir fjárfestingarsjóða eru nefndar? (Veldu alla sem eiga við)",
+      "options": [
+        "UCITS (Verðbréfasjóðir)",
+        "ETF (Kauphallarsjóðir)",
+        "Vogunarsjóðir",
+        "Dulritunargjaldmiðlasjóðir"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Fyrirlestrarnir nefna UCITS, ETF og vogunarsjóði sem tegundir fjárfestingarsjóða. Dulritunargjaldmiðlasjóðir eru ekki sérstaklega nefndir."
+    },
+    {
+      "id": 55,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Pörun tilboða",
+      "question": "Þegar nýtt tilboð kemur inn í kauphöllina, hvað ákvarðar hvort viðskipti eiga sér stað?",
+      "options": [
+        "Tilviljunarkennt val á mótaðilum",
+        "Tilboðið er borið saman við tilboðsbókina fyrir samrýmanleg andstæð tilboð",
+        "Kauphöllin ákveður út frá orðspori kaupmanns",
+        "Tilboð bíða alltaf í 5 mínútur fyrir pörun"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Ný tilboð eru borin saman við tilboðsbókina og ef samrýmanlegt tilboð frá mótaðila finnst þá verður pörun (viðskipti)."
+    },
+    {
+      "id": 56,
+      "seminar": "Seminar 6: Eignastýring",
+      "topic": "Eignastýringaraðilar",
+      "question": "Hvaða aðilar eru nefndir sem eignastýringarfyrirtæki? (Veldu alla sem eiga við)",
+      "options": [
+        "Lífeyrissjóðir",
+        "Fjölskylduskrifstofur (Family offices)",
+        "Framtakssjóðir",
+        "Matvöruverslanir"
+      ],
+      "correctAnswers": [0, 1, 2],
+      "multiSelect": true,
+      "explanation": "Fyrirlestrarnir telja upp lífeyrissjóði, fjölskylduskrifstofur og framtakssjóði meðal eignastýringaraðila. Matvöruverslanir eru ekki fjármálastýringarfyrirtæki."
+    },
+    {
+      "id": 57,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Þjónusta kauphallar",
+      "question": "Samkvæmt fyrirlestri, hvaða þrjár meginþjónustur veitir kauphöll?",
+      "options": [
+        "Bankaþjónusta, tryggingar og viðskipti",
+        "Skráningarþjónusta, viðskiptaþjónusta og upplýsingamiðlun",
+        "Lánveitingar, lántökur og fjárfestingar",
+        "Bókhald, endurskoðun og regluvarsla"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Kauphallir veita skráningarþjónustu, viðskiptaþjónustu og upplýsingamiðlun."
+    },
+    {
+      "id": 58,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "AON pantanir",
+      "question": "Hvað þýðir AON (All or None) fyrir pöntun?",
+      "options": [
+        "Pöntunin getur verið fyllt að hluta",
+        "Pöntunin verður að vera alveg fyllt eða alls ekki",
+        "Pöntunin rennur út eftir eina mínútu",
+        "Pöntunin hefur forgang fram yfir allar aðrar"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "AON (All or None) pantanir verða að vera alveg fylltar að fullu eða þær framkvæmast alls ekki - engar hlutalausnir leyfðar."
+    },
+    {
+      "id": 59,
+      "seminar": "Seminar 2: Hlutabréf",
+      "topic": "Ábyrgð hluthafa",
+      "question": "Hvað þýðir 'takmörkuð ábyrgð' fyrir hluthafa?",
+      "options": [
+        "Þeir bera ábyrgð á öllum skuldum fyrirtækis",
+        "Tap þeirra takmarkast við fjárfestingarupphæð þeirra",
+        "Þeir hafa takmarkaðan atkvæðisrétt",
+        "Þeir geta aðeins átt takmarkaðan fjölda hluta"
+      ],
+      "correctAnswers": [1],
+      "multiSelect": false,
+      "explanation": "Takmörkuð ábyrgð þýðir að hluthafar geta aðeins tapað upphæðinni sem þeir fjárfestu, ekki meira, jafnvel þótt fyrirtækið fari á hausinn."
+    },
+    {
+      "id": 60,
+      "seminar": "Seminar 5: Markaðurinn",
+      "topic": "Pörun tilboða",
+      "question": "Þegar tilboð parast í tilboðsbókinni, hvað ákvarðar framkvæmdarverðið?",
+      "options": [
+        "Meðaltal beggja tilboðsverða",
+        "Verð nýja tilboðsins sem kemur inn",
+        "Verð þess tilboðs sem var fyrir í bókinni",
+        "Viðskiptavakinn setur verðið"
+      ],
+      "correctAnswers": [2],
+      "multiSelect": false,
+      "explanation": "Þegar tilboð parast er framkvæmdarverðið verð þess tilboðs sem var fyrir í tilboðsbókinni (passive order)."
+    }
+  ],
+  "metadata": {
+    "created_date": "2025-01-10",
+    "course": "V-505-ROTM - Fjármálamarkaðir fyrir Rotman Trading Competition",
+    "university": "Háskólinn í Reykjavík",
+    "exam_format": "60 mínútur, 25 spurningar úr þessum hópi",
+    "passing_score": "60%",
+    "topics_covered": [
+      "Hlutabréf",
+      "Skuldabréf",
+      "Afleiður",
+      "Markaðurinn",
+      "Eignastýring"
+    ]
+  }
+}

@@ -308,6 +308,31 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
+        .language-btn {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            padding: 8px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        .language-btn:hover {
+            background: #e3f2fd;
+            border-color: #3498db;
+            transform: translateY(-1px);
+        }
+
+        .language-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -427,10 +452,15 @@
     <div class="container">
         <!-- Question Selection Setup -->
         <div class="setup-container" id="setupContainer">
-            <h1>Financial Markets Comprehensive Quiz</h1>
-            <p class="subtitle">Rotman Trading Competition - Customize Your Test</p>
+            <h1 id="quizTitle">Financial Markets Comprehensive Quiz</h1>
+            <p class="subtitle" id="quizSubtitle">Rotman Trading Competition - Customize Your Test</p>
             
-            <p style="text-align: center; margin: 20px 0; color: #7f8c8d;">Select how many questions you want from each seminar to create your personalized quiz.</p>
+            <div class="language-toggle" style="text-align: center; margin: 20px 0;">
+                <button class="language-btn active" id="englishBtn" onclick="switchLanguage('english')">🇬🇧 English</button>
+                <button class="language-btn" id="icelandicBtn" onclick="switchLanguage('icelandic')">🇮🇸 Íslenska</button>
+            </div>
+            
+            <p style="text-align: center; margin: 20px 0; color: #7f8c8d;" id="instructionText">Select how many questions you want from each seminar to create your personalized quiz.</p>
 
             <div class="seminar-selection">
                 <div class="seminar-card">
@@ -495,8 +525,8 @@
 
         <!-- Quiz Interface -->
         <div class="container hidden" id="quizInterface">
-            <h1>Financial Markets Comprehensive Quiz</h1>
-            <p class="subtitle">Rotman Trading Competition - Test Your Knowledge</p>
+            <h1 id="runningQuizTitle">Financial Markets Comprehensive Quiz</h1>
+            <p class="subtitle" id="runningQuizSubtitle">Rotman Trading Competition - Test Your Knowledge</p>
 
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -505,10 +535,10 @@
             <div id="quizContainer"></div>
 
             <div class="results" id="results">
-                <h2>Quiz Complete!</h2>
+                <h2 id="resultsTitle">Quiz Complete!</h2>
                 <div class="score" id="finalScore"></div>
                 <div class="score-message" id="scoreMessage"></div>
-                <button class="restart-btn" onclick="restartQuiz()">Retake Quiz</button>
+                <button class="restart-btn" id="restartBtn" onclick="restartQuiz()">Retake Quiz</button>
             </div>
         </div>
     </div>
@@ -522,6 +552,7 @@
         let score = 0;
         let answers = {};
         let questionAnswered = {};
+        let currentLanguage = 'english'; // Track current language
 
         // Seminar question limits based on available questions in JSON
         const SEMINAR_LIMITS = {
@@ -532,13 +563,79 @@
             'Seminar 6: Eignastýring': 10
         };
 
-        // Load questions from JSON file with enhanced error handling
+        // Language-specific text content
+        const LANGUAGE_CONTENT = {
+            english: {
+                title: 'Financial Markets Comprehensive Quiz',
+                subtitle: 'Rotman Trading Competition - Test Your Knowledge',
+                setupSubtitle: 'Rotman Trading Competition - Customize Your Test',
+                instruction: 'Select how many questions you want from each seminar to create your personalized quiz.',
+                startBtn: 'Start Custom Quiz',
+                questionsLabel: 'Questions:',
+                totalLabel: 'Total Questions:',
+                questionOf: 'of',
+                submitBtn: 'Submit Answer',
+                nextBtn: 'Next Question',
+                prevBtn: 'Previous',
+                resultsBtn: 'View Results',
+                loading: 'Loading questions...',
+                filename: 'quiz_questions.json'
+            },
+            icelandic: {
+                title: 'Fjármálamarkaðir Heildarúttektarpróf',
+                subtitle: 'Rotman Trading Competition - Prófaðu þig',
+                setupSubtitle: 'Rotman Trading Competition - Sérsníðu próf',
+                instruction: 'Veldu hversu margar spurningar þú vilt úr hverjum námskeiðskafla til að búa til þitt sérsniðna próf.',
+                startBtn: 'Byrja sérsnítt próf',
+                questionsLabel: 'Spurningar:',
+                totalLabel: 'Samtals spurningar:',
+                questionOf: 'af',
+                submitBtn: 'Skila svari',
+                nextBtn: 'Næsta spurning',
+                prevBtn: 'Fyrri',
+                resultsBtn: 'Skoða niðurstöður',
+                loading: 'Hleð spurningum...',
+                filename: 'quiz_questions_icelandic.json'
+            }
+        };
+
+        // Switch language functionality
+        function switchLanguage(language) {
+            currentLanguage = language;
+            
+            // Update button states
+            document.getElementById('englishBtn').classList.toggle('active', language === 'english');
+            document.getElementById('icelandicBtn').classList.toggle('active', language === 'icelandic');
+            
+            // Update text content
+            const content = LANGUAGE_CONTENT[language];
+            document.getElementById('quizTitle').textContent = content.title;
+            document.getElementById('quizSubtitle').textContent = content.setupSubtitle;
+            document.getElementById('instructionText').textContent = content.instruction;
+            document.getElementById('startQuizBtn').textContent = content.startBtn;
+            
+            // Update question labels
+            document.querySelectorAll('.question-selector label').forEach(label => {
+                label.textContent = content.questionsLabel;
+            });
+            
+            // Update total questions label
+            const totalQuestionsDiv = document.getElementById('totalQuestions');
+            const currentCount = document.getElementById('totalCount').textContent;
+            totalQuestionsDiv.innerHTML = `${content.totalLabel} <span id="totalCount">${currentCount}</span>`;
+            
+            // Clear current questions to force reload
+            allQuestions = [];
+        }
+
+        // Load questions from JSON file with language support
         async function loadQuestions() {
             try {
-                const response = await fetch('quiz_questions.json');
+                const filename = LANGUAGE_CONTENT[currentLanguage].filename;
+                const response = await fetch(filename);
                 if (!response.ok) {
                     if (response.status === 404) {
-                        throw new Error('Question file not found. Please ensure quiz_questions.json is in the same folder as this quiz.');
+                        throw new Error(`Question file not found. Please ensure ${filename} is in the same folder as this quiz.`);
                     } else {
                         throw new Error(`Failed to load questions (Error ${response.status}). Please check your internet connection and try again.`);
                     }
@@ -549,7 +646,7 @@
             } catch (error) {
                 console.error('Error loading questions:', error);
                 if (error.message.includes('fetch')) {
-                    showUserMessage('Cannot load questions. Please check that quiz_questions.json is available and your connection is working.', 'error');
+                    showUserMessage('Cannot load questions. Please check that the question file is available and your connection is working.', 'error');
                 } else {
                     showUserMessage(error.message, 'error');
                 }
@@ -763,6 +860,11 @@
                 document.getElementById('setupContainer').classList.add('hidden');
                 document.getElementById('quizInterface').classList.remove('hidden');
 
+                // Update quiz interface titles based on current language
+                const content = LANGUAGE_CONTENT[currentLanguage];
+                document.getElementById('runningQuizTitle').textContent = content.title;
+                document.getElementById('runningQuizSubtitle').textContent = content.subtitle;
+
                 // Initialize quiz
                 initQuiz();
                 
@@ -791,6 +893,7 @@
         function showQuestion() {
             const container = document.getElementById('quizContainer');
             const question = selectedQuestions[currentQuestion];
+            const content = LANGUAGE_CONTENT[currentLanguage];
 
             // Update progress bar
             const progress = ((currentQuestion + 1) / selectedQuestions.length) * 100;
@@ -814,24 +917,29 @@
                 `;
             });
 
+            // Multi-select warning text
+            const multiSelectText = currentLanguage === 'icelandic' ? 
+                '⚠️ Mörg svör geta verið rétt. Veldu öll sem eiga við.' : 
+                '⚠️ Multiple answers may be correct. Select all that apply.';
+
             container.innerHTML = `
                 <div class="question-container active">
                     <div class="question-header">
-                        <span class="question-number">Question ${currentQuestion + 1} of ${selectedQuestions.length}</span>
+                        <span class="question-number">${currentLanguage === 'icelandic' ? 'Spurning' : 'Question'} ${currentQuestion + 1} ${content.questionOf} ${selectedQuestions.length}</span>
                         <span class="seminar-tag" onclick="openSeminarPDF('${question.seminar}')" title="Click to view seminar PDF">${question.seminar}</span>
                     </div>
                     <div class="question-text">${question.question}</div>
-                    ${question.multiSelect ? '<div class="multi-select-note">⚠️ Multiple answers may be correct. Select all that apply.</div>' : ''}
+                    ${question.multiSelect ? `<div class="multi-select-note">${multiSelectText}</div>` : ''}
                     <div class="options">${optionsHTML}</div>
                     <div class="feedback" id="feedback"></div>
                     <div class="button-container">
-                        ${currentQuestion > 0 ? '<button class="prev-btn" onclick="previousQuestion()">Previous</button>' : ''}
+                        ${currentQuestion > 0 ? `<button class="prev-btn" onclick="previousQuestion()">${content.prevBtn}</button>` : ''}
                         <button class="submit-btn" id="submitBtn" onclick="submitAnswer()" ${questionAnswered[question.id] ? 'disabled' : ''}>
-                            Submit Answer
+                            ${content.submitBtn}
                         </button>
                         ${currentQuestion < selectedQuestions.length - 1 ?
-                            '<button class="next-btn" onclick="nextQuestion()">Next Question</button>' :
-                            '<button class="next-btn" onclick="showResults()">View Results</button>'}
+                            `<button class="next-btn" onclick="nextQuestion()">${content.nextBtn}</button>` :
+                            `<button class="next-btn" onclick="showResults()">${content.resultsBtn}</button>`}
                     </div>
                 </div>
             `;
@@ -932,20 +1040,41 @@
             const finalScoreDiv = document.getElementById('finalScore');
             const messageDiv = document.getElementById('scoreMessage');
 
+            // Update results section with current language
+            const content = LANGUAGE_CONTENT[currentLanguage];
+            const resultsText = currentLanguage === 'icelandic' ? 'Prófi lokið!' : 'Quiz Complete!';
+            const restartText = currentLanguage === 'icelandic' ? 'Endurtaka próf' : 'Retake Quiz';
+            const scoreText = currentLanguage === 'icelandic' ? 'Þín einkunn:' : 'Your score:';
+            
+            document.getElementById('resultsTitle').textContent = resultsText;
+            document.getElementById('restartBtn').textContent = restartText;
+
             finalScoreDiv.textContent = `${score} / ${selectedQuestions.length}`;
 
             let message = '';
-            if (percentage >= 90) {
-                message = 'Outstanding! You have mastered the material! 🏆';
-            } else if (percentage >= 75) {
-                message = 'Great job! You have a strong understanding! 🌟';
-            } else if (percentage >= 60) {
-                message = 'Good effort! Review the topics you missed. 📚';
+            if (currentLanguage === 'icelandic') {
+                if (percentage >= 90) {
+                    message = 'Frábært! Þú hefur náð tökum á efninu! 🏆';
+                } else if (percentage >= 75) {
+                    message = 'Vel gert! Þú hefur góðan skilning! 🌟';
+                } else if (percentage >= 60) {
+                    message = 'Góð vinna! Farðu yfir efnið sem þú misstir af. 📚';
+                } else {
+                    message = 'Haltu áfram að læra! Farðu yfir námskeiðsefnið. 💪';
+                }
             } else {
-                message = 'Keep studying! Review the seminar materials. 💪';
+                if (percentage >= 90) {
+                    message = 'Outstanding! You have mastered the material! 🏆';
+                } else if (percentage >= 75) {
+                    message = 'Great job! You have a strong understanding! 🌟';
+                } else if (percentage >= 60) {
+                    message = 'Good effort! Review the topics you missed. 📚';
+                } else {
+                    message = 'Keep studying! Review the seminar materials. 💪';
+                }
             }
 
-            messageDiv.innerHTML = `${message}<br>Your score: ${percentage}%`;
+            messageDiv.innerHTML = `${message}<br>${scoreText} ${percentage}%`;
 
             document.getElementById('quizContainer').style.display = 'none';
             resultsDiv.classList.add('show');
