@@ -110,6 +110,27 @@
       "icon": "folder"
     },
     {
+      "id": "pharmacology",
+      "title": "Clinical Pharmacology Exam",
+      "description": "Interactive clinical pharmacology exam platform with study mode, practice tests, and comprehensive patient case analysis for LYF516G course.",
+      "tags": [
+        "Education",
+        "Medicine",
+        "Exam"
+      ],
+      "categories": [
+        "education"
+      ],
+      "path": "Projects/pharmacology /index.html",
+      "featured": false,
+      "technologies": [
+        "Education",
+        "Medicine",
+        "Interactive"
+      ],
+      "icon": "medical"
+    },
+    {
       "id": "tree-website",
       "title": "Tree Website",
       "description": "An interactive visualization of trees and nature with beautiful biome styling. Experience different environmental themes and natural landscapes.",

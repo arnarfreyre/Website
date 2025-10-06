@@ -1,0 +1,391 @@
+{
+  "proftitill": "Lokapróf í Klínískri Aðgengisfræði - LYF516G",
+  "ar": 2025,
+  "timi_minutur": 180,
+  "heildareinkunn": 100,
+  
+  "sjukratilfelli": {
+    "titill": "Sjúkratilfelli: KS - 68 ára karlmaður",
+    
+    "bakgrunnur": {
+      "nafn": "KS",
+      "aldur": 68,
+      "kyn": "karlmaður",
+      "haed_cm": 176,
+      "thyngd_kg": 94,
+      "starf": "fyrrverandi smiður, á örorkulífeyri"
+    },
+    
+    "astæda_komu": "KS kemur á bráðamóttöku LSH með öndunarerfiðleika, bjúg á fótleggjum og mæði. Hann segist hafa verið að versna síðustu 10 daga og hefur fundið fyrir þunga fyrir bringu. Hann vaknar oft á nóttum með öndunarvanda og þarf að sofa í háum kodda.",
+    
+    "sjukrasaga": {
+      "hjartabilun": "Greindur fyrir 3 árum (NYHA klasi II-III)",
+      "gattatif": "Greindur fyrir 8 mánuðum",
+      "sykursyki_typa2": "Greindur fyrir 12 árum",
+      "hathrysting": "Greindur fyrir 20 árum",
+      "nyrnamjaðmabolga": "Greindur með skerta nýrnastarfsemi fyrir 2 árum",
+      "annað": "Fékk vægan heilablóðfall (TIA) fyrir 3 árum"
+    },
+    
+    "felagssaga": {
+      "reykingar": "Hætti að reykja fyrir 5 árum (reykti 2 pakka/dag í 40 ár)",
+      "afengi": "Drekkur 2-3 bjóra á kvöldin, meira um helgar",
+      "hreyfinaefur": "Mjög lítil hreyfing vegna bjúgs og mæðis"
+    },
+    
+    "lyfjasaga": [
+      {
+        "lyf": "Enalapril",
+        "skammtur": "10 mg",
+        "tíðni": "tvisvar á dag"
+      },
+      {
+        "lyf": "Metoprolol",
+        "skammtur": "50 mg",
+        "tíðni": "tvisvar á dag"
+      },
+      {
+        "lyf": "Fúrósemíð",
+        "skammtur": "40 mg",
+        "tíðni": "einu sinni á dag"
+      },
+      {
+        "lyf": "Warfarin",
+        "skammtur": "5 mg",
+        "tíðni": "einu sinni á dag",
+        "aths": "INR mæling fyrir 3 vikum var 2.8"
+      },
+      {
+        "lyf": "Metformin",
+        "skammtur": "1000 mg",
+        "tíðni": "tvisvar á dag"
+      },
+      {
+        "lyf": "Atorvastatin",
+        "skammtur": "20 mg",
+        "tíðni": "að kvöldi"
+      },
+      {
+        "lyf": "Paracetamól",
+        "skammtur": "500-1000 mg",
+        "tíðni": "eftir þörfum við verkjum"
+      }
+    ],
+    
+    "lifsmaork": {
+      "blodthrysting_mmHg": "165/102",
+      "puls_slog_min": 110,
+      "ondun_andadrættir_min": 26,
+      "hiti_celsius": 37.2,
+      "surefiismetun_prósent": 91
+    },
+    
+    "laknisskoðun": {
+      "almennt": "Sjúklingur situr og er greinilega móður",
+      "hud": "Litlaus, væg kaldsveitta",
+      "hals": "Þrútin hálsslagæð (JVD)",
+      "lungu": "Rakahljóð (crackles) í báðum lungnabotnum, aukin öndunartíðni",
+      "hjarta": "Óreglulegur hjartsláttaróregla, S3 gallop hljóð",
+      "kviður": "Mjúkur, lifur stækkuð 2 cm neðan við rifbein",
+      "utlimir": "Mikill bjúgur (3+) á báðum fótleggjum upp að hnjám",
+      "taugakerfi": "Við meðvitund, óruggt göngulag"
+    },
+    
+    "blodmaelingar": {
+      "Na_mmol_L": {
+        "gildi": 132,
+        "vidmidun": "135-145",
+        "eining": "mmol/L"
+      },
+      "K_mmol_L": {
+        "gildi": 5.8,
+        "vidmidun": "3.5-5.0",
+        "eining": "mmol/L"
+      },
+      "Cl_mmol_L": {
+        "gildi": 98,
+        "vidmidun": "95-105",
+        "eining": "mmol/L"
+      },
+      "CO2_mmol_L": {
+        "gildi": 29,
+        "vidmidun": "22-30",
+        "einding": "mmol/L"
+      },
+      "BUN_mmol_L": {
+        "gildi": 12.5,
+        "vidmidun": "3.5-8.5",
+        "eining": "mmol/L"
+      },
+      "SCr_mikromol_L": {
+        "gildi": 195,
+        "vidmidun": "50-120",
+        "eining": "μmol/L"
+      },
+      "glukosi_mmol_L": {
+        "gildi": 14.2,
+        "vidmidun": "3.2-6.1 (fastandi)",
+        "eining": "mmol/L"
+      },
+      "HbA1c_mmol_mol": {
+        "gildi": 82,
+        "vidmidun": "<53",
+        "eining": "mmol/mol"
+      },
+      "Ca_mmol_L": {
+        "gildi": 2.15,
+        "vidmidun": "2.20-2.55",
+        "eining": "mmol/L"
+      },
+      "Mg_mmol_L": {
+        "gildi": 0.72,
+        "vidmidun": "0.66-1.10",
+        "eining": "mmol/L"
+      },
+      "T_Kol_mmol_L": {
+        "gildi": 5.8,
+        "vidmidun": "<5.0 (æskilegt)",
+        "eining": "mmol/L"
+      },
+      "LDL_mmol_L": {
+        "gildi": 3.8,
+        "vidmidun": "<2.6 (æskilegt)",
+        "eining": "mmol/L"
+      },
+      "HDL_mmol_L": {
+        "gildi": 0.9,
+        "vidmidun": ">1.0",
+        "eining": "mmol/L"
+      },
+      "triglyseridar_mmol_L": {
+        "gildi": 2.9,
+        "vidmidun": "0.28-2.3",
+        "eining": "mmol/L"
+      },
+      "INR": {
+        "gildi": 4.2,
+        "vidmidun": "2.0-3.0 (fyrir gáttatif)",
+        "eining": "hlutfall"
+      },
+      "AST_U_L": {
+        "gildi": 42,
+        "vidmidun": "7-26",
+        "eining": "U/L"
+      },
+      "ALT_U_L": {
+        "gildi": 38,
+        "vidmidun": "0-54",
+        "eining": "U/L"
+      },
+      "NT_proBNP_pg_mL": {
+        "gildi": 3500,
+        "vidmidun": "<125 (eðlilegt)",
+        "eining": "pg/mL",
+        "aths": "Mjög hækkað - bendir til hjartabilunar"
+      }
+    },
+    
+    "aukagogn": {
+      "ECG": "Gáttatif með hraðan kamratakt (110 slög/mín). Engin merki um nýlegan hjartadrep.",
+      "rontgenmynd_brjostkassa": "Stækkað hjarta (aukið cardiothoracic ratio), vökvasöfnun í lungnabotnum, væg pleuralvökvi tvíhliða",
+      "echokardiogram_fyrir_6_man": "LVEF (left ventricular ejection fraction) 35% - bendir til skertrar hjartavirkni"
+    },
+    
+    "nidurstad_laeknis": "KS er greindur með bráða versnun á hjartabilun (acute decompensated heart failure) með vökvasöfnun. Hann er einnig með óstjórnað gáttatif, skerta nýrnastarfsemi og illa stjórnaða sykursýki. INR gildi of hátt sem eykur blæðingarhættu. Þörf er á bráðri meðferð og endurskoðun á lyfjasögu."
+  },
+  
+  "spurningar": [
+    {
+      "spurning_nr": 1,
+      "flokkur": "Farmakokinetic útreikningar",
+      "stig": 20,
+      "spurning": "Reiknið út eftirfarandi stærðir fyrir KS:",
+      "undirspur": [
+        {
+          "a": "Creatinine clearance (CrCl) með Cockcroft-Gault jöfnunni. Sýnið útreikninga.",
+          "stig": 5,
+          "leidbeiningar": "Notið: CrCl = [(140-aldur) × Wt] / (0.815 × SCr[μmol/L])"
+        },
+        {
+          "b": "Túlkið niðurstöðu CrCl. Hversu skert er nýrnastarfsemi KS? Hvað þýðir þetta fyrir lyfjameðferð?",
+          "stig": 5
+        },
+        {
+          "c": "Ef KS fengi digoxin, reiknið út áætlaðan clearance (Cl) fyrir digoxin. Gerið ráð fyrir að hann sé með hjartabilun.",
+          "stig": 5,
+          "leidbeiningar": "Notið: Cldigoxin = (1.303 × CrCl) + ClNR, þar sem ClNR = 20 mL/mín fyrir hjartabilun"
+        },
+        {
+          "d": "Reiknið út volume of distribution (Vd) fyrir digoxin hjá KS.",
+          "stig": 5,
+          "leidbeiningar": "Notið: Vd = 3.8 × þyngd[kg] + 3.1 × CrCl[mL/mín]"
+        }
+      ]
+    },
+    {
+      "spurning_nr": 2,
+      "flokkur": "Blóðgildi og túlkun",
+      "stig": 15,
+      "spurning": "Farið yfir blóðgildi KS og svarið eftirfarandi:",
+      "undirspur": [
+        {
+          "a": "Tilgreinið öll frávik frá eðlilegum viðmiðunarmörkum. Flokka þau sem lítil, miðlungs eða alvarleg frávik.",
+          "stig": 6
+        },
+        {
+          "b": "Hvaða blóðgildi eru mest áhyggjuefni klínískt séð og hvers vegna?",
+          "stig": 5
+        },
+        {
+          "c": "Leiðréttið natríum gildi KS fyrir háan blóðsykur. Sýnið útreikninga. Hvað segir leiðrétt gildi ykkur?",
+          "stig": 4,
+          "leidbeiningar": "Notið: Leiðrétt Na = mælt Na + [(glúkósi - 5.5) / 5.5] × 2.4"
+        }
+      ]
+    },
+    {
+      "spurning_nr": 3,
+      "flokkur": "Lyfjasaga og milliverkanir",
+      "stig": 20,
+      "spurning": "Farið markvisst yfir lyfjasögu KS:",
+      "undirspur": [
+        {
+          "a": "Greinið öll lyf sem gætu stuðlað að eða versnað núverandi einkenni sjúklingsins (hjartabilun, hátt kalíum, skert nýrnastarfsemi).",
+          "stig": 6
+        },
+        {
+          "b": "Warfarin INR gildi er 4.2 (of hátt). Hvað gæti hafa valdið þessu? Tilgreinið a.m.k. 3 hugsanlegar orsakir tengdar lyfjum eða ástandi sjúklingsins.",
+          "stig": 6
+        },
+        {
+          "c": "Metformin er frábending ef CrCl < 30 mL/mín og þarf varúð ef CrCl 30-45 mL/mín. Á KS að halda áfram með Metformin? Rökstyðjið svar ykkar.",
+          "stig": 4
+        },
+        {
+          "d": "Tilgreinið a.m.k. 2 milliverkanir milli lyfja sem KS tekur inn.",
+          "stig": 4
+        }
+      ]
+    },
+    {
+      "spurning_nr": 4,
+      "flokkur": "Meðferðaráætlun - Bráðameðferð",
+      "stig": 25,
+      "spurning": "KS þarf bráða meðferð á LSH. Setjið fram meðferðaráætlun:",
+      "undirspur": [
+        {
+          "a": "Hvaða bráðaúrræði ráðleggið þið til að bæta hjartabilun og draga úr vökvasöfnun? Tilgreinið lyf, skammta og gjafaleið.",
+          "stig": 6
+        },
+        {
+          "b": "INR er 4.2. Hvaða aðgerðir ráðleggið þið til að lækka blæðingarhættu? Þarf að stöðva warfarin? Þarf antagónista (t.d. vítamín K)?",
+          "stig": 5
+        },
+        {
+          "c": "Kalíum er 5.8 mmol/L (hátt). Hvaða ráðstafanir mynduð þið gera til að lækka kalíum? Tilgreinið a.m.k. 2 aðgerðir.",
+          "stig": 5
+        },
+        {
+          "d": "Blóðsykurinn er 14.2 mmol/L. Hvernig mynduð þið meðhöndla háan blóðsykur í bráðu tilviki?",
+          "stig": 5
+        },
+        {
+          "e": "Súrefnismettun er 91%. Hvaða úrræði ráðleggið þið til að bæta öndun?",
+          "stig": 4
+        }
+      ]
+    },
+    {
+      "spurning_nr": 5,
+      "flokkur": "Langtímameðferð og breytingar á lyfjasögu",
+      "stig": 20,
+      "spurning": "Þegar ástand KS hefur verið varð stöðugt, þarf að endurskoða langtíma lyfjameðferð:",
+      "undirspur": [
+        {
+          "a": "Enalapril 10 mg × 2: Er þessi skammtur viðeigandi? Mætti hækka hann? Hvað þarf að hafa í huga með tilliti til nýrnastarfsemi og kalíums?",
+          "stig": 5
+        },
+        {
+          "b": "Metoprolol 50 mg × 2: Er þessi skammtur viðeigandi fyrir sjúkling með hjartabilun og gáttatif? Þarf að breyta?",
+          "stig": 4
+        },
+        {
+          "c": "Warfarin: Reiknið út nýjan viðhaldsskammt fyrir KS til að ná INR 2.0-3.0. Gerið ráð fyrir að núverandi skammtur (5 mg/dag) gefi INR 4.2. Sýnið útreikninga.",
+          "stig": 6,
+          "leidbeiningar": "Notið: Nýr skammtur = (núverandi skammtur × markmið INR) / núverandi INR"
+        },
+        {
+          "d": "Atorvastatin: LDL er 3.8 mmol/L (æskilegt <2.6 fyrir háa hjarta-æðaáhættu). Þarf að auka skammt eða bæta við öðru lyfi?",
+          "stig": 5
+        }
+      ]
+    },
+    {
+      "spurning_nr": 6,
+      "flokkur": "Eftirfylgd og eftirlit",
+      "stig": 10,
+      "spurning": "Setjið fram áætlun um eftirfylgd fyrir KS:",
+      "undirspur": [
+        {
+          "a": "Hvaða blóðpróf þarf að fylgjast með og hversu oft?",
+          "stig": 4
+        },
+        {
+          "b": "Hvaða lífsmörk/einkenni þarf að fylgjast með heima og hvenær á að hafa samband við heilsugæslu/bráðadeild?",
+          "stig": 3
+        },
+        {
+          "c": "Hvaða lífsstílsráðleggingar mynduð þið gefa KS?",
+          "stig": 3
+        }
+      ]
+    },
+    {
+      "spurning_nr": 7,
+      "flokkur": "Valfrjáls viðbótarspurning - Digoxin",
+      "stig": 10,
+      "bonus": true,
+      "spurning": "Læknir íhugar að bæta digoxin við meðferð KS til að bæta stjórn á gáttatifi og styrka samdrátt hjarta:",
+      "undirspur": [
+        {
+          "a": "Reiknið út viðeigandi upphafsskammt (loading dose) fyrir digoxin. Gerið ráð fyrir að markmið Css sé 1.0 μg/L. Notið Vd sem þið reiknaðuð í spurningu 1d. Sýnið útreikninga.",
+          "stig": 5,
+          "leidbeiningar": "LD = (Css × Vd) / F, þar sem F = 0.7 fyrir töflur"
+        },
+        {
+          "b": "Reiknið út viðhaldsskammt (maintenance dose) fyrir digoxin. Notið Cl sem þið reiknaðuð í spurningu 1c. Sýnið útreikninga.",
+          "stig": 5,
+          "leidbeiningar": "MD = (Css × Cl × τ) / F, þar sem τ = 1440 mín (1 dagur)"
+        }
+      ]
+    }
+  ],
+  
+  "svarblad_leidbeiningar": {
+    "almennar_leidbeiningar": [
+      "Svarið öllum spurningum á sérstakt svarblað",
+      "Sýnið alla útreikninga og rökstuðning",
+      "Notið viðeigandi einingar í öllum útreikningum",
+      "Tilvísið í klínískar leiðbeiningar þar sem við á",
+      "Heildarstig: 110 (stig úr spurningu 7 teljast sem bónus)",
+      "Lágmarkseinkunn til að standast: 50 stig"
+    ],
+    "leyfileg_hjalpargjn": [
+      "Reiknivél (ekki forritanleg)",
+      "Lyfjaskrá/Serlyfjaskrá (prentuð útgáfa)",
+      "Formúlublað úr námskeiði (1 blaðsíða, tvíhliða)"
+    ]
+  },
+  
+  "vidauki": {
+    "formul_til_studnings": {
+      "cockcroft_gault": "CrCl[mL/mín] = [(140 - aldur) × þyngd[kg]] / (0.815 × SCr[μmol/L])",
+      "leidrett_natrium": "Leiðrétt Na = mælt Na + [(glúkósi - 5.5) / 5.5] × 2.4",
+      "digoxin_clearance": "Cldigoxin = (1.303 × CrCl) + ClNR",
+      "digoxin_vd": "Vd = 3.8 × þyngd[kg] + 3.1 × CrCl[mL/mín]",
+      "loading_dose": "LD = (Css × Vd) / F",
+      "maintenance_dose": "MD = (Css × Cl × τ) / F",
+      "warfarin_skammtalbreytning": "Nýr skammtur = (núverandi skammtur × markmið INR) / núverandi INR"
+    }
+  }
+}
