@@ -520,10 +520,87 @@ function showResults() {
                         : 'Því miður náðir þú ekki lágmarkseinkunn. Reyndu aftur!'}
                 </p>
             </div>
+
+            <!-- Show Correct Answers Button -->
+            <div style="margin-top: 2rem; text-align: center;">
+                <button
+                    id="toggleAnswersBtn"
+                    class="show-answers-btn"
+                    onclick="toggleCorrectAnswers()"
+                    aria-label="Sýna eða fela réttar svör"
+                    style="padding: 0.75rem 1.5rem; background: var(--secondary); color: white; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease;">
+                    📖 Sýna réttar svör
+                </button>
+            </div>
+
+            <!-- Correct Answers Container (initially hidden) -->
+            <div id="correctAnswersContainer" style="display: none; margin-top: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">✅ Réttar svör</h3>
+                ${examData.spurningar.map((q, qIndex) => `
+                    <div style="margin-bottom: 2rem; padding: 1.5rem; background: #f0f9ff; border-radius: 10px; border-left: 4px solid var(--primary);">
+                        <h4 style="color: var(--primary); margin-bottom: 1rem;">
+                            Spurning ${q.spurning_nr}: ${q.flokkur}
+                        </h4>
+                        ${q.undirspur ? q.undirspur.map((sub, subIndex) => {
+                            const userAnswer = answers[qIndex] && answers[qIndex][subIndex] ? answers[qIndex][subIndex] : 'Ekkert svar gefið';
+                            const correctAnswer = sub.rett_svar || 'Ekkert rétt svar í gagnagrunni';
+                            const subLabel = sub.a || sub.b || sub.c || sub.d || sub.e || '';
+
+                            return `
+                                <div style="margin-bottom: 1.5rem; padding: 1rem; background: white; border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">
+                                        ${subLabel}
+                                    </div>
+
+                                    ${userAnswer !== 'Ekkert svar gefið' ? `
+                                        <div style="margin-bottom: 1rem;">
+                                            <div style="font-weight: 600; color: #6b7280; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                                                📝 Þitt svar:
+                                            </div>
+                                            <div style="padding: 0.75rem; background: #f9fafb; border-radius: 6px; color: #374151; white-space: pre-wrap; font-size: 0.95rem;">
+                                                ${userAnswer}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--success); font-size: 0.9rem; margin-bottom: 0.25rem;">
+                                            ✅ Rétt svar:
+                                        </div>
+                                        <div style="padding: 0.75rem; background: #dcfce7; border-radius: 6px; color: #166534; white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem;">
+                                            ${correctAnswer}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('') : '<p>Engar undirspur</p>'}
+                    </div>
+                `).join('')}
+            </div>
         </div>
     `;
 
     document.getElementById('resultsModal').classList.add('show');
+}
+
+// Toggle correct answers visibility
+function toggleCorrectAnswers() {
+    const container = document.getElementById('correctAnswersContainer');
+    const btn = document.getElementById('toggleAnswersBtn');
+
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        btn.textContent = '📚 Fela svör';
+        btn.setAttribute('aria-expanded', 'true');
+        // Smooth scroll to correct answers
+        setTimeout(() => {
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    } else {
+        container.style.display = 'none';
+        btn.textContent = '📖 Sýna réttar svör';
+        btn.setAttribute('aria-expanded', 'false');
+    }
 }
 
 // Show review mode

@@ -204,21 +204,25 @@
         {
           "a": "Creatinine clearance (CrCl) með Cockcroft-Gault jöfnunni. Sýnið útreikninga.",
           "stig": 5,
-          "leidbeiningar": "Notið: CrCl = [(140-aldur) × Wt] / (0.815 × SCr[μmol/L])"
+          "leidbeiningar": "Notið: CrCl = [(140-aldur) × Wt] / (0.815 × SCr[μmol/L])",
+          "rett_svar": "CrCl = [(140-68) × 94] / (0.815 × 195) = (72 × 94) / 158.925 = 6768 / 158.925 = 42.6 mL/mín\n\nÚtreikningur: Sjúklingur er 68 ára, vegur 94 kg og SCr er 195 μmol/L. Með Cockcroft-Gault formúlunni fæst CrCl = 42.6 mL/mín."
         },
         {
           "b": "Túlkið niðurstöðu CrCl. Hversu skert er nýrnastarfsemi KS? Hvað þýðir þetta fyrir lyfjameðferð?",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "CrCl 42.6 mL/mín = í meðallagi skert nýrnastarfsemi (CKD stage 3b).\n\nKlínískar afleiðingar:\n- Þörf á skammtaleiðréttingu fyrir mörg lyf\n- Metformin þarf varúð (frábending ef <30 mL/mín)\n- Aukin hætta á lyfjauppsöfnun\n- Þörf á nánu eftirliti með nýrnastarfsemi\n- ACE-hemlar þarf að nota með varúð"
         },
         {
           "c": "Ef KS fengi digoxin, reiknið út áætlaðan clearance (Cl) fyrir digoxin. Gerið ráð fyrir að hann sé með hjartabilun.",
           "stig": 5,
-          "leidbeiningar": "Notið: Cldigoxin = (1.303 × CrCl) + ClNR, þar sem ClNR = 20 mL/mín fyrir hjartabilun"
+          "leidbeiningar": "Notið: Cldigoxin = (1.303 × CrCl) + ClNR, þar sem ClNR = 20 mL/mín fyrir hjartabilun",
+          "rett_svar": "Cldigoxin = (1.303 × 42.6) + 20 = 55.5 + 20 = 75.5 mL/mín\n\nÚtreikningur: CrCl er 42.6 mL/mín og ClNR fyrir hjartabilun er 20 mL/mín. Heildar digoxin clearance er því 75.5 mL/mín, sem er verulega lækkað miðað við eðlilegt gildi (~180 mL/mín)."
         },
         {
           "d": "Reiknið út volume of distribution (Vd) fyrir digoxin hjá KS.",
           "stig": 5,
-          "leidbeiningar": "Notið: Vd = 3.8 × þyngd[kg] + 3.1 × CrCl[mL/mín]"
+          "leidbeiningar": "Notið: Vd = 3.8 × þyngd[kg] + 3.1 × CrCl[mL/mín]",
+          "rett_svar": "Vd = (3.8 × 94) + (3.1 × 42.6) = 357.2 + 132.1 = 489.3 L\n\nÚtreikningur: Þyngd er 94 kg og CrCl er 42.6 mL/mín. Volume of distribution fyrir digoxin er því 489.3 L, sem er lækkað miðað við eðlilegt gildi vegna skertrar nýrnastarfsemi."
         }
       ]
     },
@@ -230,16 +234,19 @@
       "undirspur": [
         {
           "a": "Tilgreinið öll frávik frá eðlilegum viðmiðunarmörkum. Flokka þau sem lítil, miðlungs eða alvarleg frávik.",
-          "stig": 6
+          "stig": 6,
+          "rett_svar": "Frávik frá eðlilegum gildum:\n\nALVARLEG:\n- K+ 5.8 mmol/L (viðmið 3.5-5.0) - 16% yfir, hætta á hjartaóreglu\n- INR 4.2 (viðmið 2.0-3.0) - 40% yfir, aukin blæðingarhætta\n- Glúkósi 14.2 mmol/L (viðmið 3.2-6.1) - 133% yfir\n- NT-proBNP 3500 pg/mL (viðmið <125) - 2700% yfir\n\nMIÐLUNGS:\n- Na 132 mmol/L (viðmið 135-145) - lækkað\n- BUN 12.5 mmol/L (viðmið 3.5-8.5) - 47% yfir\n- SCr 195 μmol/L (viðmið 50-120) - 63% yfir\n- HbA1c 82 mmol/mol (viðmið <53) - 55% yfir\n- LDL 3.8 mmol/L (viðmið <2.6) - 46% yfir\n- Triglýseríð 2.9 mmol/L (viðmið 0.28-2.3) - 26% yfir\n\nLÍTIL:\n- Ca 2.15 mmol/L (viðmið 2.20-2.55) - lítillega lækkað\n- HDL 0.9 mmol/L (viðmið >1.0) - lítillega lækkað\n- AST 42 U/L (viðmið 7-26) - hækkað en ekki alvarlegt"
         },
         {
           "b": "Hvaða blóðgildi eru mest áhyggjuefni klínískt séð og hvers vegna?",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "Mest áhyggjuefni (í forgangsröð):\n\n1. **K+ 5.8 mmol/L (ofhýperkaleía)**\n   - Bráð hætta á hjartaóreglu og hjartastopp\n   - Krefst tafarlausra aðgerða\n\n2. **INR 4.2 (ofþynnandi blóð)**\n   - Aukin blæðingarhætta\n   - Þarf leiðréttingu til að koma í markmið 2.0-3.0\n\n3. **NT-proBNP 3500 pg/mL**\n   - Staðfestir bráða hjartabilun\n   - Þörf á þvagræsilyfjum og öðrum úrræðum\n\n4. **Glúkósi 14.2 mmol/L**\n   - Mjög hár blóðsykur, getur versnað vökvauppsteypu\n   - Þarfnast innlyfjameðferðar í bráðu tilviki\n\n5. **SCr 195 μmol/L (CrCl ~43 mL/mín)**\n   - Þörf á skammtaleiðréttingu lyfja\n   - Metformin contraindicated ef versnar"
         },
         {
           "c": "Leiðréttið natríum gildi KS fyrir háan blóðsykur. Sýnið útreikninga. Hvað segir leiðrétt gildi ykkur?",
           "stig": 4,
-          "leidbeiningar": "Notið: Leiðrétt Na = mælt Na + [(glúkósi - 5.5) / 5.5] × 2.4"
+          "leidbeiningar": "Notið: Leiðrétt Na = mælt Na + [(glúkósi - 5.5) / 5.5] × 2.4",
+          "rett_svar": "Leiðrétt Na = 132 + [(14.2 - 5.5) / 5.5] × 2.4\n            = 132 + [8.7 / 5.5] × 2.4\n            = 132 + 1.58 × 2.4\n            = 132 + 3.8\n            = 135.8 mmol/L\n\nTúlkun: Mælt natríum er 132 mmol/L (lægt), en eftir leiðréttingu fyrir háan blóðsykur er natríum í raun eðlilegt (135.8 mmol/L, viðmið 135-145). Þetta sýnir að lægð natríums er falslæg (pseudohyponatremia) vegna hámarks glúkósa, sem þynnir út natríum í blóðinu. Þegar glúkósi lækkar, mun natríum hækka sjálfkrafa."
         }
       ]
     },
@@ -251,19 +258,23 @@
       "undirspur": [
         {
           "a": "Greinið öll lyf sem gætu stuðlað að eða versnað núverandi einkenni sjúklingsins (hjartabilun, hátt kalíum, skert nýrnastarfsemi).",
-          "stig": 6
+          "stig": 6,
+          "rett_svar": "Lyf sem geta versnað núverandi ástand:\n\n**Hjartabilun:**\n- **Metoprolol** - Beta-blokkarar geta versnað hjartabilun til skamms tíma, en eru nauðsynlegir til langs tíma. Þarf varlega títrering.\n\n**Hátt kalíum (5.8 mmol/L):**\n- **Enalapril (ACE-hemlar)** - Hindrar aldosteron → minnkar kalíumútskilnað → hækkun á K+\n- **Fúrósemíð** - Þó að þvagræsilyf lækki yfirleitt kalíum, getur skert nýrnastarfsemi dregið úr þessu\n\n**Skert nýrnastarfsemi (CrCl 43 mL/mín):**\n- **Metformin** - Hætta á mjólkursýringu (lactic acidosis) ef CrCl <30. Varúð við 30-45 mL/mín\n- **Enalapril** - Getur versnað nýrnastarfsemi, sérstaklega í sambland við þvagræsilyf\n- **Warfarin** - Skert nýrnastarfsemi eykur blæðingarhættu\n- **Atorvastatin** - Aukin hætta á vöðvakvilla (myopathy) við skerta nýrnastarfsemi"
         },
         {
           "b": "Warfarin INR gildi er 4.2 (of hátt). Hvað gæti hafa valdið þessu? Tilgreinið a.m.k. 3 hugsanlegar orsakir tengdar lyfjum eða ástandi sjúklingsins.",
-          "stig": 6
+          "stig": 6,
+          "rett_svar": "Orsakir hækkaðs INR (4.2):\n\n1. **Skert nýrnastarfsemi (CrCl 43 mL/mín)**\n   - Minni útskilnaður warfarin\n   - Minni framleiðsla storkufaktora\n   - Aukin næmni fyrir warfarin\n\n2. **Hjartabilun og lifraþrútur**\n   - Lifrin er stækkuð 2 cm neðan við rifbein\n   - Skert framleiðsla storkufaktora í lifur\n   - AST/ALT hækkuð bendir til lifrarskerðingar\n\n3. **Lyfjasamskipti:**\n   - **Atorvastatin + Warfarin** - Statin lyf geta aukið áhrif warfarin\n   - **Metronidazole eða önnur sýklalyf** (ef til staðar í nýlegri sögu)\n   - Skert mataræði/næringu getur lækkað K-vítamín\n\n4. **Breytingar á mataræði**\n   - Minni neysla K-vítamíns í mat\n   - Minnkað lyst og mataræðistakmarkanir vegna sjúkdóms\n\n5. **Ósamræmi í lyfjainnttöku**\n   - Sjúklingur gæti hafa tekið of mikið af misgáninni"
         },
         {
           "c": "Metformin er frábending ef CrCl < 30 mL/mín og þarf varúð ef CrCl 30-45 mL/mín. Á KS að halda áfram með Metformin? Rökstyðjið svar ykkar.",
-          "stig": 4
+          "stig": 4,
+          "rett_svar": "**NEI, ætti að stöðva Metformin tímabundið**\n\nRökstuðningur:\n- CrCl KS er 42.6 mL/mín → fellur á mörkum varúðarsviðs (30-45 mL/mín)\n- Sjúklingur er í bráðri hjartabilun með:\n  * Vökvauppsteypu og skert vefjadreyring\n  * Hætta á súrefnisskorti í vefjum\n  * Mjög hár blóðsykur (14.2 mmol/L)\n  \n**Hætta:** Mjólkursýring (lactic acidosis) vegna:\n- Skertrar nýrnastarfsemi\n- Vefjadreyringarvandamála í bráðu tilviki\n- Metformin uppsöfnun\n\n**Ráðlegging:**\n- Stöðva Metformin þar til ástand stöðugast\n- Nota insulin í bráðu tilviki til að stjórna blóðsykri\n- Endurskoða þegar CrCl stöðugast og hjartabilun batnað\n- Gæti endurræst ef CrCl >45 mL/mín og ástand stöðugt"
         },
         {
           "d": "Tilgreinið a.m.k. 2 milliverkanir milli lyfja sem KS tekur inn.",
-          "stig": 4
+          "stig": 4,
+          "rett_svar": "Lyfjamilliverkanir:\n\n**1. Enalapril (ACE-hemlar) + Fúrósemíð (þvagræsilyf)**\n- Þvagræsilyf → vökvahætti → virkjun renin-angiotensin\n- ACE-hemlar blokka þetta → of mikil blóðþrýstingslækkun\n- Þvagræsilyf → kalíumtap, en ACE-hemlar → kalíumsparnaður\n- Nettóáhrif: Geta valdið hjörtun eða öfuga, kalíumsöfnun (eins og hjá KS)\n\n**2. Warfarin + Atorvastatin**\n- Statin lyf hamla CYP450 ensím (CYP3A4, CYP2C9)\n- Warfarin er metabolized gegnum CYP2C9\n- Atorvastatin getur aukið warfarin áhrif → hækkað INR\n- Aukin blæðingarhætta\n\n**3. Enalapril + Metoprolol**\n- Bæði lækka blóðþrýsting\n- Samlegðaráhrif → of mikil hypotension\n- Beta-blokkar maskerar hypoglycemia einkenni frá insulin/glúkósalækkun\n\n**4. Metformin + Fúrósemíð**\n- Þvagræsilyf getur aukið lactic acidosis hættu\n- Vökvahætti → versnar nýrnastarfsemi → minni metformin clearance"
         }
       ]
     },
@@ -275,23 +286,28 @@
       "undirspur": [
         {
           "a": "Hvaða bráðaúrræði ráðleggið þið til að bæta hjartabilun og draga úr vökvasöfnun? Tilgreinið lyf, skammta og gjafaleið.",
-          "stig": 6
+          "stig": 6,
+          "rett_svar": "Bráðameðferð við bráðri hjartabilun:\n\n**1. Súrefni**\n- Súrefni 2-4 L/mín með nefbilung eða mask\n- Markmið: SpO2 >94%\n\n**2. IV þvagræsilyf (fyrsta val):**\n- **Fúrósemíð 40-80 mg IV bolus**\n- Ef engin svörun: endurtaka 80-120 mg IV\n- Eða fúrósemíð 5-10 mg/klst continuous infusion\n- Fylgjast með þvaglát og vægi daglega\n\n**3. Vasodilatation (ef blóðþrýstingur leyfa):**\n- **Nítróglyserín 10-20 μg/mín IV infusion** (ef BP >100 mmHg)\n- Dregur úr preload og afterload\n\n**4. Morphín (ef þörf):**\n- **Morphín 2.5-5 mg IV** til að minnka kvíða og öndunarvanda\n- Varúð: getur lækkað blóðþrýsting\n\n**5. Inotropic support (ef þörf):**\n- Ef lágur cardiac output: **Dobutamine 2.5-10 μg/kg/mín IV**\n- Aðeins ef blóðþrýstingur mjög lágur\n\n**Markmið:** Draga úr vökvasöfnun, bæta öndun, lækka preload"
         },
         {
           "b": "INR er 4.2. Hvaða aðgerðir ráðleggið þið til að lækka blæðingarhættu? Þarf að stöðva warfarin? Þarf antagónista (t.d. vítamín K)?",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "**Meðferð við INR 4.2 (of hátt en ekki með blæðingu):**\n\n**1. Stöðva warfarin tímabundið**\n- Sleppa næsta skammti (1-2 daga)\n- INR ætti að lækka sjálfkrafa\n\n**2. Vítamín K (lágur skammtur):**\n- **Vítamín K1 (phytomenadione) 1-2 mg PO eða IV**\n- Lækkar INR á 12-24 klst\n- Of mikið vítamín K getur gert erfiðara að koma INR í markmið aftur\n- IV gefið hægt (>30 mín) til að forðast ofnæmisviðbrögð\n\n**3. Endurræsa warfarin með lægri skammti**\n- Þegar INR <3.0, endurræsa með lægri skammti (t.d. 3 mg í stað 5 mg)\n- Fylgjast með INR á 1-2 daga fresti þar til stöðugt\n\n**4. Ef alvarlegt blóðrás (ekki hér):**\n- Vítamín K 5-10 mg IV\n- Prothrombin complex concentrate (PCC) eða fresh frozen plasma (FFP)\n\n**Markmið:** Koma INR í 2.0-3.0 sviðið fyrir gáttatif"
         },
         {
           "c": "Kalíum er 5.8 mmol/L (hátt). Hvaða ráðstafanir mynduð þið gera til að lækka kalíum? Tilgreinið a.m.k. 2 aðgerðir.",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "**Meðferð við offhýperkaleíu (K+ 5.8 mmol/L):**\n\n**1. Hjartavörn (fyrsta skref ef EKG breytingar):**\n- **Kalsíumglúkónat 10% 10 mL IV yfir 2-5 mín**\n- Verndar hjartað gegn áhrifum hámarks kalíums\n- Virkar strax en endist aðeins 30-60 mín\n\n**2. Flytja kalíum inn í frumur (skammt ímaðstöðlaus):**\n- **Insulin 10 units IV + Glúkósi 50 mL 50% IV**\n- Insulin flytir K+ inn í frumur\n- Glúkósi til að koma í veg fyrir hypoglycemia\n- Lækkar K+ um 0.5-1.5 mmol/L á 30-60 mín\n\n**3. Beta-2 agonisti:**\n- **Salbutamol 10-20 mg með nebulizer**\n- Flytir K+ inn í frumur\n- Lækkar K+ um 0.5-1.0 mmol/L\n\n**4. Fjarlægja kalíum úr líkama (lengri tíma):**\n- **Patiromer (Veltassa) 8.4 g PO daglega**\n- Eða **Sodium polystyrene sulfonate 15-30 g PO eða per rectum**\n- Bindir kalíum í meltingarvegi\n\n**5. Þvagræsilyf:**\n- Auka fúrósemíð skammt til að auka kalíumútskilnað\n\n**6. Stöðva ACE-hemla tímabundið**\n- Enalapril stuðlar að kalíumsöfnun\n\n**Ef alvarlegra eða engin svörun:** Nýrnahreinsun (dialysis)"
         },
         {
           "d": "Blóðsykurinn er 14.2 mmol/L. Hvernig mynduð þið meðhöndla háan blóðsykur í bráðu tilviki?",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "**Bráðameðferð við háan blóðsykur (14.2 mmol/L):**\n\n**1. Stöðva Metformin tímabundið**\n- Vegna hættu á lactic acidosis\n- Sjá fyrri svör\n\n**2. Insulin meðferð (fyrsta val í bráðu tilviki):**\n\n**Option A - IV Insulin infusion (ef á gjörgæslu):**\n- **Regular insulin (Actrapid) 0.1 units/kg/klst IV infusion**\n- Fylgjast með blóðsykri á 1-2 klst fresti\n- Lækka insulin eftir því sem glúkósi lækkar\n- Markmið: Glúkósi 6-10 mmol/L\n\n**Option B - Subcutaneous insulin (ef á almennri deild):**\n- **Rapid-acting insulin (NovoRapid/Humalog) 4-6 units SC strax**\n- Endurtaka á 2-4 klst fresti eftir sliding scale:\n  * Glúkósi 10-14: 4 units\n  * Glúkósi 14-18: 6 units\n  * Glúkósi >18: 8 units og hafa samband við lækni\n\n**3. Vökvar:**\n- IV vökvar (NaCl 0.9%) til að bæta dreyring\n- Hjálpar til við að lækka blóðsykur\n\n**4. Langtímameðferð:**\n- Basal-bolus insulin meðferð meðan á sjúkrahúsdvöl stendur\n- Endurskoða Metformin þegar ástand stöðugast\n\n**5. Fylgjast með:**\n- Blóðsykur á 2-4 klst\n- Kalíum (insulin lækkar K+)\n- Keton (útiloka diabetic ketoacidosis)"
         },
         {
           "e": "Súrefnismettun er 91%. Hvaða úrræði ráðleggið þið til að bæta öndun?",
-          "stig": 4
+          "stig": 4,
+          "rett_svar": "**Úrræði til að bæta súrefnun (SpO2 91%):**\n\n**1. Súrefnisgjöf (fyrsta skref):**\n- **Súrefni 2-4 L/mín með nefbilung**\n- Ef ekki nægjanlegt: **Súrefni 5-10 L/mín með mask**\n- Markmið: SpO2 >94%\n\n**2. Setja sjúkling upp (positioning):**\n- **Hálfsetandi staða (semi-Fowler's 45°)**\n- Bætir lungnaútvíkkun\n- Dregur úr preload á hjarta\n\n**3. Bráðir þvagræsilyf:**\n- **Fúrósemíð IV** (sjá fyrri svör)\n- Dregur úr lungnabjúg\n\n**4. Ekki-ífarandi öndunarstuðningur (ef þörf):**\n- **CPAP (Continuous Positive Airway Pressure)**\n- Eða **BiPAP** ef CPAP ekki nægjanlegt\n- Bætir oxygen exchange og dregur úr preload\n- Getur komið í veg fyrir ífarandi öndunarvél\n\n**5. Bronchodilator (ef bronchospasme):**\n- **Salbutamol nebulizer 2.5-5 mg**\n- **Ipratropium 0.5 mg nebulizer**\n\n**6. Fylgjast með:**\n- SpO2 samfellt\n- Blóðgas (ABG) til að meta CO2, pH, oxygenation\n- Íhuga gjörgæslu ef versnar\n\n**7. Ef engin svörun:**\n- Íhuga meðvitundarleysisgefningu og ífarandi öndunarvél (intubation)"
         }
       ]
     },
@@ -303,20 +319,24 @@
       "undirspur": [
         {
           "a": "Enalapril 10 mg × 2: Er þessi skammtur viðeigandi? Mætti hækka hann? Hvað þarf að hafa í huga með tilliti til nýrnastarfsemi og kalíums?",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "**Núverandi: Enalapril 10 mg × 2 (20 mg/dag)**\n\n**Mat:** Núverandi skammtur er í miðsvæði fyrir hjartabilun. Mætti títra upp en þarf varúð.\n\n**Markmið fyrir hjartabilun:**\n- Markmiðsskammtur: 20-40 mg/dag\n- Núverandi er 20 mg/dag → við lágt marksvæði\n- Gæti títrað upp í 10 mg × 2 → 15 mg × 2 (30 mg/dag)\n\n**VARÚÐ vegna:**\n\n**1. Skert nýrnastarfsemi (CrCl 43 mL/mín):**\n- ACE-hemlar geta versnað nýrnastarfsemi\n- Fylgjast með SCr og kalíum eftir hækkun\n- Ef SCr hækkar >30% → lækka skammt eða stöðva\n\n**2. Hátt kalíum (5.8 mmol/L):**\n- ACE-hemlar auka kalíum\n- VERÐUR að lækka kalíum fyrst áður en hækkað\n- Fylgjast með K+ vikulega við hækkun\n- Íhuga kalíumsparandi þvagræsilyf ef K+ heldur sig hátt\n\n**3. Blóðþrýstingur:**\n- Núna 165/102 → hár\n- ACE-hemlar munu lækka BP\n- Fylgjast með hypotension\n\n**Ráðlegging:**\n- **EKKI hækka strax** vegna hámarks K+\n- Leiðrétta kalíum fyrst\n- Þegar K+ <5.0 mmol/L: Íhuga títra upp í 15 mg × 2\n- Fylgjast með SCr, K+, BP á 1-2 vikna fresti"
         },
         {
           "b": "Metoprolol 50 mg × 2: Er þessi skammtur viðeigandi fyrir sjúkling með hjartabilun og gáttatif? Þarf að breyta?",
-          "stig": 4
+          "stig": 4,
+          "rett_svar": "**Núverandi: Metoprolol 50 mg × 2 (100 mg/dag)**\n\n**Mat:** Skammtur er í meðallagi en gæti verið hærri.\n\n**Markmið fyrir hjartabilun og gáttatif:**\n- Hjartabilun: Markmiðsskammtur metoprolol succinate (extended-release) 200 mg/dag\n- Gáttatif: Markmið HR 60-100 slög/mín í hvíld\n- Núverandi HR er 110 slög/mín → þarf betri stjórn\n\n**Vandi:**\n- KS er sennilega á **metoprolol tartrate (immediate-release)** × 2\n- Fyrir hjartabilun er betra að nota **metoprolol succinate XL** (extended-release) einu sinni á dag\n\n**Ráðlegging:**\n\n**Option 1 (ákjósanlegast):**\n- **Skipta yfir í Metoprolol XL 100 mg einu sinni á dag**\n- Títra upp í 200 mg/dag ef þolað\n- Betri outcome fyrir hjartabilun\n\n**Option 2:**\n- Halda áfram með tartrate en hækka í 75-100 mg × 2\n- Títra varlega vegna bráðrar hjartabilunar\n\n**Varúðarreglur:**\n- Ekki hækka í bráðu tilviki (gæti versnað hjartabilun)\n- Bíða þar til ástand stöðugast (1-2 vikur)\n- Fylgjast með HR, BP, einkennum hjartabilunar\n- Markmið HR 60-80 slög/mín\n\n**Niðurstaða:**\n- Núverandi skammtur of lágur langtíma\n- Skipta yfir í Metoprolol XL 100 mg, títra upp í 200 mg\n- Títrering á 2-4 vikna fresti"
         },
         {
           "c": "Warfarin: Reiknið út nýjan viðhaldsskammt fyrir KS til að ná INR 2.0-3.0. Gerið ráð fyrir að núverandi skammtur (5 mg/dag) gefi INR 4.2. Sýnið útreikninga.",
           "stig": 6,
-          "leidbeiningar": "Notið: Nýr skammtur = (núverandi skammtur × markmið INR) / núverandi INR"
+          "leidbeiningar": "Notið: Nýr skammtur = (núverandi skammtur × markmið INR) / núverandi INR",
+          "rett_svar": "**Útreikningur á nýjum warfarin skammti:**\n\nGefið:\n- Núverandi skammtur = 5 mg/dag\n- Núverandi INR = 4.2\n- Markmið INR = 2.5 (miðja sviðsins 2.0-3.0)\n\nFormúla:\nNýr skammtur = (núverandi skammtur × markmið INR) / núverandi INR\n\nÚtreikningur:\nNýr skammtur = (5 mg × 2.5) / 4.2\n             = 12.5 / 4.2\n             = **2.98 mg ≈ 3.0 mg/dag**\n\n**Skammtaáætlun:**\n\nVegna þess að warfarin töflur koma í 2.5 mg og 5 mg:\n\n**Option 1 (einfaldast):**\n- **3 mg á dag** (nota 2.5 mg + 0.5 mg skorna töflu)\n- Eða skipta á milli 2.5 mg og 3.75 mg á víxl\n\n**Option 2:**\n- **21 mg á viku** (3 mg/dag × 7)\n- T.d. 2.5 mg × 6 daga + 5 mg × 1 dagur = 20 mg\n- Eða 2.5 mg × 5 daga + 3.75 mg (5 mg skorin) × 2 dagar\n\n**Eftirfylgd:**\n- Mæla INR eftir 3-5 daga\n- Ef INR 2.0-3.0 → halda skammti\n- Ef INR enn hátt → lækka frekar\n- Þegar INR stöðugt → mæla vikulega síðan mánaðarlega\n\n**Varúð:**\n- Veita vítamín K 1-2 mg PO núna til að flýta lækkun\n- Fylgjast með blæðingum\n- Fræða sjúkling um stöðuga innttöku K-vítamíns í mat"
         },
         {
           "d": "Atorvastatin: LDL er 3.8 mmol/L (æskilegt <2.6 fyrir háa hjarta-æðaáhættu). Þarf að auka skammt eða bæta við öðru lyfi?",
-          "stig": 5
+          "stig": 5,
+          "rett_svar": "**Núverandi: Atorvastatin 20 mg**\n**LDL: 3.8 mmol/L (markmið <2.6, eða <1.8 fyrir mjög háa áhættu)**\n\n**Áhættumat KS:**\n- Hjartabilun, gáttatif, TIA saga, sykursýki, háþrýstingur\n- **Mjög há hjarta-æðaáhætta**\n- Markmið LDL: **<1.8 mmol/L** (sumir segja <1.4)\n\n**LDL frávik:**\n- Núverandi: 3.8 mmol/L\n- Markmið: 1.8 mmol/L\n- Þarf lækkun um: 2.0 mmol/L (53% lækkun)\n\n**Ráðleggingar:**\n\n**1. Hækka Atorvastatin skammt**\n- **Hækka í 40 mg** eða **80 mg**\n- Hver tvöföldun skammtar = ~6% viðbótar LDL lækkun\n- 20 mg → 40 mg: ~6% lækkun\n- 40 mg → 80 mg: ~6% lækkun\n- 20 mg → 80 mg: ~12% lækkun\n- Ekki nægjanlegt eitt og sér\n\n**2. Bæta við Ezetimibe (mælt með)**\n- **Ezetimibe 10 mg daglega**\n- Lækkar LDL um ~18-20%\n- Öruggur með statin\n- Dregur úr hjarta-æðaatburðum\n\n**3. Íhuga PCSK9 hemil (ef ekki nægilegt)**\n- Ef LDL enn >1.8 með statin + ezetimibe\n- Evolocumab eða alirocumab\n- Lækkar LDL um ~60%\n- Dýrt en áhrifaríkt\n\n**Ráðlögð áætlun:**\n\n**Strax:**\n- Hækka atorvastatin í **40 mg** (eða 80 mg ef þolað)\n- Bæta við **Ezetimibe 10 mg**\n\n**Eftirfylgd:**\n- Mæla lipíð eftir 6-8 vikur\n- Markmið LDL <1.8 mmol/L\n- Fylgjast með CPK (vöðvakvilla) og liver enzymes\n- Ef ekki nægilegt → íhuga PCSK9 hemil\n\n**Varúð:**\n- Skert nýrnastarfsemi eykur hættu á myopathy\n- Fylgjast með vöðvaverkjum\n- Mæla CPK ef einkenni"
         }
       ]
     },
@@ -328,15 +348,18 @@
       "undirspur": [
         {
           "a": "Hvaða blóðpróf þarf að fylgjast með og hversu oft?",
-          "stig": 4
+          "stig": 4,
+          "rett_svar": "**Blóðprófaáætlun fyrir KS:**\n\n**1. INR (warfarin eftirlit):**\n- **Fyrstu 2 vikurnar: 2-3 sinnum/viku**\n- Næstu 2-4 vikur: 1-2 sinnum/viku\n- Þegar stöðugt (2.0-3.0): **Mánaðarlega**\n- Ef breytingar á lyfjum/mataræði: oftar\n\n**2. Nýrnastarfsemi (SCr, eGFR):**\n- **Fyrstu 2 vikurnar: Vikulega**\n- Næstu 4-8 vikur: Á 2 vikna fresti\n- Síðan: **Á 3-6 mánaða fresti**\n- Oftar ef ACE-hemlar eða þvagræsilyf hækkuð\n\n**3. Kalíum (K+):**\n- **Fyrstu 2 vikurnar: Vikulega**\n- Næstu 4 vikur: Á 2 vikna fresti\n- Síðan: **Mánaðarlega** (vegna ACE-hemla)\n\n**4. Blóðsykursstjórn:**\n- **HbA1c: Á 3 mánaða fresti**\n- Sjúklingur fylgist með blóðsykri heima daglega\n\n**5. Lifrarensím (AST, ALT):**\n- **Eftir 6-8 vikur** (vegna statin)\n- Síðan árlega\n\n**6. Lipíð (LDL, HDL, triglýseríð):**\n- **Eftir 6-8 vikur** (meta áhrif statin breytingar)\n- Síðan á 6-12 mánaða fresti\n\n**7. NT-proBNP (hjartabilun):**\n- **Eftir 2-4 vikur** til að meta bata\n- Síðan eftir þörfum ef einkenni versna\n\n**8. Heildar blóðtal (CBC):**\n- **Á 6 mánaða fresti** (vegna warfarin, hjartabilunar)\n\n**9. CPK (vöðvaensím):**\n- Ef einkenni vöðvaverkja (statin hættur)\n- Annars ekki nema grunur"
         },
         {
           "b": "Hvaða lífsmörk/einkenni þarf að fylgjast með heima og hvenær á að hafa samband við heilsugæslu/bráðadeild?",
-          "stig": 3
+          "stig": 3,
+          "rett_svar": "**Heimaeftirlit fyrir KS:**\n\n**Daglegt eftirlit:**\n\n**1. Þyngd:**\n- Vigta sig **á hverjum morgni** (sama tíma, eftir salerni, fyrir morgunmat)\n- Skrá niður\n- **Hafa samband ef:** Þyngdaraukning >1 kg/dag eða >2 kg/viku\n\n**2. Blóðþrýstingur:**\n- Mæla **daglega** (morgun og kvöld fyrstu vikurnar)\n- Síðan 2-3x/viku\n- **Hafa samband ef:** >180/110 eða <90/60\n\n**3. Púls:**\n- Athuga daglega\n- **Hafa samband ef:** >100 eða <50 slög/mín\n\n**4. Blóðsykur:**\n- Mæla **2-4 sinnum á dag** (fyrir mat og fyrir svefn)\n- **Hafa samband ef:** <4.0 eða >15 mmol/L\n\n**Einkenni sem krefjast samskipta:**\n\n**BRÁÐADEILD STRAX (112) ef:**\n- ❗ Mikill brjóstverk eða þrýstingur\n- ❗ Alvarlegur öndunarvandi eða mæði í hvíld\n- ❗ Óeðlileg blæðing (uppköst blóð, blóð í hægðum, mikil nefblæðing)\n- ❗ Miklar breytingar á meðvitund, málfrelsi eða hreyfingu (TIA/slag)\n- ❗ Mikill bjúgur sem kemur skyndilega\n\n**HEILSUGÆSLA SAMA DAG ef:**\n- Þyngdaraukning >1 kg/dag\n- Aukinn bjúgur á fótleggjum/kviði\n- Aukinn mæði eða þreyta\n- Hósti með blóðugu slími\n- Sundl eða yfirlið\n- Óvenjulegir blámerkur eða blæðing\n\n**HEILSUGÆSLA Á 1-2 DÖGUM ef:**\n- Blóðsykur stöðugt >12 mmol/L\n- Óreglulegur hjartsláttúr eða hjartsláttartilfinning\n- Þvaglát minnkar (minna en venjulega)\n- Lyst dregur úr eða ógleði\n\n**Fræðsla:**\n- Kenna KS hvernig á að meta einkenni\n- Gefa skriflegar leiðbeiningar\n- Tengiliður við hjúkrunarfræðing eða lækni"
         },
         {
           "c": "Hvaða lífsstílsráðleggingar mynduð þið gefa KS?",
-          "stig": 3
+          "stig": 3,
+          "rett_svar": "**Lífsstílsráðleggingar fyrir KS:**\n\n**1. Mataræði:**\n\n**Saltsnautt mataræði:**\n- **<2 g natríum/dag** (5 g salt/dag)\n- Forðast borðsalt, unnar matvörur, niðursuðu kjötmeti\n- Lesa umbúðir\n\n**Vökvatakmarkanir:**\n- **<1.5-2 lítar/dag** (ef alvarleg hjartabilun)\n- Telja allt vökva: te, kaffi, súpur\n\n**Hjartahollur kostur:**\n- Mikið grænmeti og ávextir\n- Fiskur 2-3x/viku (Omega-3)\n- Heilkorn\n- Forðast rautt kjöt, feitt matur\n- **Stöðug K-vítamín neysla** (vegna warfarin) - ekki stór breytingar\n\n**Sykursýki mataræði:**\n- Forðast einfalda sykra\n- Jafnt kolvetnisinntak\n- Þrjár máltíðir + millimál\n\n**2. Hreyfing:**\n- **Vægir göngutrú 20-30 mín, 3-5x/viku**\n- Byrja hægt (5-10 mín) og auka smám saman\n- Forðast erfið verkefni eða lyftingar\n- Hlustað á líkamann - hvíla ef mæði eða þreyta\n- Hjartaendurhæfing ef í boði\n\n**3. Reykingar:**\n- **Halda áfram að hætta** (hann hætti fyrir 5 árum - frábært!)\n- Forðast aðalreyk\n\n**4. Áfengi:**\n- **Takmarka verulega:** Hámark 1-2 drykki/viku\n- Áfengi getur haft áhrif á INR (warfarin)\n- Aukin hætta á fall og slys\n\n**5. Þyngdarstjórnun:**\n- Markmið: Lækka BMI í eðlilegt svið\n- Smá þyngdartap (~5-10%) getur bætt hjartabilun\n- Vinna með næringarfræðing\n\n**6. Svefn:**\n- Sofa með hauðið uppi (30-45°)\n- Forðast að sofa flatt\n\n**7. Streitustjórnun:**\n- Slökun, jóga, meditation\n- Félagsleg þátttaka\n\n**8. Lyfjaaðlögun:**\n- Taka lyf á sama tíma á hverjum degi\n- Nota lyfjadósir (pill box) til að muna\n- Aldrei sleppa skömmtum\n\n**9. Bólusetningar:**\n- Árlegt inflúensubóluefni\n- Pneumococcal bólusetning\n- COVID-19 bólusetning\n\n**10. Aðrir þættir:**\n- Forðast hitastig öfgar (kuldi/hiti)\n- Forðast óþarfa stress\n- Spyrja lækni áður en taka ný lyf (þ.m.t. lausasölulyf)"
         }
       ]
     },
@@ -350,12 +373,14 @@
         {
           "a": "Reiknið út viðeigandi upphafsskammt (loading dose) fyrir digoxin. Gerið ráð fyrir að markmið Css sé 1.0 μg/L. Notið Vd sem þið reiknaðuð í spurningu 1d. Sýnið útreikninga.",
           "stig": 5,
-          "leidbeiningar": "LD = (Css × Vd) / F, þar sem F = 0.7 fyrir töflur"
+          "leidbeiningar": "LD = (Css × Vd) / F, þar sem F = 0.7 fyrir töflur",
+          "rett_svar": "**Útreikningur á digoxin loading dose:**\n\n**Gefið:**\n- Markmið Css = 1.0 μg/L = 1.0 mg/L\n- Vd = 489.3 L (frá spurningu 1d)\n- F = 0.7 (bioavailability fyrir töflur)\n\n**Formúla:**\nLD = (Css × Vd) / F\n\n**Útreikningur:**\nLD = (1.0 mg/L × 489.3 L) / 0.7\n   = 489.3 mg / 0.7\n   = **699 mg ≈ 700 μg = 0.7 mg**\n\n**Skammtaáætlun:**\n\nLoading dose er of stór til að gefa í einu. Gefa í 3 skömmtum:\n\n**Option 1 - Oral loading:**\n- **Skammtur 1: 0.25 mg (250 μg) strax**\n- **Skammtur 2: 0.25 mg (250 μg) eftir 6-8 klst**\n- **Skammtur 3: 0.125-0.25 mg (125-250 μg) eftir 6-8 klst**\n- **Heildarsumma: 0.625-0.75 mg á 16-24 klst**\n\n**Option 2 - IV loading (hraðvirkara):**\n- **Skammtur 1: 0.4 mg IV yfir 30 mín**\n- **Skammtur 2: 0.2 mg IV eftir 4-6 klst**\n- **Skammtur 3: 0.1 mg IV eftir 4-6 klst**\n- **Heildarsumma: 0.7 mg IV á 12-16 klst**\n\n**Varúð:**\n- Fylgjast með EKG (bradycardia, AV blokk)\n- Mæla digoxin level eftir 6-8 klst frá síðasta skammti\n- Leiðrétta eftir level og klínískum svörun\n- Hátt kalíum (5.8) eykur digoxin toxicity hættu → leiðrétta K+ fyrst!"
         },
         {
           "b": "Reiknið út viðhaldsskammt (maintenance dose) fyrir digoxin. Notið Cl sem þið reiknaðuð í spurningu 1c. Sýnið útreikninga.",
           "stig": 5,
-          "leidbeiningar": "MD = (Css × Cl × τ) / F, þar sem τ = 1440 mín (1 dagur)"
+          "leidbeiningar": "MD = (Css × Cl × τ) / F, þar sem τ = 1440 mín (1 dagur)",
+          "rett_svar": "**Útreikningur á digoxin maintenance dose:**\n\n**Gefið:**\n- Markmið Css = 1.0 μg/L = 1.0 mg/L = 0.001 mg/mL\n- Cl = 75.5 mL/mín (frá spurningu 1c)\n- τ = 1440 mín (1 dagur, 24 klst)\n- F = 0.7 (bioavailability fyrir töflur)\n\n**Formúla:**\nMD = (Css × Cl × τ) / F\n\n**Útreikningur:**\nMD = (0.001 mg/mL × 75.5 mL/mín × 1440 mín/dag) / 0.7\n   = (0.001 × 75.5 × 1440) / 0.7\n   = 108.72 mg / 0.7\n   = **155.3 μg/dag ≈ 0.155 mg/dag**\n\n**Skammtaáætlun:**\n\nDigoxin töflur koma í 62.5 μg, 125 μg, og 250 μg:\n\n**Ráðlagður skammtur:**\n- **125 μg (0.125 mg) daglega** (næst markmiði)\n- Eða **0.125 mg á hverjum degi**\n\n**Alternative:**\n- **Gefa 0.125 mg á vosdögum og 0.1875 mg (0.125 + hálf 0.125 tafla) á vikudögum** til að ná meðaltali ~155 μg\n- En þetta er flókið → halda við 125 μg daglega\n\n**Eftirfylgd:**\n- Byrja viðhaldsskammt **24-48 klst eftir síðasta loading dose**\n- Mæla **digoxin level** eftir 5-7 daga (steady state)\n- Markmið level: **0.5-1.0 ng/mL (0.5-1.0 μg/L)** fyrir hjartabilun\n- Markmið level: **0.8-2.0 ng/mL** fyrir gáttatif (en lægra betra)\n- Leiðrétta skammt eftir level og klínískum svörun\n\n**Varúð:**\n- Lágur clearance vegna skertrar nýrnastarfsemi\n- Aukin hætta á digoxin toxicity\n- Fylgjast með K+ (hátt K+ eykur toxicity)\n- Fylgjast með einkennum toxicity: ógleði, sýntruflanir, bradycardia"
         }
       ]
     }
