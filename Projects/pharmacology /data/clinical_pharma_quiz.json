@@ -1,0 +1,326 @@
+{
+  "prófHeiti": "Klínísk Aðgengisfræði - LYF516G",
+  "lýsing": "Æfingapróf sem nær yfir ópíóíðar, sýklalyf, hjartaóreglulyfja, segavarnarlyf, insúlín og krabbameinslyf",
+  "spurningar": [
+    {
+      "id": 1,
+      "spurning": "Hvaða viðtaki er klínískt mikilvægastur fyrir verkjastillingu ópíóíða?",
+      "valmöguleikar": [
+        "δ-viðtakinn",
+        "κ-viðtakinn",
+        "μ-viðtakinn",
+        "σ-viðtakinn"
+      ],
+      "réttSvar": 2,
+      "útskýring": "μ-viðtakinn er klínískt mikilvægastur og miðlar sterkri verkjastillingu en einnig helstu aukaverkunum á borð við öndunarbælingu."
+    },
+    {
+      "id": 2,
+      "spurning": "Hvers vegna er fentanyl öruggara val en morfín fyrir sjúklinga með alvarlega nýrnabilun?",
+      "valmöguleikar": [
+        "Fentanyl hefur minni próteinbindingu",
+        "Fentanyl er brotið niður í lifur og skiljast út sem óvirk umbrotsefni",
+        "Fentanyl hefur styttri helmingunartíma",
+        "Fentanyl hefur minni fituleysanleika"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Fentanyl er brotið niður í lifur (CYP3A4) og skiljast út sem óvirk umbrotsefni, á meðan morfín myndar M6G sem safnast upp við nýrnabilun."
+    },
+    {
+      "id": 3,
+      "spurning": "Hver er helsti verkun amínóglýkósíða?",
+      "valmöguleikar": [
+        "Hamla frumuveggsmyndun",
+        "Bindast 30S ríbósóminu og hindra próteinmyndun",
+        "Hamla DNA-rýringu",
+        "Hindra fólínsýrusameindir"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Amínóglýkósíðar bindast A-einingunni á 16S ríbósómal RNA í 30S ríbósóminu og hindra eðlilega próteinmyndun."
+    },
+    {
+      "id": 4,
+      "spurning": "Hvaða alvarlegustu aukaverkanir þarf að fylgjast með við notkun amínóglýkósíða?",
+      "valmöguleikar": [
+        "Lifrarbilun og gula",
+        "Nýrna- og heyrnarskerðing",
+        "Hjartaáfall og heilablóðfall",
+        "Lungnatrefjun og öndunarfæravandamál"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Nýrna- og heyrnarskerðing eru alvarlegustu aukaverkanir amínóglýkósíða og krefjast náins eftirlits."
+    },
+    {
+      "id": 5,
+      "spurning": "Hvernig verkar vancomycin?",
+      "valmöguleikar": [
+        "Hamlar próteinmyndun í ríbósómum",
+        "Hamlar myndun frumuveggjar hjá gram-jákvæðum bakteríum",
+        "Hamlar DNA-rýringu",
+        "Hamlar RNA-sameindir"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Vancomycin kemur í veg fyrir að NAM/NAG-peptíð verði innlimaðar í peptíðóglýkan lag bakteríunnar, sem leiðir til rofs á frumuvegg og frumudauða."
+    },
+    {
+      "id": 6,
+      "spurning": "Hvað þarf að hafa í huga við útreikning á CrCl fyrir vancomycin?",
+      "valmöguleikar": [
+        "Margfalda CrCl með 1,2",
+        "Margfalda CrCl með 0,8 til að fá CrCl~vanco~",
+        "Deila CrCl með 0,8",
+        "Engar breytingar þarf að gera"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Við gjöf á vancomycin þarf að margfalda CrCl með 0,8 til að fá CrCl~vanco~ til nákvæmari skammtaútreiknings."
+    },
+    {
+      "id": 7,
+      "spurning": "Hver er æskilegur styrkur digoxíns í blóði við gáttatifi?",
+      "valmöguleikar": [
+        "2,0-3,0 µg/L",
+        "0,5-1,8 µg/L",
+        "0,1-0,5 µg/L",
+        "3,0-5,0 µg/L"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Lækningalegur stuðull digoxíns við gáttatifi er 0,5 til 1,8 µg/L. Styrkur yfir þessum mörkum eykur hættu á eiturverkunum."
+    },
+    {
+      "id": 8,
+      "spurning": "Hvaða lyf geta aukið plasmastyrk digoxíns og krefjast skammtalækkunar?",
+      "valmöguleikar": [
+        "Paracetamol og ibuprofen",
+        "Amoxicillin og penicillin",
+        "Amiodaron og verapamil",
+        "Metformin og insúlín"
+      ],
+      "réttSvar": 2,
+      "útskýring": "Amiodaron getur aukið digoxínstyrk verulega. Mælt er með að lækka digoxín um helming ef amiodaron er gefið samhliða."
+    },
+    {
+      "id": 9,
+      "spurning": "Hvert er helsta markmið með notkun amiodaron?",
+      "valmöguleikar": [
+        "Meðhöndla bakteríusýkingar",
+        "Meðhöndla alvarlegar og lífshættulegar hjartsláttartruflanir",
+        "Lækka blóðþrýsting",
+        "Meðhöndla sykursýki"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Amiodaron er flokkur 3 hjartsláttaróreglulyfja sem notað er við alvarlegum og lífshættulegum hjartsláttartruflunum með því að blokka K⁺ jónagöng."
+    },
+    {
+      "id": 10,
+      "spurning": "Hvaða próf þarf að fylgjast með reglulega við langtímanotkun amiodaron?",
+      "valmöguleikar": [
+        "Blóðsykur og HbA1c",
+        "Skjaldkirtils- og lifrarpróf, ECG og lungnapróf",
+        "Nýrnapróf og þvagpróf",
+        "Blóðfitugildi og blóðþrýstingur"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Fylgjast þarf með skjaldkirtilsprófum (TSH, T4/T3), lifrarprófi (ALAT/ASAT), ECG (QT tímabil) og lungnaskoðun á 6 mánaða fresti."
+    },
+    {
+      "id": 11,
+      "spurning": "Hver er munurinn á fullum agónistum og hlutagónistum ópíóíða?",
+      "valmöguleikar": [
+        "Fullir agónistar hafa enga verkun á viðtaka",
+        "Fullir agónistar virkja viðtaka að fullu, hlutagónistar virkja að hluta með minni aukaverkunum",
+        "Hlutagónistar eru sterkari en fullir agónistar",
+        "Enginn munur er á þeim"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Fullir agónistar (t.d. morfín, fentanyl) virkja viðtaka að fullu með hámarks verkjastillingu en meiri hættu á aukaverkunum. Hlutagónistar (t.d. búprenorfín) virkja að hluta með minni öndunarbælingu."
+    },
+    {
+      "id": 12,
+      "spurning": "Hvað gerist þegar kódein er umbrotið í líkamanum?",
+      "valmöguleikar": [
+        "Það er brotið niður í óvirk efni",
+        "Það er virkjað með CYP2D6 í morfín",
+        "Það er breytt í fentanyl",
+        "Það er skilið út óbreytt"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Kódein er virkjað með CYP2D6 ensíminu í morfín, sem skýrir mikinn einstaklingsmun í verkun eftir genetískum breytileika í þessu ensími."
+    },
+    {
+      "id": 13,
+      "spurning": "Hvers vegna eru DOAC lyf oft betri valkostur en warfarin fyrir suma sjúklinga?",
+      "valmöguleikar": [
+        "DOAC lyf eru ódýrari",
+        "DOAC lyf krefjast ekki eins mikils eftirlits með blóðprófum",
+        "DOAC lyf hafa engar aukaverkanir",
+        "DOAC lyf verka hraðar"
+      ],
+      "réttSvar": 1,
+      "útskýring": "DOAC lyf (t.d. apixaban, rivaroxaban) krefjast ekki reglubundinna INR mælinga eins og warfarin, sem gerir meðferðina einfaldari fyrir sjúklinga."
+    },
+    {
+      "id": 14,
+      "spurning": "Hvaða próf er notað til að fylgjast með warfarin meðferð?",
+      "valmöguleikar": [
+        "aPTT próf",
+        "INR próf",
+        "Anti-Xa gildi",
+        "Blóðflagnatelning"
+      ],
+      "réttSvar": 1,
+      "útskýring": "INR próf segir til um hversu lengi blóð storknar og er notað til að stýra warfarin skömmtum og tryggja að blóðstorknun sé á æskilegu bili."
+    },
+    {
+      "id": 15,
+      "spurning": "Hvað er helsta aukaverkun segavarnarlyfja?",
+      "valmöguleikar": [
+        "Hægðatregða",
+        "Blæðing",
+        "Öndunarbæling",
+        "Lifrarbilun"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Blæðing er helsta aukaverkun segavarnarlyfja. Blæðingarnar geta verið litlar og minniháttar en einnig miklar og lífshættulegar."
+    },
+    {
+      "id": 16,
+      "spurning": "Hvað er markmið insúlínmeðferðar hjá sykursjúkum?",
+      "valmöguleikar": [
+        "Hækka blóðsykur",
+        "Lækka blóðsykur og koma í veg fyrir fylgikvilla",
+        "Auka þyngd",
+        "Minnka þvaglát"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Helsta markmið insúlínmeðferðar er að lækka blóðsykur niður í æskileg mörk og koma í veg fyrir bráða og langvarandi fylgikvilla sykursýki."
+    },
+    {
+      "id": 17,
+      "spurning": "Hver er munurinn á basal og bolus insúlínmeðferð?",
+      "valmöguleikar": [
+        "Basal er skammvirkur og bolus langvirkur",
+        "Basal er langvirkur grunnur, bolus er hraðvirkur fyrir máltíðir",
+        "Basal er gefið í æð, bolus undir húð",
+        "Enginn munur er"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Basal insúlín (t.d. Tresiba) er langvirkt og veitir stöðugan grunn allan sólarhringinn. Bolus insúlín (t.d. Fiasp) er hraðvirkt og gefið fyrir máltíðir til að mæta blóðsykurhækkun frá mat."
+    },
+    {
+      "id": 18,
+      "spurning": "Hvað er HbA1c og hvað segir það okkur?",
+      "valmöguleikar": [
+        "Mælir blóðsykur síðustu 24 klst",
+        "Mælir meðalblóðsykur síðustu 2-3 mánuði",
+        "Mælir insúlínstyrk í blóði",
+        "Mælir nýrnastarfsemi"
+      ],
+      "réttSvar": 1,
+      "útskýring": "HbA1c mælir langtíma stjórnun á blóðsykri (2-3 mánuði). Gildi undir 53 mmól/mól er markmiðið fyrir flesta sykursjúka. Hærra gildi bendir til illa stjórnaðrar sykursýki."
+    },
+    {
+      "id": 19,
+      "spurning": "Hvað er CINV og hvers vegna er það mikilvægt að fyrirbyggja?",
+      "valmöguleikar": [
+        "Hjartasjúkdómur af völdum krabbameinslyfjameðferðar",
+        "Ógleði og uppköst af völdum krabbameinslyfjameðferðar sem getur leitt til vannæringar og minnkaðrar meðferðarheldni",
+        "Lifrarbilun af völdum krabbameinslyfjameðferðar",
+        "Nýrnabilun af völdum krabbameinslyfjameðferðar"
+      ],
+      "réttSvar": 1,
+      "útskýring": "CINV (Chemotherapy-Induced Nausea & Vomiting) er ógleði og uppköst vegna krabbameinslyfjameðferðar. Það getur leitt til vannæringar, vökvaskorta og minnkaðrar meðferðarheldni."
+    },
+    {
+      "id": 20,
+      "spurning": "Hvaða 4-lyfja samsetning er notuð við mjög hættulega ógleðimeðferð (t.d. cisplatin)?",
+      "valmöguleikar": [
+        "Paracetamol + ibuprofen + morfín + metoclopramid",
+        "NK1 (aprepitant) + 5-HT3 (ondansetron) + dexametason + olanzapin",
+        "Warfarin + aspirín + digoxín + metformin",
+        "Amoxicillin + gentamicin + vancomycin + metronidazol"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Við krabbameinslyfjum með mikla hættu á ógleði (t.d. cisplatin) er notað 4-lyfja regimen: NK1 antagónisti (aprepitant) + 5-HT3 antagónisti (ondansetron) + dexametason + olanzapin."
+    },
+    {
+      "id": 21,
+      "spurning": "Hvernig er CrCl reiknað með Cockcroft-Gault jöfnunni fyrir karla?",
+      "valmöguleikar": [
+        "CrCl = (140-aldur) × þyngd / (72 × SCr)",
+        "CrCl = (140+aldur) × þyngd / (72 × SCr)",
+        "CrCl = aldur × þyngd / (72 × SCr)",
+        "CrCl = (140-aldur) / (þyngd × SCr)"
+      ],
+      "réttSvar": 0,
+      "útskýring": "Fyrir karla: CrCl [mL/mín] = (140-aldur) × þyngd[kg] / (72 × SCr[mg/dL]). Fyrir konur margfaldast niðurstaðan með 0,85."
+    },
+    {
+      "id": 22,
+      "spurning": "Hvað þýðir það að lyf séu 'concentration dependent'?",
+      "valmöguleikar": [
+        "Virkni fer eftir tíma sem lyfið er gefið",
+        "Virkni fer eftir hámarksstyrk lyfsins, því hærri styrkur því meiri sýkladrepandi virkni",
+        "Virkni fer eftir aldri sjúklings",
+        "Virkni fer ekki eftir skammti"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Amínóglýkósíðar eru concentration dependent (styrkháð). Því hærra sem hlutfallið er milli Cmax/MIC, því meiri er sýkladrepandi virkni."
+    },
+    {
+      "id": 23,
+      "spurning": "Hver er helmingunartími digoxíns hjá einstaklingi með eðlilega nýrnastarfsemi?",
+      "valmöguleikar": [
+        "2-6 klst",
+        "12-24 klst",
+        "36-48 klst",
+        "3-7 dagar"
+      ],
+      "réttSvar": 2,
+      "útskýring": "Helmingunartími digoxíns er um 36-48 klst (1,5-2 dagar) hjá einstaklingum með eðlilega nýrnastarfsemi. Við skerta nýrnastarfsemi lengist helmingunartíminn verulega."
+    },
+    {
+      "id": 24,
+      "spurning": "Hvað gerir naloxón?",
+      "valmöguleikar": [
+        "Eykur verkun ópíóíða",
+        "Er antagónisti sem snýr við áhrifum ópíóíða við ofskömmtun",
+        "Er fullur agónisti ópíóíða",
+        "Hamlar verkun paracetamóls"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Naloxón er ópíóíð antagónisti sem keppur um bindisetin og snýr við áhrifum ópíóíða, t.d. við ofskömmtun með öndunarbælingu."
+    },
+    {
+      "id": 25,
+      "spurning": "Hvers vegna þarf að gefa stóran upphafsskammt (loading dose) af amiodaron?",
+      "valmöguleikar": [
+        "Vegna þess að lyfið er mjög dýrt",
+        "Vegna þess að verkun lyfsins byrjar hægt og það þarf að safnast upp í líkamanum",
+        "Vegna þess að lyfið er brotið hratt niður",
+        "Vegna þess að sjúklingar þola það ekki vel"
+      ],
+      "réttSvar": 1,
+      "útskýring": "Amiodaron hefur mjög langan helmingunartíma (20-100 dagar) og dreifist mikið í fituvef. Því þarf stóran upphafsskammt til að ná læknisfræðilegum styrk hratt, áður en hafist er handa með lægri viðhaldsskammt."
+    }
+  ],
+  "stigagjöf": {
+    "hámarksstig": 25,
+    "stig_fyrir_hvern_rétt": 1,
+    "staðið": 15,
+    "útskýring": "Þú þarft að fá að minnsta kosti 15 af 25 stigum til að standast prófið (60%)"
+  },
+  "metadata": {
+    "höfundur": "Útbúið úr námsefni LYF516G",
+    "dagsetning": "2025",
+    "námskeið": "Klínísk Aðgengisfræði",
+    "efnissvið": [
+      "Ópíóíðar",
+      "Amínóglýkósíðar og Vancomycin",
+      "Digoxín",
+      "Amiodaron",
+      "Segavarnarlyf",
+      "Insúlín",
+      "Krabbameinslyf og ógleðilyf"
+    ]
+  }
+}

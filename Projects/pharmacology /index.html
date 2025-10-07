@@ -3,171 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klínísk Aðgengisfræði - LYF516G | Lokapróf 2025</title>
+    <meta name="description" content="Klínísk Aðgengisfræði - LYF516G - Náms- og Prófumhverfi">
+    <title>Klínísk Aðgengisfræði - LYF516G | Veldu Próf</title>
 
     <!-- External CSS -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
     <!-- Loading Spinner -->
-    <div class="loader" id="loader">
+    <div class="loader hidden" id="loader">
         <div class="spinner"></div>
     </div>
 
     <div class="container">
         <!-- Header -->
-        <div class="header">
+        <header class="home-header">
+            <div class="logo">🏥</div>
             <h1>Klínísk Aðgengisfræði - LYF516G</h1>
-            <p class="subtitle">Lokapróf 2025 - Gagnvirkt Námsumhverfi</p>
-        </div>
+            <p class="subtitle">Náms- og Prófumhverfi fyrir Lyfjafræði</p>
+        </header>
 
-        <!-- Mode Selector -->
-        <div class="mode-selector">
-            <button class="mode-btn active" onclick="setMode('study')">
-                📚 Námsstilling
-            </button>
-            <button class="mode-btn" onclick="setMode('exam')">
-                ⏱️ Prófstilling
-            </button>
-            <button class="mode-btn" onclick="setMode('review')">
-                📊 Yfirlit
-            </button>
-        </div>
-
-        <!-- Exam Info -->
-        <div class="exam-info">
-            <div class="info-card">
-                <div class="icon">⏰</div>
-                <div class="label">Tími</div>
-                <div class="value">180 mín</div>
-            </div>
-            <div class="info-card">
-                <div class="icon">📝</div>
-                <div class="label">Spurningar</div>
-                <div class="value">7</div>
-            </div>
-            <div class="info-card">
-                <div class="icon">🎯</div>
-                <div class="label">Heildarstig</div>
-                <div class="value">110</div>
-            </div>
-            <div class="info-card">
-                <div class="icon">✅</div>
-                <div class="label">Lágmark</div>
-                <div class="value">50 stig</div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Timer (Exam Mode) -->
-                <div class="timer" id="timerCard" style="display: none;">
-                    <h3>⏱️ Tími eftir</h3>
-                    <div class="time-display" id="timeDisplay">03:00:00</div>
-                </div>
-
-                <!-- Progress -->
-                <div class="progress-card">
-                    <h3>📊 Framvinda</h3>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-                        <span id="progressText">0 af 7 spurningum</span>
-                        <span id="scoreText">0 stig</span>
-                    </div>
-
-                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: #6b7280;">Flýtileiðir</h4>
-                    <div class="question-nav" id="questionNav">
-                        <!-- Will be populated by JS -->
+        <!-- Test Selection -->
+        <section class="test-selection">
+            <!-- Case-Based Exam Card -->
+            <div class="test-card" onclick="window.location.href='case-exam.html'">
+                <div class="test-card-header">
+                    <div class="test-icon">📋</div>
+                    <div>
+                        <h2 class="test-title">Lokapróf 2025</h2>
+                        <div class="difficulty-badge difficulty-hard">🏆 Erfitt</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Content Area -->
-            <div class="content-area">
-                <!-- Patient Case -->
-                <div class="patient-case" id="patientCase">
-                    <div class="patient-header">
-                        <div class="patient-avatar">👨‍⚕️</div>
-                        <div class="patient-info">
-                            <h2>Sjúkratilfelli: KS</h2>
-                            <div class="patient-meta">
-                                <span class="meta-tag">68 ára</span>
-                                <span class="meta-tag">Karlmaður</span>
-                                <span class="meta-tag">94 kg</span>
-                                <span class="meta-tag">176 cm</span>
-                                <span class="meta-tag">Fyrrv. smiður</span>
-                            </div>
+                <p class="test-description">
+                    Umfangsmikið próf með raunverulegum sjúkratilfellum.
+                    Prófaðu þekkingu þína á farmakokinetík, lyfjamilliverkunum og
+                    klínískri ákvarðanatöku með verklegum dæmum.
+                </p>
+
+                <div class="test-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⏱️</span>
+                        <div>
+                            <div class="stat-label">Tími</div>
+                            <div class="stat-value">180 mín</div>
                         </div>
                     </div>
-
-                    <!-- Tabs -->
-                    <div class="tabs">
-                        <button class="tab-btn active" onclick="switchTab('saga')">Sjúkrasaga</button>
-                        <button class="tab-btn" onclick="switchTab('lyf')">Lyfjasaga</button>
-                        <button class="tab-btn" onclick="switchTab('lifsmark')">Lífsmörk</button>
-                        <button class="tab-btn" onclick="switchTab('blod')">Blóðmælingar</button>
-                        <button class="tab-btn" onclick="switchTab('skodun')">Læknisskoðun</button>
+                    <div class="stat-item">
+                        <span class="stat-icon">📝</span>
+                        <div>
+                            <div class="stat-label">Spurningar</div>
+                            <div class="stat-value">7 spurningar</div>
+                        </div>
                     </div>
-
-                    <div class="tab-content active" id="tab-saga">
-                        <!-- Will be populated by JS -->
+                    <div class="stat-item">
+                        <span class="stat-icon">🎯</span>
+                        <div>
+                            <div class="stat-label">Heildarstig</div>
+                            <div class="stat-value">110 stig</div>
+                        </div>
                     </div>
-                    <div class="tab-content" id="tab-lyf">
-                        <!-- Will be populated by JS -->
-                    </div>
-                    <div class="tab-content" id="tab-lifsmark">
-                        <!-- Will be populated by JS -->
-                    </div>
-                    <div class="tab-content" id="tab-blod">
-                        <!-- Will be populated by JS -->
-                    </div>
-                    <div class="tab-content" id="tab-skodun">
-                        <!-- Will be populated by JS -->
+                    <div class="stat-item">
+                        <span class="stat-icon">✅</span>
+                        <div>
+                            <div class="stat-label">Lágmark</div>
+                            <div class="stat-value">50 stig</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Question Containers -->
-                <div id="questionsContainer">
-                    <!-- Will be populated by JS -->
-                </div>
-
-                <!-- Navigation -->
-                <div class="navigation" id="navigation" style="display: none;">
-                    <button class="nav-button" id="prevBtn" onclick="navigateQuestion(-1)">
-                        ← Fyrri spurning
-                    </button>
-                    <span id="currentQuestionText">Spurning 1 af 7</span>
-                    <button class="nav-button" id="nextBtn" onclick="navigateQuestion(1)">
-                        Næsta spurning →
-                    </button>
-                    <button class="nav-button submit" id="submitBtn" onclick="submitExam()" style="display: none;">
-                        🎯 Skila prófi
-                    </button>
-                </div>
+                <button class="start-btn">
+                    <span>Hefja Lokapróf</span>
+                    <span>→</span>
+                </button>
             </div>
-        </div>
+
+            <!-- Multiple Choice Quiz Card -->
+            <div class="test-card" onclick="window.location.href='quiz.html'">
+                <div class="test-card-header">
+                    <div class="test-icon">✍️</div>
+                    <div>
+                        <h2 class="test-title">Æfingapróf - Fjölval</h2>
+                        <div class="difficulty-badge difficulty-medium">🌟 Miðlungs</div>
+                    </div>
+                </div>
+
+                <p class="test-description">
+                    Stuttar spurningar til að æfa lyfjafræði. Nær yfir ópíóíðar,
+                    sýklalyf, hjartaóreglulyfja, segavarnarlyf, insúlín og krabbameinslyf.
+                    Tilvalið til að rifja upp efnið.
+                </p>
+
+                <div class="test-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⏱️</span>
+                        <div>
+                            <div class="stat-label">Tími</div>
+                            <div class="stat-value">~30 mín</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">📝</span>
+                        <div>
+                            <div class="stat-label">Spurningar</div>
+                            <div class="stat-value">25 spurningar</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🎯</span>
+                        <div>
+                            <div class="stat-label">Heildarstig</div>
+                            <div class="stat-value">25 stig</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">✅</span>
+                        <div>
+                            <div class="stat-label">Lágmark</div>
+                            <div class="stat-value">15 stig (60%)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn">
+                    <span>Hefja Æfingapróf</span>
+                    <span>→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="home-footer">
+            <h3>💡 Ábendingar</h3>
+            <ul class="tips-list">
+                <li>
+                    <span class="tip-icon">📚</span>
+                    <span>Byrjaðu á æfingaprófinu til að æfa</span>
+                </li>
+                <li>
+                    <span class="tip-icon">🎯</span>
+                    <span>Lokaprófið krefst djúprar skilnings</span>
+                </li>
+                <li>
+                    <span class="tip-icon">⏰</span>
+                    <span>Skipulagðu tímann þinn vel</span>
+                </li>
+                <li>
+                    <span class="tip-icon">✅</span>
+                    <span>Lestu spurningarnar vandlega</span>
+                </li>
+            </ul>
+        </footer>
     </div>
-
-    <!-- Results Modal -->
-    <div class="modal" id="resultsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Niðurstöður</h2>
-                <div class="score-display" id="finalScore">0 / 110</div>
-                <div class="grade" id="gradeDisplay">Staðist</div>
-            </div>
-            <div id="detailedResults">
-                <!-- Will be populated by JS -->
-            </div>
-            <button class="close-modal" onclick="closeModal()">Loka</button>
-        </div>
-    </div>
-
-    <!-- External JavaScript -->
-    <script src="js/script.js"></script>
 </body>
 </html>

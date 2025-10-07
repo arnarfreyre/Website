@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Æfingapróf í Klínískri Aðgengisfræði - Fjölvalsspurningar">
+    <title>Æfingapróf - Klínísk Aðgengisfræði | LYF516G</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="quiz-container">
+        <!-- Header -->
+        <div class="quiz-header">
+            <div class="quiz-header-content">
+                <div>
+                    <h1 class="quiz-title">Klínísk Aðgengisfræði - Æfingapróf</h1>
+                    <p style="color: var(--text-secondary); margin: 0;">Fjölvalsspurningar um lyfjafræði</p>
+                </div>
+                <div class="quiz-info">
+                    <div class="info-item">
+                        <span class="info-label">Spurningar:</span>
+                        <span class="info-value" id="totalQuestions">25</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Stig:</span>
+                        <span class="info-value" id="currentScore">0 / 25</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="quiz-layout">
+            <!-- Question Area -->
+            <div>
+                <div class="question-card" id="questionCard">
+                    <div class="question-number" id="questionNumber">
+                        <span>📝</span>
+                        <span>Spurning 1 af 25</span>
+                    </div>
+
+                    <div class="question-text" id="questionText">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+
+                    <div class="answer-options" id="answerOptions">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+
+                    <div class="explanation hidden" id="explanation">
+                        <div class="explanation-title">
+                            <span>💡</span>
+                            <span>Útskýring:</span>
+                        </div>
+                        <p class="explanation-text" id="explanationText">
+                            <!-- Will be populated by JavaScript -->
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="quiz-navigation" style="margin-top: var(--spacing-lg);">
+                    <button class="nav-btn nav-btn-prev" id="prevBtn" onclick="previousQuestion()">
+                        <span>←</span>
+                        <span>Fyrri spurning</span>
+                    </button>
+                    <button class="nav-btn nav-btn-next" id="nextBtn" onclick="nextQuestion()">
+                        <span>Næsta spurning</span>
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="quiz-sidebar">
+                <!-- Progress Card -->
+                <div class="progress-card">
+                    <h3>📊 Framvinda</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">0 af 25 svarað</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+
+                    <h4 style="margin-top: var(--spacing-lg); margin-bottom: var(--spacing-sm); font-size: 0.875rem; color: var(--text-secondary);">Flýtileiðir</h4>
+                    <div class="question-navigator" id="questionNavigator">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Submit Card -->
+                <div class="submit-card">
+                    <h3 style="font-size: 1rem; margin-bottom: var(--spacing-md);">🎯 Ljúka prófi</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
+                        Vinsamlegast svaraðu öllum spurningum áður en þú skilar.
+                    </p>
+                    <button class="submit-btn" id="submitBtn" onclick="submitQuiz()" disabled>
+                        <span>🎯</span>
+                        <span>Skila prófi</span>
+                    </button>
+                </div>
+
+                <!-- Home Button -->
+                <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='index.html'">
+                    ← Til baka heim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal hidden" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Niðurstöður</h2>
+                <div class="score-display" id="finalScore">0 / 25</div>
+                <div class="grade" id="gradeDisplay">Staðist</div>
+            </div>
+
+            <div class="results-stats">
+                <div class="stat-box">
+                    <div class="stat-number correct" id="correctCount">0</div>
+                    <div class="stat-label">Rétt</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number incorrect" id="incorrectCount">0</div>
+                    <div class="stat-label">Rangt</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number percentage" id="percentageScore">0%</div>
+                    <div class="stat-label">Hlutfall</div>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: var(--text-secondary); margin: var(--spacing-lg) 0;">
+                <span id="passingMessage">Þú þarft að fá að minnsta kosti 15 stig til að standast (60%)</span>
+            </p>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-review" onclick="reviewAnswers()">
+                    📝 Skoða svör
+                </button>
+                <button class="modal-btn btn-home" onclick="window.location.href='index.html'">
+                    🏠 Til baka heim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="js/quiz.js"></script>
+</body>
+</html>
