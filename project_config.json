@@ -43,12 +43,6 @@
       "needs_main": true,
       "displayed": true,
       "description": "A university practice exam in pharmacology"
-    },
-    "Heatsink Web Front": {
-      "needs_main": false,
-      "displayed": true,
-      "description": "Heatsink thermal analysis and optimization tool",
-      "main_file": "New_heatsink.html"
     }
   },
   "default_settings": {

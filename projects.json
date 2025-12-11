@@ -55,32 +55,17 @@
       "icon": "chart"
     },
     {
-      "id": "heatsink-web-front",
-      "title": "Heatsink Web Front",
-      "description": "Explore Heatsink Web Front with interactive features and modern design.",
-      "tags": [
-        "Interactive"
-      ],
-      "categories": [
-        "interactive"
-      ],
-      "path": "Projects/Heatsink Web Front/New_heatsink.html",
-      "featured": false,
-      "technologies": [
-        "JavaScript"
-      ],
-      "icon": "folder"
-    },
-    {
       "id": "math-visuals",
       "title": "Math Visuals Collection",
       "description": "Interactive mathematical visualizations including differentials, integrals, Fourier transforms, and Laplace transforms. Perfect for learning and exploring mathematical concepts.",
       "tags": [
         "Math",
-        "Visualization"
+        "Visualization",
+        "Interactive"
       ],
       "categories": [
-        "visualization"
+        "visualization",
+        "interactive"
       ],
       "path": "Projects/Math visuals/Main.html",
       "featured": false,
