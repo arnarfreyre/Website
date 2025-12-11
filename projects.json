@@ -55,6 +55,23 @@
       "icon": "chart"
     },
     {
+      "id": "heatsink-web-front",
+      "title": "Heatsink Web Front",
+      "description": "Explore Heatsink Web Front with interactive features and modern design.",
+      "tags": [
+        "Interactive"
+      ],
+      "categories": [
+        "interactive"
+      ],
+      "path": "Projects/Heatsink Web Front/New_heatsink.html",
+      "featured": false,
+      "technologies": [
+        "JavaScript"
+      ],
+      "icon": "folder"
+    },
+    {
       "id": "math-visuals",
       "title": "Math Visuals Collection",
       "description": "Interactive mathematical visualizations including differentials, integrals, Fourier transforms, and Laplace transforms. Perfect for learning and exploring mathematical concepts.",
@@ -93,6 +110,23 @@
       "icon": "gamepad"
     },
     {
+      "id": "pharmacology-",
+      "title": "Pharmacology",
+      "description": "Explore Pharmacology with interactive features and modern design.",
+      "tags": [
+        "Interactive"
+      ],
+      "categories": [
+        "interactive"
+      ],
+      "path": "Projects/pharmacology /index.html",
+      "featured": false,
+      "technologies": [
+        "Web"
+      ],
+      "icon": "folder"
+    },
+    {
       "id": "rottman",
       "title": "Rottman",
       "description": "Explore Rottman with interactive features and modern design.",
@@ -105,30 +139,9 @@
       "path": "Projects/Rottman/Main.html",
       "featured": false,
       "technologies": [
-        "Web"
+        "JavaScript"
       ],
       "icon": "folder"
-    },
-    {
-      "id": "pharmacology",
-      "title": "Clinical Pharmacology Exam",
-      "description": "Interactive clinical pharmacology exam platform with study mode, practice tests, and comprehensive patient case analysis for LYF516G course.",
-      "tags": [
-        "Education",
-        "Medicine",
-        "Exam"
-      ],
-      "categories": [
-        "education"
-      ],
-      "path": "Projects/pharmacology /index.html",
-      "featured": false,
-      "technologies": [
-        "Education",
-        "Medicine",
-        "Interactive"
-      ],
-      "icon": "medical"
     },
     {
       "id": "tree-website",
