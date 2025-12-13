@@ -22,7 +22,7 @@ function solveHeatEquation(params) {
   // Optimal omega for 2D Laplacian accelerates convergence ~100x
   const omega = 2 / (1 + Math.sin(Math.PI / Math.max(n, m)));
   const maxIter = 50000;
-  const tol = 1e-10;
+  const tol = 1e-6;
 
   for (let iter = 0; iter < maxIter; iter++) {
     let maxDiff = 0;
