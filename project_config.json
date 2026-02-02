@@ -43,6 +43,12 @@
       "needs_main": true,
       "displayed": true,
       "description": "A university practice exam in pharmacology"
+    },
+    "Iceland-CPI-Analysis": {
+      "needs_main": false,
+      "displayed": true,
+      "description": "Single-page interactive CPI similarity visualization",
+      "main_file": "index.html"
     }
   },
   "default_settings": {

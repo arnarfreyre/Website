@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iceland CPI Similarity — World Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+    /* ============================================= */
+    /* RESET & BASE                                  */
+    /* ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0f0f23;
+      color: #e0e0e0;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+    #map {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+    }
+
+    /* ============================================= */
+    /* HEADER                                        */
+    /* ============================================= */
+    #header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(12, 14, 30, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+      padding: 10px 24px 12px;
+    }
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f0f0f0;
+      letter-spacing: 0.02em;
+    }
+    .title span { color: #ef5350; }
+    .subtitle {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.4);
+      margin: 2px 0 10px;
+      font-weight: 400;
+    }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* ============================================= */
+    /* TAB BUTTONS                                   */
+    /* ============================================= */
+    .tab {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.55);
+      padding: 7px 16px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      letter-spacing: 0.01em;
+    }
+    .tab:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .tab.active[data-view="knn"] {
+      background: rgba(33, 150, 243, 0.2);
+      border-color: rgba(33, 150, 243, 0.45);
+      color: #90caf9;
+      box-shadow: 0 0 20px rgba(33, 150, 243, 0.15);
+    }
+    .tab.active[data-view="cluster"] {
+      background: rgba(0, 150, 136, 0.2);
+      border-color: rgba(0, 150, 136, 0.45);
+      color: #80cbc4;
+      box-shadow: 0 0 20px rgba(0, 150, 136, 0.15);
+    }
+    .tab.active[data-view="correlation"] {
+      background: rgba(76, 175, 80, 0.2);
+      border-color: rgba(76, 175, 80, 0.45);
+      color: #a5d6a7;
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.15);
+    }
+    .tab.active[data-view="combined"] {
+      background: rgba(239, 83, 80, 0.2);
+      border-color: rgba(239, 83, 80, 0.45);
+      color: #ef9a9a;
+      box-shadow: 0 0 20px rgba(239, 83, 80, 0.15);
+    }
+
+    /* ============================================= */
+    /* GLASS PANELS                                  */
+    /* ============================================= */
+    .glass-panel {
+      position: fixed;
+      z-index: 1000;
+      background: rgba(12, 14, 30, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+      color: #e0e0e0;
+      padding: 16px;
+      font-size: 0.82rem;
+      transition: opacity 0.3s ease;
+    }
+    #info-panel {
+      top: 105px;
+      right: 16px;
+      width: 270px;
+      min-height: 60px;
+    }
+    #info-panel h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #fff;
+    }
+    #info-panel .info-iso {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    #info-panel .info-pop {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+    #info-panel hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin: 8px 0;
+    }
+    .metric {
+      font-size: 0.82rem;
+      margin: 4px 0;
+    }
+    .metric strong {
+      color: #fff;
+      font-weight: 600;
+    }
+    .metric.muted { color: rgba(255,255,255,0.35); }
+    .metric.highlight { color: #ef5350; font-weight: 600; }
+    .metric-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      margin: 4px 0 6px;
+      overflow: hidden;
+    }
+    .metric-bar div {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #1565c0, #64b5f6);
+      transition: width 0.4s ease;
+    }
+    .metric-bar.green div {
+      background: linear-gradient(90deg, #2e7d32, #81c784);
+    }
+    .metric-bar.red div {
+      background: linear-gradient(90deg, #c62828, #ef9a9a);
+    }
+    .rank {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(239, 83, 80, 0.2);
+      border: 1px solid rgba(239, 83, 80, 0.4);
+      color: #ef9a9a;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 4px;
+    }
+    .default-hint {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.78rem;
+    }
+
+    #legend {
+      bottom: 30px;
+      right: 16px;
+      width: 220px;
+    }
+    .legend-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .legend-gradient {
+      width: 100%;
+      height: 14px;
+      border-radius: 4px;
+      margin: 6px 0 4px;
+    }
+    .legend-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.65);
+    }
+    .legend-swatch {
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #method-info {
+      bottom: 30px;
+      left: 16px;
+      max-width: 320px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      padding: 12px 16px;
+    }
+
+    /* ============================================= */
+    /* LEAFLET OVERRIDES                             */
+    /* ============================================= */
+    .leaflet-container { background: #0a0a1a !important; }
+    .leaflet-interactive {
+      transition: fill 0.35s ease, fill-opacity 0.35s ease, stroke 0.15s ease, stroke-width 0.15s ease;
+    }
+    .leaflet-control-zoom a {
+      background: rgba(12, 14, 30, 0.85) !important;
+      color: #ccc !important;
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: rgba(30, 32, 50, 0.9) !important;
+      color: #fff !important;
+    }
+
+    /* ============================================= */
+    /* ICELAND PULSING MARKER                        */
+    /* ============================================= */
+    .iceland-pin {
+      width: 22px; height: 22px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .iceland-pin .core {
+      width: 10px; height: 10px;
+      background: #ff4444;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 12px rgba(255, 68, 68, 0.6);
+      z-index: 2;
+      position: relative;
+    }
+    .iceland-pin .ring {
+      position: absolute;
+      border: 2px solid rgba(255, 68, 68, 0.5);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-ring 2.5s ease-out infinite;
+    }
+    .iceland-pin .ring:nth-child(3) { animation-delay: 1.25s; }
+    @keyframes pulse-ring {
+      0%   { width: 12px; height: 12px; opacity: 1; }
+      100% { width: 50px; height: 50px; opacity: 0; }
+    }
+
+    /* ============================================= */
+    /* COUNTRY TOOLTIP (Leaflet tooltip override)    */
+    /* ============================================= */
+    .country-tooltip {
+      background: rgba(12, 14, 30, 0.92) !important;
+      border: 1px solid rgba(255,255,255,0.12) !important;
+      border-radius: 8px !important;
+      color: #e0e0e0 !important;
+      font-family: 'Segoe UI', system-ui, sans-serif !important;
+      font-size: 0.75rem !important;
+      padding: 6px 10px !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+    }
+    .country-tooltip::before { display: none !important; }
+
+    /* ============================================= */
+    /* LOADING STATE                                 */
+    /* ============================================= */
+    #loading {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 2000;
+      background: #0f0f23;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      transition: opacity 0.6s ease;
+    }
+    #loading.hidden { opacity: 0; pointer-events: none; }
+    .loader {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #ef5350;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+
+  <div id="loading">
+    <div class="loader"></div>
+    <div class="loader-text">Loading world map data...</div>
+  </div>
+
+  <header id="header">
+    <div class="header-content">
+      <h1 class="title"><span>Iceland</span> CPI Similarity — World Map</h1>
+      <p class="subtitle">K-Nearest Neighbors, Clustering & Correlation Analysis (2000–2024)</p>
+      <nav class="tabs">
+        <button class="tab active" data-view="knn">KNN Distance</button>
+        <button class="tab" data-view="cluster">Clustering</button>
+        <button class="tab" data-view="correlation">Correlation</button>
+        <button class="tab" data-view="combined">Combined</button>
+      </nav>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <div id="info-panel" class="glass-panel">
+    <h3>Hover over a country</h3>
+    <p class="default-hint">View similarity metrics</p>
+  </div>
+
+  <div id="legend" class="glass-panel"></div>
+
+  <div id="method-info" class="glass-panel">
+    <p id="method-text"></p>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+  /* ============================================================= */
+  /* DATA CONSTANTS                                                 */
+  /* ============================================================= */
+
+  // KNN: 30 nearest countries to Iceland (ISO3 -> Euclidean distance)
+  const KNN_DATA = {
+    STP:12.809, SYC:14.495, MLT:14.858, TGO:14.959, CMR:15.177,
+    PHL:15.386, ISR:15.872, HRV:15.916, LTU:16.074, KWT:16.118,
+    CPV:16.146, KOR:16.523, BWA:16.592, LVA:16.609, BGR:16.675,
+    MLI:16.747, BHS:17.060, VCT:17.075, MNG:17.278, RWA:17.292,
+    NIC:17.333, MUS:17.355, BFA:17.362, SGP:17.400, GBR:17.448,
+    SLB:17.460, FIN:17.488, MKD:17.529, JAM:17.611, DNK:17.631
+  };
+  const KNN_MIN = 12.809, KNN_MAX = 17.631;
+
+  // KNN ranked list for rank lookup
+  const KNN_RANKED = Object.entries(KNN_DATA).sort((a,b) => a[1]-b[1]).map(e => e[0]);
+
+  // Clustering: K=3, Iceland's cluster (Cluster 0) — 52 countries
+  const CLUSTER_0 = new Set([
+    'ARM','AZE','BEN','BGD','BOL','BRB','BWA','CAF','CHN','COG','CRI',
+    'DMA','ETH','FJI','GAB','GEO','GRD','GTM','GUY','HKG','IDN','IND',
+    'ISL','JAM','JOR','KEN','KGZ','KHM','KNA','KWT','MAC','MDG','MDV',
+    'MNG','MRT','MYS','NER','NIC','NPL','PAN','PHL','SAU','SLB','STP',
+    'SYC','THA','TTO','TZA','UGA','VCT','VNM','ZAF'
+  ]);
+
+  // Correlation: 30 most correlated with Iceland (ISO3 -> Pearson r)
+  const CORR_DATA = {
+    STP:0.726, SYC:0.649, MLT:0.631, TGO:0.626, CMR:0.615,
+    PHL:0.604, ISR:0.579, HRV:0.576, LTU:0.568, KWT:0.566,
+    CPV:0.564, KOR:0.543, BWA:0.540, LVA:0.539, BGR:0.535,
+    MLI:0.531, BHS:0.513, VCT:0.512, MNG:0.501, RWA:0.500,
+    NIC:0.498, MUS:0.496, BFA:0.496, SGP:0.494, GBR:0.491,
+    SLB:0.490, FIN:0.489, MKD:0.486, JAM:0.481, DNK:0.480
+  };
+  const CORR_MIN = 0.480, CORR_MAX = 0.726;
+  const CORR_RANKED = Object.entries(CORR_DATA).sort((a,b) => b[1]-a[1]).map(e => e[0]);
+
+  // Consensus top 10
+  const CONSENSUS_TOP10 = new Set(['STP','SYC','PHL','KWT','BWA','VCT','MNG','NIC','SLB','MLT']);
+
+  // Combined scores (computed from normalized KNN rank + corr rank + cluster)
+  const COMBINED_SCORES = (() => {
+    const all = new Set([...Object.keys(KNN_DATA), ...CLUSTER_0, ...Object.keys(CORR_DATA)]);
+    all.delete('ISL');
+    const scores = {};
+    all.forEach(iso => {
+      const ki = KNN_RANKED.indexOf(iso);
+      const ci = CORR_RANKED.indexOf(iso);
+      const normK = ki >= 0 ? (ki + 1) / 30 : 1.0;
+      const normC = ci >= 0 ? (ci + 1) / 30 : 1.0;
+      const normCl = CLUSTER_0.has(iso) ? 0.0 : 1.0;
+      scores[iso] = (normK + normC + normCl) / 3;
+    });
+    return scores;
+  })();
+
+  // Country name overrides (where GeoJSON name differs or is missing)
+  const NAME_OVERRIDES = {
+    STP:"São Tomé and Príncipe", KOR:"South Korea", MKD:"North Macedonia",
+    CPV:"Cape Verde", VCT:"St. Vincent & Grenadines", BHS:"Bahamas",
+    KNA:"St. Kitts and Nevis", GRD:"Grenada", DMA:"Dominica",
+    BRB:"Barbados", TTO:"Trinidad and Tobago", HKG:"Hong Kong",
+    MAC:"Macau", ISL:"Iceland", USA:"United States", GBR:"United Kingdom",
+    ARE:"United Arab Emirates", PRK:"North Korea", COD:"DR Congo",
+    COG:"Republic of the Congo", CIV:"Côte d'Ivoire", PSE:"Palestine",
+    SSD:"South Sudan", TLS:"Timor-Leste"
+  };
+
+  // Population data (approximate 2024, in thousands where noted — stored as integers)
+  const POPULATIONS = {
+    AFG:42240000, ALB:2780000, DZA:45610000, AND:80000, AGO:36680000,
+    ATG:100000, ARG:46650000, ARM:2780000, AUS:26640000, AUT:9160000,
+    AZE:10410000, BHS:410000, BHR:1530000, BGD:172950000, BRB:282000,
+    BLR:9200000, BEL:11690000, BLZ:410000, BEN:13710000, BTN:790000,
+    BOL:12290000, BIH:3210000, BWA:2630000, BRA:216420000, BRN:452000,
+    BGR:6520000, BFA:22670000, BDI:13240000, KHM:17170000, CMR:28650000,
+    CAN:39740000, CPV:599000, CAF:5740000, TCD:18280000, CHL:19620000,
+    CHN:1412000000, COL:52090000, COM:852000, COG:6110000, COD:102260000,
+    CRI:5210000, CIV:28870000, HRV:3860000, CUB:11190000, CYP:1260000,
+    CZE:10900000, DNK:5960000, DJI:1140000, DMA:72000, DOM:11330000,
+    ECU:18190000, EGY:112720000, SLV:6360000, GNQ:1740000, ERI:3680000,
+    EST:1360000, SWZ:1210000, ETH:126530000, FJI:936000, FIN:5560000,
+    FRA:68170000, GAB:2440000, GMB:2700000, GEO:3730000, DEU:84480000,
+    GHA:34120000, GRC:10340000, GRD:126000, GTM:18090000, GIN:14190000,
+    GNB:2150000, GUY:813000, HTI:11720000, HND:10430000, HKG:7490000,
+    HUN:9600000, ISL:376000, IND:1429000000, IDN:277530000, IRN:88550000,
+    IRQ:44500000, IRL:5260000, ISR:9750000, ITA:58870000, JAM:2830000,
+    JPN:123290000, JOR:11340000, KAZ:19620000, KEN:55100000, KIR:132000,
+    KWT:4310000, KGZ:7100000, LAO:7530000, LVA:1830000, LBN:5490000,
+    LSO:2330000, LBR:5420000, LBY:7130000, LIE:40000, LTU:2790000,
+    LUX:668000, MAC:704000, MDG:30330000, MWI:20930000, MYS:34310000,
+    MDV:523000, MLI:22590000, MLT:535000, MHL:42000, MRT:4870000,
+    MUS:1310000, MEX:129390000, FSM:113000, MDA:2540000, MCO:39000,
+    MNG:3400000, MNE:620000, MAR:37840000, MOZ:33900000, MMR:54410000,
+    NAM:2600000, NRU:13000, NPL:30900000, NLD:17880000, NZL:5220000,
+    NIC:7050000, NER:26210000, NGA:223800000, PRK:26160000, MKD:1830000,
+    NOR:5550000, OMN:4600000, PAK:231400000, PLW:18000, PAN:4410000,
+    PNG:10330000, PRY:6860000, PER:34050000, PHL:117340000, POL:36820000,
+    PRT:10250000, QAT:2690000, ROU:19060000, RUS:143400000, RWA:14090000,
+    KNA:48000, LCA:184000, VCT:101000, WSM:225000, SMR:33000,
+    STP:228000, SAU:36410000, SEN:17920000, SRB:6650000, SYC:100000,
+    SLE:8610000, SGP:5920000, SVK:5430000, SVN:2110000, SLB:740000,
+    SOM:18140000, ZAF:60410000, KOR:51780000, SSD:11090000, ESP:48400000,
+    LKA:22160000, SDN:48110000, SUR:620000, SWE:10550000, CHE:8850000,
+    SYR:23230000, TWN:23570000, TJK:10260000, TZA:67440000, THA:71800000,
+    TLS:1340000, TGO:8850000, TON:107000, TTO:1530000, TUN:12460000,
+    TUR:85280000, TKM:6520000, TUV:11000, UGA:48580000, UKR:37000000,
+    ARE:9440000, GBR:67740000, USA:334000000, URY:3420000, UZB:35650000,
+    VUT:330000, VEN:28440000, VNM:100350000, YEM:34450000, ZMB:20570000,
+    ZWE:16320000, PSE:5370000, XKX:1780000, BFA:22670000
+  };
+
+  // Iceland coordinates
+  const ICELAND_COORDS = [64.96, -19.02];
+
+  // GeoJSON source
+  const GEOJSON_URL = 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json';
+
+  /* ============================================================= */
+  /* COLOR UTILITIES                                                */
+  /* ============================================================= */
+
+  function hsl(h, s, l) { return `hsl(${h},${s}%,${l}%)`; }
+
+  function lerpHSL(t, h1, s1, l1, h2, s2, l2) {
+    return hsl(h1 + t*(h2-h1), s1 + t*(s2-s1), l1 + t*(l2-l1));
+  }
+
+  // KNN: dark vivid blue (closest) -> light desaturated blue (farthest)
+  function knnColor(dist) {
+    const t = (dist - KNN_MIN) / (KNN_MAX - KNN_MIN); // 0 = closest, 1 = farthest
+    return lerpHSL(t, 210, 90, 30, 210, 40, 65);
+  }
+
+  // Correlation: vivid green (highest) -> muted green (lowest)
+  function corrColor(r) {
+    const t = (r - CORR_MIN) / (CORR_MAX - CORR_MIN); // 0 = lowest, 1 = highest
+    return lerpHSL(t, 140, 45, 60, 150, 80, 28);
+  }
+
+  // Combined: muted salmon (least similar) -> vivid dark red (most similar)
+  function combinedColor(score) {
+    const t = 1 - score; // invert: lower score = more similar = higher t
+    // Keep hue fixed at red (0), vary saturation and lightness only
+    return hsl(0, 30 + t * 50, 68 - t * 38);
+  }
+
+  const GREY = '#1e1e32';
+  const ISL_COLOR = '#ef5350';
+
+  /* ============================================================= */
+  /* STYLE FUNCTIONS                                                */
+  /* ============================================================= */
+
+  const BASE = { weight: 0.7, opacity: 0.85, color: 'rgba(255,255,255,0.12)', fillOpacity: 0.75 };
+
+  function styleKnn(f) {
+    const iso = f.id;
+    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
+    if (KNN_DATA[iso] !== undefined) return { ...BASE, fillColor: knnColor(KNN_DATA[iso]) };
+    return { ...BASE, fillColor: GREY, fillOpacity: 0.25 };
+  }
+
+  function styleCluster(f) {
+    const iso = f.id;
+    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
+    if (CLUSTER_0.has(iso)) return { ...BASE, fillColor: '#00897b', fillOpacity: 0.65 };
+    return { ...BASE, fillColor: GREY, fillOpacity: 0.2 };
+  }
+
+  function styleCorr(f) {
+    const iso = f.id;
+    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
+    if (CORR_DATA[iso] !== undefined) return { ...BASE, fillColor: corrColor(CORR_DATA[iso]) };
+    return { ...BASE, fillColor: GREY, fillOpacity: 0.25 };
+  }
+
+  function styleCombined(f) {
+    const iso = f.id;
+    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
+    if (COMBINED_SCORES[iso] !== undefined) {
+      const s = COMBINED_SCORES[iso];
+      return { ...BASE, fillColor: combinedColor(s), fillOpacity: 0.35 + 0.55 * (1 - s) };
+    }
+    return { ...BASE, fillColor: GREY, fillOpacity: 0.18 };
+  }
+
+  const STYLES = { knn: styleKnn, cluster: styleCluster, correlation: styleCorr, combined: styleCombined };
+
+  /* ============================================================= */
+  /* MAP INITIALIZATION                                             */
+  /* ============================================================= */
+
+  let currentView = 'knn';
+  let geojsonLayer = null;
+  let countryLayers = {};
+
+  const map = L.map('map', {
+    center: [25, 10],
+    zoom: 2.4,
+    minZoom: 2,
+    maxZoom: 8,
+    zoomControl: false,
+    attributionControl: false,
+    worldCopyJump: true
+  });
+
+  L.control.zoom({ position: 'topright' }).addTo(map);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  /* ============================================================= */
+  /* HELPER FUNCTIONS                                               */
+  /* ============================================================= */
+
+  function fmtPop(n) {
+    if (!n) return 'N/A';
+    if (n >= 1e9) return (n/1e9).toFixed(2) + ' billion';
+    if (n >= 1e6) return (n/1e6).toFixed(1) + ' million';
+    if (n >= 1e3) return (n/1e3).toFixed(0) + 'K';
+    return n.toString();
+  }
+
+  function getKnnRank(iso) {
+    const i = KNN_RANKED.indexOf(iso);
+    return i >= 0 ? i + 1 : null;
+  }
+
+  function getCorrRank(iso) {
+    const i = CORR_RANKED.indexOf(iso);
+    return i >= 0 ? i + 1 : null;
+  }
+
+  function getName(iso, geoName) {
+    return NAME_OVERRIDES[iso] || geoName || iso;
+  }
+
+  /* ============================================================= */
+  /* INFO PANEL                                                     */
+  /* ============================================================= */
+
+  const infoEl = document.getElementById('info-panel');
+
+  function updateInfo(iso, geoName) {
+    const name = getName(iso, geoName);
+    const pop = POPULATIONS[iso];
+    const isIceland = iso === 'ISL';
+
+    let metricHtml = '';
+
+    if (currentView === 'knn') {
+      const d = KNN_DATA[iso];
+      if (isIceland) {
+        metricHtml = '<div class="metric highlight">Reference country</div>';
+      } else if (d !== undefined) {
+        const rank = getKnnRank(iso);
+        const pct = Math.round((1 - (d - KNN_MIN) / (KNN_MAX - KNN_MIN)) * 100);
+        metricHtml = `
+          <div class="metric">KNN Distance: <strong>${d.toFixed(3)}</strong></div>
+          <div class="metric-bar"><div style="width:${pct}%"></div></div>
+          <div class="rank">Rank: #${rank} of 30 nearest neighbors</div>`;
+      } else {
+        metricHtml = '<div class="metric muted">Not in top 30 KNN neighbors</div>';
+      }
+    } else if (currentView === 'cluster') {
+      if (isIceland) {
+        metricHtml = '<div class="metric highlight">Reference country — Cluster 0</div>';
+      } else if (CLUSTER_0.has(iso)) {
+        metricHtml = '<div class="metric" style="color:#80cbc4"><strong>Same cluster as Iceland</strong></div><div class="rank">Cluster 0 — Similar inflation trajectory</div>';
+      } else {
+        metricHtml = '<div class="metric muted">Different cluster from Iceland</div>';
+      }
+    } else if (currentView === 'correlation') {
+      const r = CORR_DATA[iso];
+      if (isIceland) {
+        metricHtml = '<div class="metric highlight">Reference country (r = 1.000)</div>';
+      } else if (r !== undefined) {
+        const rank = getCorrRank(iso);
+        const pct = Math.round(((r - CORR_MIN) / (CORR_MAX - CORR_MIN)) * 100);
+        metricHtml = `
+          <div class="metric">Correlation: <strong>r = ${r.toFixed(3)}</strong></div>
+          <div class="metric-bar green"><div style="width:${pct}%"></div></div>
+          <div class="rank">Rank: #${rank} of 30 most correlated</div>`;
+      } else {
+        metricHtml = '<div class="metric muted">Not in top 30 correlated countries</div>';
+      }
+    } else {
+      const s = COMBINED_SCORES[iso];
+      if (isIceland) {
+        metricHtml = '<div class="metric highlight">Reference country</div>';
+      } else if (s !== undefined) {
+        const pct = Math.round((1 - s) * 100);
+        metricHtml = `
+          <div class="metric">Combined Score: <strong>${s.toFixed(3)}</strong></div>
+          <div class="metric-bar red"><div style="width:${pct}%"></div></div>
+          <div class="rank">Lower score = more similar to Iceland</div>
+          ${CONSENSUS_TOP10.has(iso) ? '<div class="badge">Consensus Top 10</div>' : ''}`;
+      } else {
+        metricHtml = '<div class="metric muted">Not scored (insufficient data overlap)</div>';
+      }
+    }
+
+    infoEl.innerHTML = `
+      <h3>${name}</h3>
+      <div class="info-iso">${iso}${isIceland ? ' — REFERENCE' : ''}</div>
+      <div class="info-pop">Population: ${fmtPop(pop)}</div>
+      <hr>
+      ${metricHtml}`;
+  }
+
+  function clearInfo() {
+    infoEl.innerHTML = '<h3>Hover over a country</h3><p class="default-hint">View similarity metrics</p>';
+  }
+
+  /* ============================================================= */
+  /* LEGEND                                                         */
+  /* ============================================================= */
+
+  function updateLegend() {
+    const el = document.getElementById('legend');
+
+    if (currentView === 'cluster') {
+      el.innerHTML = `
+        <div class="legend-title">Cluster Membership (K=3)</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#00897b"></span> Iceland's cluster (${CLUSTER_0.size} countries)</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:${GREY};opacity:0.6"></span> Other clusters</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland (reference)</div>`;
+      return;
+    }
+
+    const configs = {
+      knn: {
+        title: 'KNN Euclidean Distance',
+        min: KNN_MIN.toFixed(1) + ' (most similar)',
+        max: KNN_MAX.toFixed(1),
+        grad: `linear-gradient(to right, ${knnColor(KNN_MIN)}, ${knnColor((KNN_MIN+KNN_MAX)/2)}, ${knnColor(KNN_MAX)})`
+      },
+      correlation: {
+        title: 'Pearson Correlation (r)',
+        min: CORR_MIN.toFixed(2),
+        max: CORR_MAX.toFixed(2) + ' (most similar)',
+        grad: `linear-gradient(to right, ${corrColor(CORR_MIN)}, ${corrColor((CORR_MIN+CORR_MAX)/2)}, ${corrColor(CORR_MAX)})`
+      },
+      combined: {
+        title: 'Combined Similarity Score',
+        min: 'Least similar',
+        max: 'Most similar',
+        grad: `linear-gradient(to right, hsl(0,30%,68%), hsl(0,55%,49%), hsl(0,80%,30%))`
+      }
+    };
+    const c = configs[currentView];
+    el.innerHTML = `
+      <div class="legend-title">${c.title}</div>
+      <div class="legend-gradient" style="background:${c.grad}"></div>
+      <div class="legend-labels"><span>${c.min}</span><span>${c.max}</span></div>
+      <div class="legend-item" style="margin-top:6px"><span class="legend-swatch" style="background:${GREY};opacity:0.5"></span> No data</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland (reference)</div>`;
+  }
+
+  /* ============================================================= */
+  /* METHOD INFO                                                    */
+  /* ============================================================= */
+
+  const METHOD_TEXTS = {
+    knn: 'K-Nearest Neighbors: Euclidean distance on z-score standardized monthly CPI inflation (2000–2024, 300 months). Showing 30 closest countries.',
+    cluster: 'K-Means Clustering (K=3) on standardized CPI. 52 countries share Iceland\'s inflation trajectory cluster.',
+    correlation: 'Pearson correlation of raw monthly CPI inflation (2000–2024). Showing 30 most positively correlated countries.',
+    combined: 'Combined score: average of normalized KNN rank, correlation rank, and cluster membership. Red intensity = overall similarity to Iceland.'
+  };
+
+  function updateMethodInfo() {
+    document.getElementById('method-text').textContent = METHOD_TEXTS[currentView];
+  }
+
+  /* ============================================================= */
+  /* TAB SWITCHING                                                  */
+  /* ============================================================= */
+
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      if (view === currentView) return;
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentView = view;
+      if (geojsonLayer) geojsonLayer.setStyle(f => STYLES[currentView](f));
+      updateLegend();
+      updateMethodInfo();
+      clearInfo();
+    });
+  });
+
+  /* ============================================================= */
+  /* GEOJSON LOADING                                                */
+  /* ============================================================= */
+
+  fetch(GEOJSON_URL)
+    .then(r => r.json())
+    .then(data => {
+      geojsonLayer = L.geoJSON(data, {
+        style: f => STYLES[currentView](f),
+        onEachFeature: (feature, layer) => {
+          const iso = feature.id;
+          if (iso) countryLayers[iso] = layer;
+
+          layer.on('mouseover', e => {
+            const l = e.target;
+            l.setStyle({ weight: 2.5, color: '#ffffff', fillOpacity: Math.min(l.options.fillOpacity + 0.2, 1) });
+            l.bringToFront();
+            updateInfo(iso, feature.properties.name);
+          });
+
+          layer.on('mouseout', e => {
+            geojsonLayer.resetStyle(e.target);
+            clearInfo();
+          });
+
+          layer.on('click', e => {
+            map.fitBounds(e.target.getBounds(), { padding: [60, 60], maxZoom: 6 });
+          });
+
+          // Tooltip with country code on the map
+          const name = getName(iso, feature.properties.name);
+          layer.bindTooltip(name, {
+            sticky: true,
+            className: 'country-tooltip',
+            direction: 'top',
+            offset: [0, -10]
+          });
+        }
+      }).addTo(map);
+
+      // Iceland pulsing marker
+      const icelandIcon = L.divIcon({
+        className: '',
+        html: '<div class="iceland-pin"><div class="ring"></div><div class="ring"></div><div class="core"></div></div>',
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      });
+      L.marker(ICELAND_COORDS, { icon: icelandIcon, zIndexOffset: 1000, interactive: false }).addTo(map);
+
+      // Initialize UI
+      updateLegend();
+      updateMethodInfo();
+
+      // Hide loader
+      setTimeout(() => document.getElementById('loading').classList.add('hidden'), 300);
+    })
+    .catch(err => {
+      document.getElementById('loading').innerHTML =
+        '<div style="color:#ef5350;font-size:1.1rem;font-weight:600;">Failed to load map data</div>' +
+        '<div style="color:rgba(255,255,255,0.4);margin-top:8px;">Please check your internet connection and reload.</div>';
+      console.error('GeoJSON fetch failed:', err);
+    });
+
+  </script>
+</body>
+</html>

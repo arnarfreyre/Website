@@ -165,6 +165,17 @@
         "AI"
       ],
       "icon": "mic"
+    },
+    {
+      "id": "iceland-cpi-analysis",
+      "title": "Iceland CPI Similarity Map",
+      "description": "Interactive world map exploring which countries share the most similar inflation patterns with Iceland. Compares 24 years of monthly CPI data using K-Nearest Neighbors, K-Means clustering, and Pearson correlation across 190+ countries.",
+      "tags": ["Data", "Visualization"],
+      "categories": ["visualization", "interactive"],
+      "path": "Projects/Iceland-CPI-Analysis/index.html",
+      "featured": false,
+      "technologies": ["Leaflet", "JavaScript", "Statistics"],
+      "icon": "chart"
     }
   ]
 }
