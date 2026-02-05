@@ -3,13 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iceland CPI Similarity — World Map</title>
+  <title>Iceland CPI Similarity</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
-    /* ============================================= */
-    /* RESET & BASE                                  */
-    /* ============================================= */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -26,9 +23,7 @@
       z-index: 1;
     }
 
-    /* ============================================= */
-    /* HEADER                                        */
-    /* ============================================= */
+    /* HEADER */
     #header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -44,6 +39,12 @@
       max-width: 1400px;
       margin: 0 auto;
     }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
     .title {
       font-size: 1.2rem;
       font-weight: 700;
@@ -54,14 +55,39 @@
     .subtitle {
       font-size: 0.7rem;
       color: rgba(255,255,255,0.4);
-      margin: 2px 0 10px;
+      margin: 2px 0 0;
       font-weight: 400;
     }
-    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
 
-    /* ============================================= */
-    /* TAB BUTTONS                                   */
-    /* ============================================= */
+    /* PAGE TOGGLE */
+    .page-toggle {
+      display: flex;
+      gap: 4px;
+    }
+    .page-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.55);
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .page-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .page-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    /* VIEW TABS */
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
     .tab {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -105,9 +131,41 @@
       box-shadow: 0 0 20px rgba(239, 83, 80, 0.15);
     }
 
-    /* ============================================= */
-    /* GLASS PANELS                                  */
-    /* ============================================= */
+    /* TOP N ROW */
+    .top-n-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .top-n-label {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.4);
+      margin-right: 4px;
+    }
+    .top-n-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+    .top-n-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .top-n-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* GLASS PANELS */
     .glass-panel {
       position: fixed;
       z-index: 1000;
@@ -123,7 +181,7 @@
       transition: opacity 0.3s ease;
     }
     #info-panel {
-      top: 105px;
+      top: 135px;
       right: 16px;
       width: 270px;
       min-height: 60px;
@@ -151,14 +209,8 @@
       border-top: 1px solid rgba(255,255,255,0.08);
       margin: 8px 0;
     }
-    .metric {
-      font-size: 0.82rem;
-      margin: 4px 0;
-    }
-    .metric strong {
-      color: #fff;
-      font-weight: 600;
-    }
+    .metric { font-size: 0.82rem; margin: 4px 0; }
+    .metric strong { color: #fff; font-weight: 600; }
     .metric.muted { color: rgba(255,255,255,0.35); }
     .metric.highlight { color: #ef5350; font-weight: 600; }
     .metric-bar {
@@ -175,16 +227,9 @@
       background: linear-gradient(90deg, #1565c0, #64b5f6);
       transition: width 0.4s ease;
     }
-    .metric-bar.green div {
-      background: linear-gradient(90deg, #2e7d32, #81c784);
-    }
-    .metric-bar.red div {
-      background: linear-gradient(90deg, #c62828, #ef9a9a);
-    }
-    .rank {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.45);
-    }
+    .metric-bar.green div { background: linear-gradient(90deg, #2e7d32, #81c784); }
+    .metric-bar.red div { background: linear-gradient(90deg, #c62828, #ef9a9a); }
+    .rank { font-size: 0.72rem; color: rgba(255,255,255,0.45); }
     .badge {
       display: inline-block;
       background: rgba(239, 83, 80, 0.2);
@@ -196,62 +241,32 @@
       border-radius: 10px;
       margin-top: 4px;
     }
-    .default-hint {
-      color: rgba(255,255,255,0.3);
-      font-size: 0.78rem;
-    }
+    .default-hint { color: rgba(255,255,255,0.3); font-size: 0.78rem; }
 
-    #legend {
-      bottom: 30px;
-      right: 16px;
-      width: 220px;
-    }
-    .legend-title {
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 8px;
-      color: #fff;
-    }
+    #legend { bottom: 30px; right: 16px; width: 220px; }
+    .legend-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; color: #fff; }
     .legend-gradient {
-      width: 100%;
-      height: 14px;
-      border-radius: 4px;
-      margin: 6px 0 4px;
+      width: 100%; height: 14px; border-radius: 4px; margin: 6px 0 4px;
     }
     .legend-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 6px;
+      display: flex; justify-content: space-between;
+      font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-bottom: 6px;
     }
     .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 4px 0;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.65);
+      display: flex; align-items: center; gap: 8px;
+      margin: 4px 0; font-size: 0.75rem; color: rgba(255,255,255,0.65);
     }
     .legend-swatch {
-      width: 14px; height: 14px;
-      border-radius: 3px;
-      flex-shrink: 0;
+      width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
     #method-info {
-      bottom: 30px;
-      left: 16px;
-      max-width: 320px;
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.45);
-      padding: 12px 16px;
+      bottom: 30px; left: 16px; max-width: 320px;
+      font-size: 0.72rem; color: rgba(255,255,255,0.45); padding: 12px 16px;
     }
 
-    /* ============================================= */
-    /* LEAFLET OVERRIDES                             */
-    /* ============================================= */
+    /* LEAFLET OVERRIDES */
     .leaflet-container { background: #0a0a1a !important; }
     .leaflet-interactive {
       transition: fill 0.35s ease, fill-opacity 0.35s ease, stroke 0.15s ease, stroke-width 0.15s ease;
@@ -266,30 +281,20 @@
       color: #fff !important;
     }
 
-    /* ============================================= */
-    /* ICELAND PULSING MARKER                        */
-    /* ============================================= */
+    /* ICELAND MARKER */
     .iceland-pin {
-      width: 22px; height: 22px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 22px; height: 22px; position: relative;
+      display: flex; align-items: center; justify-content: center;
     }
     .iceland-pin .core {
-      width: 10px; height: 10px;
-      background: #ff4444;
-      border-radius: 50%;
-      border: 2px solid #fff;
+      width: 10px; height: 10px; background: #ff4444;
+      border-radius: 50%; border: 2px solid #fff;
       box-shadow: 0 0 12px rgba(255, 68, 68, 0.6);
-      z-index: 2;
-      position: relative;
+      z-index: 2; position: relative;
     }
     .iceland-pin .ring {
-      position: absolute;
-      border: 2px solid rgba(255, 68, 68, 0.5);
-      border-radius: 50%;
-      top: 50%; left: 50%;
+      position: absolute; border: 2px solid rgba(255, 68, 68, 0.5);
+      border-radius: 50%; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       animation: pulse-ring 2.5s ease-out infinite;
     }
@@ -299,9 +304,7 @@
       100% { width: 50px; height: 50px; opacity: 0; }
     }
 
-    /* ============================================= */
-    /* COUNTRY TOOLTIP (Leaflet tooltip override)    */
-    /* ============================================= */
+    /* TOOLTIP */
     .country-tooltip {
       background: rgba(12, 14, 30, 0.92) !important;
       border: 1px solid rgba(255,255,255,0.12) !important;
@@ -314,19 +317,12 @@
     }
     .country-tooltip::before { display: none !important; }
 
-    /* ============================================= */
-    /* LOADING STATE                                 */
-    /* ============================================= */
+    /* LOADING */
     #loading {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 2000;
-      background: #0f0f23;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 16px;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 2000; background: #0f0f23;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
       transition: opacity 0.6s ease;
     }
     #loading.hidden { opacity: 0; pointer-events: none; }
@@ -339,6 +335,72 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loader-text { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+
+    /* DATA PAGE */
+    #data-page {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      background: #0f0f23;
+      overflow-y: auto;
+      padding: 140px 24px 40px;
+      display: none;
+    }
+    .data-container { max-width: 1200px; margin: 0 auto; }
+    .data-summary {
+      background: rgba(12, 14, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      font-size: 0.82rem;
+    }
+    .summary-stat { text-align: center; }
+    .summary-stat .value {
+      font-size: 1.4rem; font-weight: 700; color: #fff;
+    }
+    .summary-stat .label {
+      font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 2px;
+    }
+    .data-controls { margin-bottom: 12px; }
+    #search-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e0e0e0;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      width: 300px;
+      font-family: inherit;
+      outline: none;
+    }
+    #search-input:focus { border-color: rgba(255, 255, 255, 0.25); }
+    #search-input::placeholder { color: rgba(255,255,255,0.3); }
+    .table-wrapper { overflow-x: auto; }
+    #data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    #data-table th {
+      position: sticky; top: 0;
+      background: rgba(12, 14, 30, 0.95);
+      padding: 10px 12px; text-align: left;
+      font-weight: 600; color: rgba(255,255,255,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer; user-select: none; white-space: nowrap;
+    }
+    #data-table th:hover { color: #fff; }
+    .sort-icon::after { content: ''; }
+    .sort-asc .sort-icon::after { content: ' \25B2'; font-size: 0.6rem; }
+    .sort-desc .sort-icon::after { content: ' \25BC'; font-size: 0.6rem; }
+    #data-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.75);
+    }
+    #data-table tr:hover td { background: rgba(255, 255, 255, 0.04); }
+    #data-table tr.cluster-match td { background: rgba(0, 150, 136, 0.08); }
+    #data-table tr.cluster-match td:nth-child(8) { color: #80cbc4; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -350,18 +412,62 @@
 
   <header id="header">
     <div class="header-content">
-      <h1 class="title"><span>Iceland</span> CPI Similarity — World Map</h1>
-      <p class="subtitle">K-Nearest Neighbors, Clustering & Correlation Analysis (2000–2024)</p>
-      <nav class="tabs">
+      <div class="header-top">
+        <div>
+          <h1 class="title"><span>Iceland</span> CPI Similarity</h1>
+          <p class="subtitle">K-Nearest Neighbors, Clustering & Correlation Analysis</p>
+        </div>
+        <nav class="page-toggle">
+          <button class="page-btn active" data-page="map">Map</button>
+          <button class="page-btn" data-page="data">Data Table</button>
+        </nav>
+      </div>
+      <nav class="tabs" id="view-tabs">
         <button class="tab active" data-view="knn">KNN Distance</button>
         <button class="tab" data-view="cluster">Clustering</button>
         <button class="tab" data-view="correlation">Correlation</button>
         <button class="tab" data-view="combined">Combined</button>
       </nav>
+      <nav class="top-n-row" id="top-n-row">
+        <span class="top-n-label">Show top:</span>
+        <button class="top-n-btn" data-n="5">5</button>
+        <button class="top-n-btn" data-n="10">10</button>
+        <button class="top-n-btn" data-n="20">20</button>
+        <button class="top-n-btn active" data-n="30">30</button>
+        <button class="top-n-btn" data-n="0">All</button>
+      </nav>
     </div>
   </header>
 
   <div id="map"></div>
+
+  <div id="data-page">
+    <div class="data-container">
+      <div class="data-summary" id="data-summary"></div>
+      <div class="data-controls">
+        <input type="text" id="search-input" placeholder="Search countries...">
+      </div>
+      <div class="table-wrapper">
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th data-col="overall_rank" class="sortable sort-asc">Rank <span class="sort-icon"></span></th>
+              <th data-col="name" class="sortable">Country <span class="sort-icon"></span></th>
+              <th data-col="iso" class="sortable">ISO <span class="sort-icon"></span></th>
+              <th data-col="knn_rank" class="sortable">KNN Rank <span class="sort-icon"></span></th>
+              <th data-col="knn_dist" class="sortable">KNN Dist <span class="sort-icon"></span></th>
+              <th data-col="corr_rank" class="sortable">Corr Rank <span class="sort-icon"></span></th>
+              <th data-col="corr" class="sortable">Correlation <span class="sort-icon"></span></th>
+              <th data-col="same_cluster" class="sortable">Cluster <span class="sort-icon"></span></th>
+              <th data-col="combined" class="sortable">Combined <span class="sort-icon"></span></th>
+              <th data-col="methods_top30" class="sortable">Top30 <span class="sort-icon"></span></th>
+            </tr>
+          </thead>
+          <tbody id="data-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <div id="info-panel" class="glass-panel">
     <h3>Hover over a country</h3>
@@ -378,226 +484,119 @@
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
-  /* ============================================================= */
-  /* DATA CONSTANTS                                                 */
-  /* ============================================================= */
+  /* DATA — injected by generate_map.py */
+  const ANALYSIS_DATA = {"metadata":{"window_start":"2000-M01","window_end":"2024-M12","n_months":300,"coverage_threshold":270,"n_countries":143,"optimal_k":3,"silhouette_score":0.1208,"isl_cluster":0,"isl_cluster_size":52},"populations":{"AFG":42240000,"ALB":2780000,"DZA":45610000,"AND":80000,"AGO":36680000,"ATG":100000,"ARG":46650000,"ARM":2780000,"AUS":26640000,"AUT":9160000,"AZE":10410000,"BHS":410000,"BHR":1530000,"BGD":172950000,"BRB":282000,"BLR":9200000,"BEL":11690000,"BLZ":410000,"BEN":13710000,"BTN":790000,"BOL":12290000,"BIH":3210000,"BWA":2630000,"BRA":216420000,"BRN":452000,"BGR":6520000,"BFA":22670000,"BDI":13240000,"KHM":17170000,"CMR":28650000,"CAN":39740000,"CPV":599000,"CAF":5740000,"TCD":18280000,"CHL":19620000,"CHN":1412000000,"COL":52090000,"COM":852000,"COG":6110000,"COD":102260000,"CRI":5210000,"CIV":28870000,"HRV":3860000,"CUB":11190000,"CYP":1260000,"CZE":10900000,"DNK":5960000,"DJI":1140000,"DMA":72000,"DOM":11330000,"ECU":18190000,"EGY":112720000,"SLV":6360000,"GNQ":1740000,"ERI":3680000,"EST":1360000,"SWZ":1210000,"ETH":126530000,"FJI":936000,"FIN":5560000,"FRA":68170000,"GAB":2440000,"GMB":2700000,"GEO":3730000,"DEU":84480000,"GHA":34120000,"GRC":10340000,"GRD":126000,"GTM":18090000,"GIN":14190000,"GNB":2150000,"GUY":813000,"HTI":11720000,"HND":10430000,"HKG":7490000,"HUN":9600000,"ISL":376000,"IND":1429000000,"IDN":277530000,"IRN":88550000,"IRQ":44500000,"IRL":5260000,"ISR":9750000,"ITA":58870000,"JAM":2830000,"JPN":123290000,"JOR":11340000,"KAZ":19620000,"KEN":55100000,"KIR":132000,"KWT":4310000,"KGZ":7100000,"LAO":7530000,"LVA":1830000,"LBN":5490000,"LSO":2330000,"LBR":5420000,"LBY":7130000,"LIE":40000,"LTU":2790000,"LUX":668000,"MAC":704000,"MDG":30330000,"MWI":20930000,"MYS":34310000,"MDV":523000,"MLI":22590000,"MLT":535000,"MHL":42000,"MRT":4870000,"MUS":1310000,"MEX":129390000,"FSM":113000,"MDA":2540000,"MCO":39000,"MNG":3400000,"MNE":620000,"MAR":37840000,"MOZ":33900000,"MMR":54410000,"NAM":2600000,"NRU":13000,"NPL":30900000,"NLD":17880000,"NZL":5220000,"NIC":7050000,"NER":26210000,"NGA":223800000,"PRK":26160000,"MKD":1830000,"NOR":5550000,"OMN":4600000,"PAK":231400000,"PLW":18000,"PAN":4410000,"PNG":10330000,"PRY":6860000,"PER":34050000,"PHL":117340000,"POL":36820000,"PRT":10250000,"QAT":2690000,"ROU":19060000,"RUS":143400000,"RWA":14090000,"KNA":48000,"LCA":184000,"VCT":101000,"WSM":225000,"SMR":33000,"STP":228000,"SAU":36410000,"SEN":17920000,"SRB":6650000,"SYC":100000,"SLE":8610000,"SGP":5920000,"SVK":5430000,"SVN":2110000,"SLB":740000,"SOM":18140000,"ZAF":60410000,"KOR":51780000,"SSD":11090000,"ESP":48400000,"LKA":22160000,"SDN":48110000,"SUR":620000,"SWE":10550000,"CHE":8850000,"SYR":23230000,"TWN":23570000,"TJK":10260000,"TZA":67440000,"THA":71800000,"TLS":1340000,"TGO":8850000,"TON":107000,"TTO":1530000,"TUN":12460000,"TUR":85280000,"TKM":6520000,"TUV":11000,"UGA":48580000,"UKR":37000000,"ARE":9440000,"GBR":67740000,"USA":334000000,"URY":3420000,"UZB":35650000,"VUT":330000,"VEN":28440000,"VNM":100350000,"YEM":34450000,"ZMB":20570000,"ZWE":16320000,"PSE":5370000,"XKX":1780000},"name_overrides":{"STP":"Sao Tome and Principe","KOR":"South Korea","MKD":"North Macedonia","CPV":"Cape Verde","VCT":"St. Vincent & Grenadines","BHS":"Bahamas","KNA":"St. Kitts and Nevis","GRD":"Grenada","DMA":"Dominica","BRB":"Barbados","TTO":"Trinidad and Tobago","HKG":"Hong Kong","MAC":"Macau","ISL":"Iceland","USA":"United States","GBR":"United Kingdom","ARE":"United Arab Emirates","PRK":"North Korea","COD":"DR Congo","COG":"Republic of the Congo","CIV":"Cote d'Ivoire","PSE":"Palestine","SSD":"South Sudan","TLS":"Timor-Leste"},"countries":{"AGO":{"knn_dist":24.796,"knn_rank":136,"corr":-0.0281,"corr_rank":136,"cluster":1,"same_cluster":false,"combined":0.9718,"overall_rank":137,"methods_top30":0},"ALB":{"knn_dist":19.558,"knn_rank":78,"corr":0.3604,"corr_rank":78,"cluster":2,"same_cluster":false,"combined":0.6995,"overall_rank":101,"methods_top30":0},"ARM":{"knn_dist":20.966,"knn_rank":99,"corr":0.2649,"corr_rank":99,"cluster":0,"same_cluster":true,"combined":0.4648,"overall_rank":57,"methods_top30":1},"ATG":{"knn_dist":19.758,"knn_rank":84,"corr":0.3472,"corr_rank":84,"cluster":2,"same_cluster":false,"combined":0.7277,"overall_rank":105,"methods_top30":0},"AUT":{"knn_dist":19.437,"knn_rank":75,"corr":0.3682,"corr_rank":75,"cluster":2,"same_cluster":false,"combined":0.6854,"overall_rank":98,"methods_top30":0},"AZE":{"knn_dist":20.424,"knn_rank":92,"corr":0.3025,"corr_rank":92,"cluster":0,"same_cluster":true,"combined":0.4319,"overall_rank":47,"methods_top30":1},"BDI":{"knn_dist":17.982,"knn_rank":42,"corr":0.4593,"corr_rank":42,"cluster":2,"same_cluster":false,"combined":0.5305,"overall_rank":72,"methods_top30":0},"BEL":{"knn_dist":19.435,"knn_rank":74,"corr":0.3683,"corr_rank":74,"cluster":2,"same_cluster":false,"combined":0.6808,"overall_rank":97,"methods_top30":0},"BEN":{"knn_dist":20.277,"knn_rank":89,"corr":0.3125,"corr_rank":89,"cluster":0,"same_cluster":true,"combined":0.4178,"overall_rank":44,"methods_top30":1},"BFA":{"knn_dist":17.362,"knn_rank":23,"corr":0.4959,"corr_rank":23,"cluster":2,"same_cluster":false,"combined":0.4413,"overall_rank":50,"methods_top30":2},"BGD":{"knn_dist":22.949,"knn_rank":124,"corr":0.1193,"corr_rank":124,"cluster":0,"same_cluster":true,"combined":0.5822,"overall_rank":81,"methods_top30":1},"BGR":{"knn_dist":16.675,"knn_rank":15,"corr":0.535,"corr_rank":15,"cluster":2,"same_cluster":false,"combined":0.4038,"overall_rank":41,"methods_top30":2},"BHS":{"knn_dist":17.06,"knn_rank":17,"corr":0.5133,"corr_rank":17,"cluster":2,"same_cluster":false,"combined":0.4131,"overall_rank":43,"methods_top30":2},"BLR":{"knn_dist":23.884,"knn_rank":130,"corr":0.0461,"corr_rank":130,"cluster":1,"same_cluster":false,"combined":0.9437,"overall_rank":132,"methods_top30":0},"BOL":{"knn_dist":21.114,"knn_rank":101,"corr":0.2545,"corr_rank":101,"cluster":0,"same_cluster":true,"combined":0.4742,"overall_rank":59,"methods_top30":1},"BRA":{"knn_dist":26.249,"knn_rank":141,"corr":-0.1522,"corr_rank":141,"cluster":1,"same_cluster":false,"combined":0.9953,"overall_rank":141,"methods_top30":0},"BRB":{"knn_dist":18.768,"knn_rank":61,"corr":0.4109,"corr_rank":61,"cluster":0,"same_cluster":true,"combined":0.2864,"overall_rank":23,"methods_top30":1},"BWA":{"knn_dist":16.592,"knn_rank":13,"corr":0.5397,"corr_rank":13,"cluster":0,"same_cluster":true,"combined":0.061,"overall_rank":5,"methods_top30":3},"CAF":{"knn_dist":22.352,"knn_rank":116,"corr":0.1645,"corr_rank":116,"cluster":0,"same_cluster":true,"combined":0.5446,"overall_rank":75,"methods_top30":1},"CAN":{"knn_dist":22.069,"knn_rank":112,"corr":0.1856,"corr_rank":112,"cluster":2,"same_cluster":false,"combined":0.8592,"overall_rank":120,"methods_top30":0},"CHE":{"knn_dist":18.477,"knn_rank":52,"corr":0.4291,"corr_rank":52,"cluster":2,"same_cluster":false,"combined":0.5775,"overall_rank":80,"methods_top30":0},"CHL":{"knn_dist":19.133,"knn_rank":70,"corr":0.3878,"corr_rank":70,"cluster":2,"same_cluster":false,"combined":0.662,"overall_rank":93,"methods_top30":0},"CHN":{"knn_dist":25.476,"knn_rank":140,"corr":-0.0854,"corr_rank":140,"cluster":0,"same_cluster":true,"combined":0.6573,"overall_rank":92,"methods_top30":1},"CIV":{"knn_dist":17.88,"knn_rank":39,"corr":0.4654,"corr_rank":39,"cluster":2,"same_cluster":false,"combined":0.5164,"overall_rank":68,"methods_top30":0},"CMR":{"knn_dist":15.177,"knn_rank":5,"corr":0.6148,"corr_rank":5,"cluster":2,"same_cluster":false,"combined":0.3568,"overall_rank":31,"methods_top30":2},"COG":{"knn_dist":18.696,"knn_rank":59,"corr":0.4155,"corr_rank":59,"cluster":0,"same_cluster":true,"combined":0.277,"overall_rank":21,"methods_top30":1},"COL":{"knn_dist":19.548,"knn_rank":76,"corr":0.361,"corr_rank":76,"cluster":1,"same_cluster":false,"combined":0.6901,"overall_rank":99,"methods_top30":0},"CPV":{"knn_dist":16.146,"knn_rank":11,"corr":0.5641,"corr_rank":11,"cluster":2,"same_cluster":false,"combined":0.385,"overall_rank":37,"methods_top30":2},"CRI":{"knn_dist":19.077,"knn_rank":69,"corr":0.3914,"corr_rank":69,"cluster":0,"same_cluster":true,"combined":0.3239,"overall_rank":28,"methods_top30":1},"CYP":{"knn_dist":18.616,"knn_rank":55,"corr":0.4205,"corr_rank":55,"cluster":2,"same_cluster":false,"combined":0.5915,"overall_rank":85,"methods_top30":0},"CZE":{"knn_dist":17.849,"knn_rank":38,"corr":0.4672,"corr_rank":38,"cluster":2,"same_cluster":false,"combined":0.5117,"overall_rank":67,"methods_top30":0},"DEU":{"knn_dist":19.311,"knn_rank":72,"corr":0.3764,"corr_rank":72,"cluster":2,"same_cluster":false,"combined":0.6714,"overall_rank":95,"methods_top30":0},"DMA":{"knn_dist":18.078,"knn_rank":44,"corr":0.4535,"corr_rank":44,"cluster":0,"same_cluster":true,"combined":0.2066,"overall_rank":14,"methods_top30":1},"DNK":{"knn_dist":17.631,"knn_rank":30,"corr":0.4802,"corr_rank":30,"cluster":2,"same_cluster":false,"combined":0.4742,"overall_rank":60,"methods_top30":2},"DOM":{"knn_dist":25.401,"knn_rank":138,"corr":-0.0789,"corr_rank":138,"cluster":1,"same_cluster":false,"combined":0.9812,"overall_rank":139,"methods_top30":0},"DZA":{"knn_dist":20.561,"knn_rank":95,"corr":0.293,"corr_rank":95,"cluster":2,"same_cluster":false,"combined":0.7793,"overall_rank":110,"methods_top30":0},"ECU":{"knn_dist":23.491,"knn_rank":128,"corr":0.0772,"corr_rank":128,"cluster":1,"same_cluster":false,"combined":0.9343,"overall_rank":131,"methods_top30":0},"EGY":{"knn_dist":21.643,"knn_rank":108,"corr":0.2167,"corr_rank":108,"cluster":2,"same_cluster":false,"combined":0.8404,"overall_rank":117,"methods_top30":0},"ESP":{"knn_dist":20.135,"knn_rank":88,"corr":0.3221,"corr_rank":88,"cluster":2,"same_cluster":false,"combined":0.7465,"overall_rank":108,"methods_top30":0},"EST":{"knn_dist":17.773,"knn_rank":35,"corr":0.4718,"corr_rank":35,"cluster":2,"same_cluster":false,"combined":0.4977,"overall_rank":63,"methods_top30":0},"ETH":{"knn_dist":18.644,"knn_rank":57,"corr":0.4187,"corr_rank":57,"cluster":0,"same_cluster":true,"combined":0.2676,"overall_rank":20,"methods_top30":1},"FIN":{"knn_dist":17.488,"knn_rank":27,"corr":0.4886,"corr_rank":27,"cluster":2,"same_cluster":false,"combined":0.4601,"overall_rank":56,"methods_top30":2},"FJI":{"knn_dist":20.638,"knn_rank":96,"corr":0.2877,"corr_rank":96,"cluster":0,"same_cluster":true,"combined":0.4507,"overall_rank":53,"methods_top30":1},"FRA":{"knn_dist":19.025,"knn_rank":67,"corr":0.3947,"corr_rank":67,"cluster":2,"same_cluster":false,"combined":0.6479,"overall_rank":90,"methods_top30":0},"GAB":{"knn_dist":21.859,"knn_rank":110,"corr":0.201,"corr_rank":110,"cluster":0,"same_cluster":true,"combined":0.5164,"overall_rank":69,"methods_top30":1},"GBR":{"knn_dist":17.448,"knn_rank":25,"corr":0.4909,"corr_rank":25,"cluster":2,"same_cluster":false,"combined":0.4507,"overall_rank":54,"methods_top30":2},"GEO":{"knn_dist":22.973,"knn_rank":125,"corr":0.1174,"corr_rank":125,"cluster":0,"same_cluster":true,"combined":0.5869,"overall_rank":83,"methods_top30":1},"GHA":{"knn_dist":21.452,"knn_rank":106,"corr":0.2304,"corr_rank":106,"cluster":1,"same_cluster":false,"combined":0.831,"overall_rank":116,"methods_top30":0},"GMB":{"knn_dist":25.448,"knn_rank":139,"corr":-0.0829,"corr_rank":139,"cluster":1,"same_cluster":false,"combined":0.9859,"overall_rank":140,"methods_top30":0},"GNB":{"knn_dist":18.523,"knn_rank":54,"corr":0.4263,"corr_rank":54,"cluster":2,"same_cluster":false,"combined":0.5869,"overall_rank":84,"methods_top30":0},"GNQ":{"knn_dist":19.894,"knn_rank":86,"corr":0.3382,"corr_rank":86,"cluster":1,"same_cluster":false,"combined":0.7371,"overall_rank":106,"methods_top30":0},"GRC":{"knn_dist":18.423,"knn_rank":50,"corr":0.4324,"corr_rank":50,"cluster":2,"same_cluster":false,"combined":0.5681,"overall_rank":79,"methods_top30":0},"GRD":{"knn_dist":18.948,"knn_rank":66,"corr":0.3996,"corr_rank":66,"cluster":0,"same_cluster":true,"combined":0.3099,"overall_rank":27,"methods_top30":1},"GTM":{"knn_dist":18.914,"knn_rank":65,"corr":0.4018,"corr_rank":65,"cluster":0,"same_cluster":true,"combined":0.3052,"overall_rank":26,"methods_top30":1},"GUY":{"knn_dist":20.521,"knn_rank":94,"corr":0.2958,"corr_rank":94,"cluster":0,"same_cluster":true,"combined":0.4413,"overall_rank":51,"methods_top30":1},"HKG":{"knn_dist":24.129,"knn_rank":131,"corr":0.0264,"corr_rank":131,"cluster":0,"same_cluster":true,"combined":0.615,"overall_rank":88,"methods_top30":1},"HND":{"knn_dist":17.803,"knn_rank":36,"corr":0.47,"corr_rank":36,"cluster":1,"same_cluster":false,"combined":0.5023,"overall_rank":64,"methods_top30":0},"HRV":{"knn_dist":15.916,"knn_rank":8,"corr":0.5764,"corr_rank":8,"cluster":2,"same_cluster":false,"combined":0.3709,"overall_rank":33,"methods_top30":2},"HTI":{"knn_dist":22.787,"knn_rank":121,"corr":0.1317,"corr_rank":121,"cluster":2,"same_cluster":false,"combined":0.9014,"overall_rank":126,"methods_top30":0},"HUN":{"knn_dist":18.077,"knn_rank":43,"corr":0.4535,"corr_rank":43,"cluster":2,"same_cluster":false,"combined":0.5352,"overall_rank":73,"methods_top30":0},"IDN":{"knn_dist":21.507,"knn_rank":107,"corr":0.2265,"corr_rank":107,"cluster":0,"same_cluster":true,"combined":0.5023,"overall_rank":65,"methods_top30":1},"IND":{"knn_dist":18.86,"knn_rank":62,"corr":0.4052,"corr_rank":62,"cluster":0,"same_cluster":true,"combined":0.2911,"overall_rank":24,"methods_top30":1},"IRL":{"knn_dist":21.745,"knn_rank":109,"corr":0.2093,"corr_rank":109,"cluster":2,"same_cluster":false,"combined":0.8451,"overall_rank":118,"methods_top30":0},"IRN":{"knn_dist":21.368,"knn_rank":103,"corr":0.2364,"corr_rank":103,"cluster":2,"same_cluster":false,"combined":0.8169,"overall_rank":114,"methods_top30":0},"ISR":{"knn_dist":15.872,"knn_rank":7,"corr":0.5787,"corr_rank":7,"cluster":2,"same_cluster":false,"combined":0.3662,"overall_rank":32,"methods_top30":2},"ITA":{"knn_dist":18.252,"knn_rank":47,"corr":0.4429,"corr_rank":47,"cluster":2,"same_cluster":false,"combined":0.554,"overall_rank":77,"methods_top30":0},"JAM":{"knn_dist":17.611,"knn_rank":29,"corr":0.4814,"corr_rank":29,"cluster":0,"same_cluster":true,"combined":0.1362,"overall_rank":10,"methods_top30":3},"JOR":{"knn_dist":18.298,"knn_rank":48,"corr":0.4401,"corr_rank":48,"cluster":0,"same_cluster":true,"combined":0.2254,"overall_rank":16,"methods_top30":1},"JPN":{"knn_dist":23.026,"knn_rank":126,"corr":0.1134,"corr_rank":126,"cluster":2,"same_cluster":false,"combined":0.9249,"overall_rank":129,"methods_top30":0},"KAZ":{"knn_dist":25.08,"knn_rank":137,"corr":-0.0518,"corr_rank":137,"cluster":1,"same_cluster":false,"combined":0.9765,"overall_rank":138,"methods_top30":0},"KEN":{"knn_dist":18.45,"knn_rank":51,"corr":0.4307,"corr_rank":51,"cluster":0,"same_cluster":true,"combined":0.2394,"overall_rank":18,"methods_top30":1},"KGZ":{"knn_dist":18.738,"knn_rank":60,"corr":0.4128,"corr_rank":60,"cluster":0,"same_cluster":true,"combined":0.2817,"overall_rank":22,"methods_top30":1},"KHM":{"knn_dist":20.646,"knn_rank":97,"corr":0.2872,"corr_rank":97,"cluster":0,"same_cluster":true,"combined":0.4554,"overall_rank":55,"methods_top30":1},"KNA":{"knn_dist":17.681,"knn_rank":31,"corr":0.4772,"corr_rank":31,"cluster":0,"same_cluster":true,"combined":0.1455,"overall_rank":11,"methods_top30":1},"KOR":{"knn_dist":16.523,"knn_rank":12,"corr":0.5434,"corr_rank":12,"cluster":2,"same_cluster":false,"combined":0.3897,"overall_rank":38,"methods_top30":2},"KWT":{"knn_dist":16.118,"knn_rank":10,"corr":0.5656,"corr_rank":10,"cluster":0,"same_cluster":true,"combined":0.0469,"overall_rank":4,"methods_top30":3},"LAO":{"knn_dist":21.206,"knn_rank":102,"corr":0.248,"corr_rank":102,"cluster":1,"same_cluster":false,"combined":0.8122,"overall_rank":113,"methods_top30":0},"LCA":{"knn_dist":18.905,"knn_rank":64,"corr":0.4023,"corr_rank":64,"cluster":2,"same_cluster":false,"combined":0.6338,"overall_rank":89,"methods_top30":0},"LKA":{"knn_dist":18.683,"knn_rank":58,"corr":0.4163,"corr_rank":58,"cluster":2,"same_cluster":false,"combined":0.6056,"overall_rank":86,"methods_top30":0},"LTU":{"knn_dist":16.074,"knn_rank":9,"corr":0.5679,"corr_rank":9,"cluster":2,"same_cluster":false,"combined":0.3756,"overall_rank":35,"methods_top30":2},"LUX":{"knn_dist":19.555,"knn_rank":77,"corr":0.3605,"corr_rank":77,"cluster":2,"same_cluster":false,"combined":0.6948,"overall_rank":100,"methods_top30":0},"LVA":{"knn_dist":16.609,"knn_rank":14,"corr":0.5387,"corr_rank":14,"cluster":2,"same_cluster":false,"combined":0.3991,"overall_rank":39,"methods_top30":2},"MAC":{"knn_dist":23.577,"knn_rank":129,"corr":0.0705,"corr_rank":129,"cluster":0,"same_cluster":true,"combined":0.6056,"overall_rank":87,"methods_top30":1},"MAR":{"knn_dist":17.888,"knn_rank":40,"corr":0.4649,"corr_rank":40,"cluster":2,"same_cluster":false,"combined":0.5211,"overall_rank":70,"methods_top30":0},"MDA":{"knn_dist":22.135,"knn_rank":114,"corr":0.1807,"corr_rank":114,"cluster":1,"same_cluster":false,"combined":0.8685,"overall_rank":122,"methods_top30":0},"MDG":{"knn_dist":22.314,"knn_rank":115,"corr":0.1674,"corr_rank":115,"cluster":0,"same_cluster":true,"combined":0.5399,"overall_rank":74,"methods_top30":1},"MDV":{"knn_dist":18.379,"knn_rank":49,"corr":0.4352,"corr_rank":49,"cluster":0,"same_cluster":true,"combined":0.23,"overall_rank":17,"methods_top30":1},"MEX":{"knn_dist":19.732,"knn_rank":83,"corr":0.3489,"corr_rank":83,"cluster":1,"same_cluster":false,"combined":0.723,"overall_rank":104,"methods_top30":0},"MKD":{"knn_dist":17.529,"knn_rank":28,"corr":0.4862,"corr_rank":28,"cluster":2,"same_cluster":false,"combined":0.4648,"overall_rank":58,"methods_top30":2},"MLI":{"knn_dist":16.747,"knn_rank":16,"corr":0.531,"corr_rank":16,"cluster":2,"same_cluster":false,"combined":0.4085,"overall_rank":42,"methods_top30":2},"MLT":{"knn_dist":14.858,"knn_rank":3,"corr":0.6308,"corr_rank":3,"cluster":2,"same_cluster":false,"combined":0.3474,"overall_rank":29,"methods_top30":2},"MNG":{"knn_dist":17.278,"knn_rank":19,"corr":0.5008,"corr_rank":19,"cluster":0,"same_cluster":true,"combined":0.0892,"overall_rank":7,"methods_top30":3},"MRT":{"knn_dist":22.681,"knn_rank":120,"corr":0.1397,"corr_rank":120,"cluster":0,"same_cluster":true,"combined":0.5634,"overall_rank":78,"methods_top30":1},"MUS":{"knn_dist":17.355,"knn_rank":22,"corr":0.4963,"corr_rank":22,"cluster":2,"same_cluster":false,"combined":0.4366,"overall_rank":48,"methods_top30":2},"MWI":{"knn_dist":24.542,"knn_rank":133,"corr":-0.0072,"corr_rank":133,"cluster":1,"same_cluster":false,"combined":0.9577,"overall_rank":134,"methods_top30":0},"MYS":{"knn_dist":20.285,"knn_rank":90,"corr":0.3119,"corr_rank":90,"cluster":0,"same_cluster":true,"combined":0.4225,"overall_rank":45,"methods_top30":1},"NER":{"knn_dist":18.869,"knn_rank":63,"corr":0.4046,"corr_rank":63,"cluster":0,"same_cluster":true,"combined":0.2958,"overall_rank":25,"methods_top30":1},"NGA":{"knn_dist":22.55,"knn_rank":118,"corr":0.1497,"corr_rank":118,"cluster":1,"same_cluster":false,"combined":0.8873,"overall_rank":124,"methods_top30":0},"NIC":{"knn_dist":17.333,"knn_rank":21,"corr":0.4976,"corr_rank":21,"cluster":0,"same_cluster":true,"combined":0.0986,"overall_rank":8,"methods_top30":3},"NLD":{"knn_dist":19.625,"knn_rank":81,"corr":0.356,"corr_rank":81,"cluster":2,"same_cluster":false,"combined":0.7136,"overall_rank":102,"methods_top30":0},"NOR":{"knn_dist":19.633,"knn_rank":82,"corr":0.3554,"corr_rank":82,"cluster":2,"same_cluster":false,"combined":0.7183,"overall_rank":103,"methods_top30":0},"NPL":{"knn_dist":20.52,"knn_rank":93,"corr":0.2959,"corr_rank":93,"cluster":0,"same_cluster":true,"combined":0.4366,"overall_rank":49,"methods_top30":1},"PAN":{"knn_dist":18.171,"knn_rank":46,"corr":0.4478,"corr_rank":46,"cluster":0,"same_cluster":true,"combined":0.216,"overall_rank":15,"methods_top30":1},"PER":{"knn_dist":19.378,"knn_rank":73,"corr":0.3721,"corr_rank":73,"cluster":2,"same_cluster":false,"combined":0.6761,"overall_rank":96,"methods_top30":0},"PHL":{"knn_dist":15.386,"knn_rank":6,"corr":0.6041,"corr_rank":6,"cluster":0,"same_cluster":true,"combined":0.0282,"overall_rank":3,"methods_top30":3},"POL":{"knn_dist":17.815,"knn_rank":37,"corr":0.4692,"corr_rank":37,"cluster":2,"same_cluster":false,"combined":0.507,"overall_rank":66,"methods_top30":0},"PRT":{"knn_dist":20.812,"knn_rank":98,"corr":0.2757,"corr_rank":98,"cluster":2,"same_cluster":false,"combined":0.7934,"overall_rank":111,"methods_top30":0},"PRY":{"knn_dist":22.88,"knn_rank":122,"corr":0.1246,"corr_rank":122,"cluster":1,"same_cluster":false,"combined":0.9061,"overall_rank":127,"methods_top30":0},"ROU":{"knn_dist":22.105,"knn_rank":113,"corr":0.1829,"corr_rank":113,"cluster":1,"same_cluster":false,"combined":0.8638,"overall_rank":121,"methods_top30":0},"RUS":{"knn_dist":21.034,"knn_rank":100,"corr":0.2602,"corr_rank":100,"cluster":1,"same_cluster":false,"combined":0.8028,"overall_rank":112,"methods_top30":0},"RWA":{"knn_dist":17.292,"knn_rank":20,"corr":0.5,"corr_rank":20,"cluster":2,"same_cluster":false,"combined":0.4272,"overall_rank":46,"methods_top30":2},"SAU":{"knn_dist":17.717,"knn_rank":34,"corr":0.4751,"corr_rank":34,"cluster":0,"same_cluster":true,"combined":0.1596,"overall_rank":13,"methods_top30":1},"SDN":{"knn_dist":24.728,"knn_rank":135,"corr":-0.0226,"corr_rank":135,"cluster":2,"same_cluster":false,"combined":0.9671,"overall_rank":136,"methods_top30":0},"SEN":{"knn_dist":18.511,"knn_rank":53,"corr":0.427,"corr_rank":53,"cluster":2,"same_cluster":false,"combined":0.5822,"overall_rank":82,"methods_top30":0},"SGP":{"knn_dist":17.4,"knn_rank":24,"corr":0.4937,"corr_rank":24,"cluster":2,"same_cluster":false,"combined":0.446,"overall_rank":52,"methods_top30":2},"SLB":{"knn_dist":17.46,"knn_rank":26,"corr":0.4902,"corr_rank":26,"cluster":0,"same_cluster":true,"combined":0.1221,"overall_rank":9,"methods_top30":3},"SLV":{"knn_dist":18.103,"knn_rank":45,"corr":0.452,"corr_rank":45,"cluster":2,"same_cluster":false,"combined":0.5446,"overall_rank":76,"methods_top30":0},"SRB":{"knn_dist":22.584,"knn_rank":119,"corr":0.1471,"corr_rank":119,"cluster":1,"same_cluster":false,"combined":0.892,"overall_rank":125,"methods_top30":0},"STP":{"knn_dist":12.809,"knn_rank":1,"corr":0.7256,"corr_rank":1,"cluster":0,"same_cluster":true,"combined":0.0047,"overall_rank":1,"methods_top30":3},"SUR":{"knn_dist":24.352,"knn_rank":132,"corr":0.0083,"corr_rank":132,"cluster":1,"same_cluster":false,"combined":0.9531,"overall_rank":133,"methods_top30":0},"SVK":{"knn_dist":19.897,"knn_rank":87,"corr":0.338,"corr_rank":87,"cluster":1,"same_cluster":false,"combined":0.7418,"overall_rank":107,"methods_top30":0},"SVN":{"knn_dist":19.242,"knn_rank":71,"corr":0.3808,"corr_rank":71,"cluster":1,"same_cluster":false,"combined":0.6667,"overall_rank":94,"methods_top30":0},"SWE":{"knn_dist":19.051,"knn_rank":68,"corr":0.3931,"corr_rank":68,"cluster":2,"same_cluster":false,"combined":0.6526,"overall_rank":91,"methods_top30":0},"SYC":{"knn_dist":14.495,"knn_rank":2,"corr":0.6487,"corr_rank":2,"cluster":0,"same_cluster":true,"combined":0.0094,"overall_rank":2,"methods_top30":3},"TCD":{"knn_dist":17.958,"knn_rank":41,"corr":0.4607,"corr_rank":41,"cluster":1,"same_cluster":false,"combined":0.5258,"overall_rank":71,"methods_top30":0},"TGO":{"knn_dist":14.959,"knn_rank":4,"corr":0.6258,"corr_rank":4,"cluster":2,"same_cluster":false,"combined":0.3521,"overall_rank":30,"methods_top30":2},"THA":{"knn_dist":21.401,"knn_rank":104,"corr":0.2341,"corr_rank":104,"cluster":0,"same_cluster":true,"combined":0.4883,"overall_rank":62,"methods_top30":1},"TON":{"knn_dist":21.983,"knn_rank":111,"corr":0.1919,"corr_rank":111,"cluster":1,"same_cluster":false,"combined":0.8545,"overall_rank":119,"methods_top30":0},"TTO":{"knn_dist":17.708,"knn_rank":33,"corr":0.4756,"corr_rank":33,"cluster":0,"same_cluster":true,"combined":0.1549,"overall_rank":12,"methods_top30":1},"TUN":{"knn_dist":22.89,"knn_rank":123,"corr":0.1238,"corr_rank":123,"cluster":2,"same_cluster":false,"combined":0.9108,"overall_rank":128,"methods_top30":0},"TUR":{"knn_dist":20.399,"knn_rank":91,"corr":0.3041,"corr_rank":91,"cluster":1,"same_cluster":false,"combined":0.7606,"overall_rank":109,"methods_top30":0},"TZA":{"knn_dist":19.874,"knn_rank":85,"corr":0.3395,"corr_rank":85,"cluster":0,"same_cluster":true,"combined":0.3991,"overall_rank":40,"methods_top30":1},"UGA":{"knn_dist":19.621,"knn_rank":80,"corr":0.3562,"corr_rank":80,"cluster":0,"same_cluster":true,"combined":0.3756,"overall_rank":36,"methods_top30":1},"UKR":{"knn_dist":23.038,"knn_rank":127,"corr":0.1125,"corr_rank":127,"cluster":1,"same_cluster":false,"combined":0.9296,"overall_rank":130,"methods_top30":0},"URY":{"knn_dist":27.421,"knn_rank":142,"corr":-0.2574,"corr_rank":142,"cluster":1,"same_cluster":false,"combined":1.0,"overall_rank":142,"methods_top30":0},"USA":{"knn_dist":21.45,"knn_rank":105,"corr":0.2306,"corr_rank":105,"cluster":2,"same_cluster":false,"combined":0.8263,"overall_rank":115,"methods_top30":0},"VCT":{"knn_dist":17.075,"knn_rank":18,"corr":0.5125,"corr_rank":18,"cluster":0,"same_cluster":true,"combined":0.0845,"overall_rank":6,"methods_top30":3},"VNM":{"knn_dist":18.634,"knn_rank":56,"corr":0.4194,"corr_rank":56,"cluster":0,"same_cluster":true,"combined":0.2629,"overall_rank":19,"methods_top30":1},"WBG":{"knn_dist":22.473,"knn_rank":117,"corr":0.1555,"corr_rank":117,"cluster":1,"same_cluster":false,"combined":0.8826,"overall_rank":123,"methods_top30":0},"WSM":{"knn_dist":17.69,"knn_rank":32,"corr":0.4767,"corr_rank":32,"cluster":2,"same_cluster":false,"combined":0.4836,"overall_rank":61,"methods_top30":0},"ZAF":{"knn_dist":19.583,"knn_rank":79,"corr":0.3587,"corr_rank":79,"cluster":0,"same_cluster":true,"combined":0.3709,"overall_rank":34,"methods_top30":1},"ZMB":{"knn_dist":24.548,"knn_rank":134,"corr":-0.0077,"corr_rank":134,"cluster":1,"same_cluster":false,"combined":0.9624,"overall_rank":135,"methods_top30":0}}};
 
-  // KNN: 30 nearest countries to Iceland (ISO3 -> Euclidean distance)
-  const KNN_DATA = {
-    STP:12.809, SYC:14.495, MLT:14.858, TGO:14.959, CMR:15.177,
-    PHL:15.386, ISR:15.872, HRV:15.916, LTU:16.074, KWT:16.118,
-    CPV:16.146, KOR:16.523, BWA:16.592, LVA:16.609, BGR:16.675,
-    MLI:16.747, BHS:17.060, VCT:17.075, MNG:17.278, RWA:17.292,
-    NIC:17.333, MUS:17.355, BFA:17.362, SGP:17.400, GBR:17.448,
-    SLB:17.460, FIN:17.488, MKD:17.529, JAM:17.611, DNK:17.631
-  };
-  const KNN_MIN = 12.809, KNN_MAX = 17.631;
-
-  // KNN ranked list for rank lookup
-  const KNN_RANKED = Object.entries(KNN_DATA).sort((a,b) => a[1]-b[1]).map(e => e[0]);
-
-  // Clustering: K=3, Iceland's cluster (Cluster 0) — 52 countries
-  const CLUSTER_0 = new Set([
-    'ARM','AZE','BEN','BGD','BOL','BRB','BWA','CAF','CHN','COG','CRI',
-    'DMA','ETH','FJI','GAB','GEO','GRD','GTM','GUY','HKG','IDN','IND',
-    'ISL','JAM','JOR','KEN','KGZ','KHM','KNA','KWT','MAC','MDG','MDV',
-    'MNG','MRT','MYS','NER','NIC','NPL','PAN','PHL','SAU','SLB','STP',
-    'SYC','THA','TTO','TZA','UGA','VCT','VNM','ZAF'
-  ]);
-
-  // Correlation: 30 most correlated with Iceland (ISO3 -> Pearson r)
-  const CORR_DATA = {
-    STP:0.726, SYC:0.649, MLT:0.631, TGO:0.626, CMR:0.615,
-    PHL:0.604, ISR:0.579, HRV:0.576, LTU:0.568, KWT:0.566,
-    CPV:0.564, KOR:0.543, BWA:0.540, LVA:0.539, BGR:0.535,
-    MLI:0.531, BHS:0.513, VCT:0.512, MNG:0.501, RWA:0.500,
-    NIC:0.498, MUS:0.496, BFA:0.496, SGP:0.494, GBR:0.491,
-    SLB:0.490, FIN:0.489, MKD:0.486, JAM:0.481, DNK:0.480
-  };
-  const CORR_MIN = 0.480, CORR_MAX = 0.726;
-  const CORR_RANKED = Object.entries(CORR_DATA).sort((a,b) => b[1]-a[1]).map(e => e[0]);
-
-  // Consensus top 10
-  const CONSENSUS_TOP10 = new Set(['STP','SYC','PHL','KWT','BWA','VCT','MNG','NIC','SLB','MLT']);
-
-  // Combined scores (computed from normalized KNN rank + corr rank + cluster)
-  const COMBINED_SCORES = (() => {
-    const all = new Set([...Object.keys(KNN_DATA), ...CLUSTER_0, ...Object.keys(CORR_DATA)]);
-    all.delete('ISL');
-    const scores = {};
-    all.forEach(iso => {
-      const ki = KNN_RANKED.indexOf(iso);
-      const ci = CORR_RANKED.indexOf(iso);
-      const normK = ki >= 0 ? (ki + 1) / 30 : 1.0;
-      const normC = ci >= 0 ? (ci + 1) / 30 : 1.0;
-      const normCl = CLUSTER_0.has(iso) ? 0.0 : 1.0;
-      scores[iso] = (normK + normC + normCl) / 3;
-    });
-    return scores;
-  })();
-
-  // Country name overrides (where GeoJSON name differs or is missing)
-  const NAME_OVERRIDES = {
-    STP:"São Tomé and Príncipe", KOR:"South Korea", MKD:"North Macedonia",
-    CPV:"Cape Verde", VCT:"St. Vincent & Grenadines", BHS:"Bahamas",
-    KNA:"St. Kitts and Nevis", GRD:"Grenada", DMA:"Dominica",
-    BRB:"Barbados", TTO:"Trinidad and Tobago", HKG:"Hong Kong",
-    MAC:"Macau", ISL:"Iceland", USA:"United States", GBR:"United Kingdom",
-    ARE:"United Arab Emirates", PRK:"North Korea", COD:"DR Congo",
-    COG:"Republic of the Congo", CIV:"Côte d'Ivoire", PSE:"Palestine",
-    SSD:"South Sudan", TLS:"Timor-Leste"
-  };
-
-  // Population data (approximate 2024, in thousands where noted — stored as integers)
-  const POPULATIONS = {
-    AFG:42240000, ALB:2780000, DZA:45610000, AND:80000, AGO:36680000,
-    ATG:100000, ARG:46650000, ARM:2780000, AUS:26640000, AUT:9160000,
-    AZE:10410000, BHS:410000, BHR:1530000, BGD:172950000, BRB:282000,
-    BLR:9200000, BEL:11690000, BLZ:410000, BEN:13710000, BTN:790000,
-    BOL:12290000, BIH:3210000, BWA:2630000, BRA:216420000, BRN:452000,
-    BGR:6520000, BFA:22670000, BDI:13240000, KHM:17170000, CMR:28650000,
-    CAN:39740000, CPV:599000, CAF:5740000, TCD:18280000, CHL:19620000,
-    CHN:1412000000, COL:52090000, COM:852000, COG:6110000, COD:102260000,
-    CRI:5210000, CIV:28870000, HRV:3860000, CUB:11190000, CYP:1260000,
-    CZE:10900000, DNK:5960000, DJI:1140000, DMA:72000, DOM:11330000,
-    ECU:18190000, EGY:112720000, SLV:6360000, GNQ:1740000, ERI:3680000,
-    EST:1360000, SWZ:1210000, ETH:126530000, FJI:936000, FIN:5560000,
-    FRA:68170000, GAB:2440000, GMB:2700000, GEO:3730000, DEU:84480000,
-    GHA:34120000, GRC:10340000, GRD:126000, GTM:18090000, GIN:14190000,
-    GNB:2150000, GUY:813000, HTI:11720000, HND:10430000, HKG:7490000,
-    HUN:9600000, ISL:376000, IND:1429000000, IDN:277530000, IRN:88550000,
-    IRQ:44500000, IRL:5260000, ISR:9750000, ITA:58870000, JAM:2830000,
-    JPN:123290000, JOR:11340000, KAZ:19620000, KEN:55100000, KIR:132000,
-    KWT:4310000, KGZ:7100000, LAO:7530000, LVA:1830000, LBN:5490000,
-    LSO:2330000, LBR:5420000, LBY:7130000, LIE:40000, LTU:2790000,
-    LUX:668000, MAC:704000, MDG:30330000, MWI:20930000, MYS:34310000,
-    MDV:523000, MLI:22590000, MLT:535000, MHL:42000, MRT:4870000,
-    MUS:1310000, MEX:129390000, FSM:113000, MDA:2540000, MCO:39000,
-    MNG:3400000, MNE:620000, MAR:37840000, MOZ:33900000, MMR:54410000,
-    NAM:2600000, NRU:13000, NPL:30900000, NLD:17880000, NZL:5220000,
-    NIC:7050000, NER:26210000, NGA:223800000, PRK:26160000, MKD:1830000,
-    NOR:5550000, OMN:4600000, PAK:231400000, PLW:18000, PAN:4410000,
-    PNG:10330000, PRY:6860000, PER:34050000, PHL:117340000, POL:36820000,
-    PRT:10250000, QAT:2690000, ROU:19060000, RUS:143400000, RWA:14090000,
-    KNA:48000, LCA:184000, VCT:101000, WSM:225000, SMR:33000,
-    STP:228000, SAU:36410000, SEN:17920000, SRB:6650000, SYC:100000,
-    SLE:8610000, SGP:5920000, SVK:5430000, SVN:2110000, SLB:740000,
-    SOM:18140000, ZAF:60410000, KOR:51780000, SSD:11090000, ESP:48400000,
-    LKA:22160000, SDN:48110000, SUR:620000, SWE:10550000, CHE:8850000,
-    SYR:23230000, TWN:23570000, TJK:10260000, TZA:67440000, THA:71800000,
-    TLS:1340000, TGO:8850000, TON:107000, TTO:1530000, TUN:12460000,
-    TUR:85280000, TKM:6520000, TUV:11000, UGA:48580000, UKR:37000000,
-    ARE:9440000, GBR:67740000, USA:334000000, URY:3420000, UZB:35650000,
-    VUT:330000, VEN:28440000, VNM:100350000, YEM:34450000, ZMB:20570000,
-    ZWE:16320000, PSE:5370000, XKX:1780000, BFA:22670000
-  };
-
-  // Iceland coordinates
+  /* DERIVED LOOKUPS */
+  const META = ANALYSIS_DATA.metadata;
+  const COUNTRIES = ANALYSIS_DATA.countries;
+  const ALL_ISOS = Object.keys(COUNTRIES);
+  const POPULATIONS = ANALYSIS_DATA.populations;
+  const NAME_OVERRIDES = ANALYSIS_DATA.name_overrides;
   const ICELAND_COORDS = [64.96, -19.02];
-
-  // GeoJSON source
   const GEOJSON_URL = 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json';
 
-  /* ============================================================= */
-  /* COLOR UTILITIES                                                */
-  /* ============================================================= */
+  /* STATE */
+  let currentView = 'knn';
+  let currentTopN = 30;
+  let currentPage = 'map';
+  let geojsonLayer = null;
 
+  /* COLOR UTILITIES */
   function hsl(h, s, l) { return `hsl(${h},${s}%,${l}%)`; }
-
   function lerpHSL(t, h1, s1, l1, h2, s2, l2) {
-    return hsl(h1 + t*(h2-h1), s1 + t*(s2-s1), l1 + t*(l2-l1));
-  }
-
-  // KNN: dark vivid blue (closest) -> light desaturated blue (farthest)
-  function knnColor(dist) {
-    const t = (dist - KNN_MIN) / (KNN_MAX - KNN_MIN); // 0 = closest, 1 = farthest
-    return lerpHSL(t, 210, 90, 30, 210, 40, 65);
-  }
-
-  // Correlation: vivid green (highest) -> muted green (lowest)
-  function corrColor(r) {
-    const t = (r - CORR_MIN) / (CORR_MAX - CORR_MIN); // 0 = lowest, 1 = highest
-    return lerpHSL(t, 140, 45, 60, 150, 80, 28);
-  }
-
-  // Combined: muted salmon (least similar) -> vivid dark red (most similar)
-  function combinedColor(score) {
-    const t = 1 - score; // invert: lower score = more similar = higher t
-    // Keep hue fixed at red (0), vary saturation and lightness only
-    return hsl(0, 30 + t * 50, 68 - t * 38);
+    return hsl(h1+t*(h2-h1), s1+t*(s2-s1), l1+t*(l2-l1));
   }
 
   const GREY = '#1e1e32';
   const ISL_COLOR = '#ef5350';
 
-  /* ============================================================= */
-  /* STYLE FUNCTIONS                                                */
-  /* ============================================================= */
+  /* TOP N FILTERING */
+  function isVisible(iso) {
+    if (iso === 'ISL') return true;
+    const d = COUNTRIES[iso];
+    if (!d) return false;
+    if (currentView === 'cluster') return d.same_cluster;
+    if (currentTopN === 0) return true;
+    if (currentView === 'knn') return d.knn_rank <= currentTopN;
+    if (currentView === 'correlation') return d.corr_rank <= currentTopN;
+    if (currentView === 'combined') return d.overall_rank <= currentTopN;
+    return false;
+  }
 
+  function getVisibleRange(key) {
+    const visible = ALL_ISOS.filter(iso => isVisible(iso));
+    if (visible.length === 0) return { min: 0, max: 1 };
+    const vals = visible.map(iso => COUNTRIES[iso][key]);
+    return { min: Math.min(...vals), max: Math.max(...vals) };
+  }
+
+  /* STYLE FUNCTIONS */
   const BASE = { weight: 0.7, opacity: 0.85, color: 'rgba(255,255,255,0.12)', fillOpacity: 0.75 };
+  const ISL_STYLE = { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
+  const HIDDEN_STYLE = { ...BASE, fillColor: GREY, fillOpacity: 0.25 };
 
   function styleKnn(f) {
     const iso = f.id;
-    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
-    if (KNN_DATA[iso] !== undefined) return { ...BASE, fillColor: knnColor(KNN_DATA[iso]) };
-    return { ...BASE, fillColor: GREY, fillOpacity: 0.25 };
+    if (iso === 'ISL') return ISL_STYLE;
+    const d = COUNTRIES[iso];
+    if (d && isVisible(iso)) {
+      const range = getVisibleRange('knn_dist');
+      const span = range.max - range.min || 1;
+      const t = (d.knn_dist - range.min) / span;
+      return { ...BASE, fillColor: lerpHSL(t, 210, 90, 30, 210, 40, 65) };
+    }
+    return HIDDEN_STYLE;
   }
 
   function styleCluster(f) {
     const iso = f.id;
-    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
-    if (CLUSTER_0.has(iso)) return { ...BASE, fillColor: '#00897b', fillOpacity: 0.65 };
+    if (iso === 'ISL') return ISL_STYLE;
+    const d = COUNTRIES[iso];
+    if (d && d.same_cluster) return { ...BASE, fillColor: '#00897b', fillOpacity: 0.65 };
     return { ...BASE, fillColor: GREY, fillOpacity: 0.2 };
   }
 
   function styleCorr(f) {
     const iso = f.id;
-    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
-    if (CORR_DATA[iso] !== undefined) return { ...BASE, fillColor: corrColor(CORR_DATA[iso]) };
-    return { ...BASE, fillColor: GREY, fillOpacity: 0.25 };
+    if (iso === 'ISL') return ISL_STYLE;
+    const d = COUNTRIES[iso];
+    if (d && isVisible(iso)) {
+      const range = getVisibleRange('corr');
+      const span = range.max - range.min || 0.01;
+      const t = (d.corr - range.min) / span;
+      return { ...BASE, fillColor: lerpHSL(t, 140, 45, 60, 150, 80, 28) };
+    }
+    return HIDDEN_STYLE;
   }
 
   function styleCombined(f) {
     const iso = f.id;
-    if (iso === 'ISL') return { ...BASE, fillColor: ISL_COLOR, fillOpacity: 0.95, weight: 2.5, color: '#ffcdd2' };
-    if (COMBINED_SCORES[iso] !== undefined) {
-      const s = COMBINED_SCORES[iso];
-      return { ...BASE, fillColor: combinedColor(s), fillOpacity: 0.35 + 0.55 * (1 - s) };
+    if (iso === 'ISL') return ISL_STYLE;
+    const d = COUNTRIES[iso];
+    if (d && isVisible(iso)) {
+      const t = 1 - d.combined;
+      return { ...BASE, fillColor: hsl(0, 30 + t*50, 68 - t*38), fillOpacity: 0.35 + 0.55*t };
     }
     return { ...BASE, fillColor: GREY, fillOpacity: 0.18 };
   }
 
   const STYLES = { knn: styleKnn, cluster: styleCluster, correlation: styleCorr, combined: styleCombined };
 
-  /* ============================================================= */
-  /* MAP INITIALIZATION                                             */
-  /* ============================================================= */
+  let pinLayer = L.layerGroup();
+  const centroids = {};
 
-  let currentView = 'knn';
-  let geojsonLayer = null;
-  let countryLayers = {};
-
+  /* MAP */
   const map = L.map('map', {
-    center: [25, 10],
-    zoom: 2.4,
-    minZoom: 2,
-    maxZoom: 8,
-    zoomControl: false,
-    attributionControl: false,
-    worldCopyJump: true
+    center: [25, 10], zoom: 2.4, minZoom: 2, maxZoom: 8,
+    zoomControl: false, attributionControl: false, worldCopyJump: true
   });
-
   L.control.zoom({ position: 'topright' }).addTo(map);
-
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-    subdomains: 'abcd',
-    maxZoom: 19
+    subdomains: 'abcd', maxZoom: 19
   }).addTo(map);
 
-  /* ============================================================= */
-  /* HELPER FUNCTIONS                                               */
-  /* ============================================================= */
-
+  /* HELPERS */
   function fmtPop(n) {
     if (!n) return 'N/A';
     if (n >= 1e9) return (n/1e9).toFixed(2) + ' billion';
@@ -605,83 +604,66 @@
     if (n >= 1e3) return (n/1e3).toFixed(0) + 'K';
     return n.toString();
   }
+  function getName(iso, geoName) { return NAME_OVERRIDES[iso] || geoName || iso; }
 
-  function getKnnRank(iso) {
-    const i = KNN_RANKED.indexOf(iso);
-    return i >= 0 ? i + 1 : null;
-  }
-
-  function getCorrRank(iso) {
-    const i = CORR_RANKED.indexOf(iso);
-    return i >= 0 ? i + 1 : null;
-  }
-
-  function getName(iso, geoName) {
-    return NAME_OVERRIDES[iso] || geoName || iso;
-  }
-
-  /* ============================================================= */
-  /* INFO PANEL                                                     */
-  /* ============================================================= */
-
+  /* INFO PANEL */
   const infoEl = document.getElementById('info-panel');
+  const totalCountries = META.n_countries - 1;
 
   function updateInfo(iso, geoName) {
     const name = getName(iso, geoName);
     const pop = POPULATIONS[iso];
     const isIceland = iso === 'ISL';
-
-    let metricHtml = '';
+    let html = '';
 
     if (currentView === 'knn') {
-      const d = KNN_DATA[iso];
+      const d = COUNTRIES[iso];
       if (isIceland) {
-        metricHtml = '<div class="metric highlight">Reference country</div>';
-      } else if (d !== undefined) {
-        const rank = getKnnRank(iso);
-        const pct = Math.round((1 - (d - KNN_MIN) / (KNN_MAX - KNN_MIN)) * 100);
-        metricHtml = `
-          <div class="metric">KNN Distance: <strong>${d.toFixed(3)}</strong></div>
+        html = '<div class="metric highlight">Reference country</div>';
+      } else if (d) {
+        const pct = Math.round((1 - (d.knn_rank - 1) / (totalCountries - 1)) * 100);
+        html = `
+          <div class="metric">KNN Distance: <strong>${d.knn_dist.toFixed(3)}</strong></div>
           <div class="metric-bar"><div style="width:${pct}%"></div></div>
-          <div class="rank">Rank: #${rank} of 30 nearest neighbors</div>`;
+          <div class="rank">Rank: #${d.knn_rank} of ${totalCountries}</div>`;
       } else {
-        metricHtml = '<div class="metric muted">Not in top 30 KNN neighbors</div>';
+        html = '<div class="metric muted">No data available</div>';
       }
     } else if (currentView === 'cluster') {
+      const d = COUNTRIES[iso];
       if (isIceland) {
-        metricHtml = '<div class="metric highlight">Reference country — Cluster 0</div>';
-      } else if (CLUSTER_0.has(iso)) {
-        metricHtml = '<div class="metric" style="color:#80cbc4"><strong>Same cluster as Iceland</strong></div><div class="rank">Cluster 0 — Similar inflation trajectory</div>';
+        html = `<div class="metric highlight">Reference country — Cluster ${META.isl_cluster}</div>`;
+      } else if (d && d.same_cluster) {
+        html = '<div class="metric" style="color:#80cbc4"><strong>Same cluster as Iceland</strong></div><div class="rank">Similar inflation trajectory</div>';
       } else {
-        metricHtml = '<div class="metric muted">Different cluster from Iceland</div>';
+        html = '<div class="metric muted">Different cluster from Iceland</div>';
       }
     } else if (currentView === 'correlation') {
-      const r = CORR_DATA[iso];
+      const d = COUNTRIES[iso];
       if (isIceland) {
-        metricHtml = '<div class="metric highlight">Reference country (r = 1.000)</div>';
-      } else if (r !== undefined) {
-        const rank = getCorrRank(iso);
-        const pct = Math.round(((r - CORR_MIN) / (CORR_MAX - CORR_MIN)) * 100);
-        metricHtml = `
-          <div class="metric">Correlation: <strong>r = ${r.toFixed(3)}</strong></div>
+        html = '<div class="metric highlight">Reference country (r = 1.000)</div>';
+      } else if (d) {
+        const pct = Math.round((1 - (d.corr_rank - 1) / (totalCountries - 1)) * 100);
+        html = `
+          <div class="metric">Correlation: <strong>r = ${d.corr.toFixed(4)}</strong></div>
           <div class="metric-bar green"><div style="width:${pct}%"></div></div>
-          <div class="rank">Rank: #${rank} of 30 most correlated</div>`;
+          <div class="rank">Rank: #${d.corr_rank} of ${totalCountries}</div>`;
       } else {
-        metricHtml = '<div class="metric muted">Not in top 30 correlated countries</div>';
+        html = '<div class="metric muted">No data available</div>';
       }
     } else {
-      const s = COMBINED_SCORES[iso];
+      const d = COUNTRIES[iso];
       if (isIceland) {
-        metricHtml = '<div class="metric highlight">Reference country</div>';
-      } else if (s !== undefined) {
-        const pct = Math.round((1 - s) * 100);
-        metricHtml = `
-          <div class="metric">Combined Score: <strong>${s.toFixed(3)}</strong></div>
+        html = '<div class="metric highlight">Reference country</div>';
+      } else if (d) {
+        const pct = Math.round((1 - d.combined) * 100);
+        html = `
+          <div class="metric">Combined Score: <strong>${d.combined.toFixed(4)}</strong></div>
           <div class="metric-bar red"><div style="width:${pct}%"></div></div>
-          <div class="rank">Lower score = more similar to Iceland</div>
-          ${CONSENSUS_TOP10.has(iso) ? '<div class="badge">Consensus Top 10</div>' : ''}`;
+          <div class="rank">Rank: #${d.overall_rank} of ${totalCountries} (lower = more similar)</div>
+          ${d.methods_top30 >= 2 ? '<div class="badge">Multi-method match (' + d.methods_top30 + '/3)</div>' : ''}`;
       } else {
-        metricHtml = '<div class="metric muted">Not scored (insufficient data overlap)</div>';
+        html = '<div class="metric muted">No data available</div>';
       }
     }
 
@@ -690,77 +672,103 @@
       <div class="info-iso">${iso}${isIceland ? ' — REFERENCE' : ''}</div>
       <div class="info-pop">Population: ${fmtPop(pop)}</div>
       <hr>
-      ${metricHtml}`;
+      ${html}`;
   }
 
   function clearInfo() {
     infoEl.innerHTML = '<h3>Hover over a country</h3><p class="default-hint">View similarity metrics</p>';
   }
 
-  /* ============================================================= */
-  /* LEGEND                                                         */
-  /* ============================================================= */
-
+  /* LEGEND */
   function updateLegend() {
     const el = document.getElementById('legend');
 
     if (currentView === 'cluster') {
       el.innerHTML = `
-        <div class="legend-title">Cluster Membership (K=3)</div>
-        <div class="legend-item"><span class="legend-swatch" style="background:#00897b"></span> Iceland's cluster (${CLUSTER_0.size} countries)</div>
+        <div class="legend-title">Cluster Membership (K=${META.optimal_k})</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#00897b"></span> Iceland's cluster (${META.isl_cluster_size} countries)</div>
         <div class="legend-item"><span class="legend-swatch" style="background:${GREY};opacity:0.6"></span> Other clusters</div>
         <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland (reference)</div>`;
       return;
     }
 
-    const configs = {
-      knn: {
-        title: 'KNN Euclidean Distance',
-        min: KNN_MIN.toFixed(1) + ' (most similar)',
-        max: KNN_MAX.toFixed(1),
-        grad: `linear-gradient(to right, ${knnColor(KNN_MIN)}, ${knnColor((KNN_MIN+KNN_MAX)/2)}, ${knnColor(KNN_MAX)})`
-      },
-      correlation: {
-        title: 'Pearson Correlation (r)',
-        min: CORR_MIN.toFixed(2),
-        max: CORR_MAX.toFixed(2) + ' (most similar)',
-        grad: `linear-gradient(to right, ${corrColor(CORR_MIN)}, ${corrColor((CORR_MIN+CORR_MAX)/2)}, ${corrColor(CORR_MAX)})`
-      },
-      combined: {
-        title: 'Combined Similarity Score',
-        min: 'Least similar',
-        max: 'Most similar',
-        grad: `linear-gradient(to right, hsl(0,30%,68%), hsl(0,55%,49%), hsl(0,80%,30%))`
-      }
-    };
-    const c = configs[currentView];
-    el.innerHTML = `
-      <div class="legend-title">${c.title}</div>
-      <div class="legend-gradient" style="background:${c.grad}"></div>
-      <div class="legend-labels"><span>${c.min}</span><span>${c.max}</span></div>
-      <div class="legend-item" style="margin-top:6px"><span class="legend-swatch" style="background:${GREY};opacity:0.5"></span> No data</div>
-      <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland (reference)</div>`;
+    const showing = currentTopN === 0 ? 'all' : 'top ' + currentTopN;
+
+    if (currentView === 'knn') {
+      const range = getVisibleRange('knn_dist');
+      el.innerHTML = `
+        <div class="legend-title">KNN Euclidean Distance (${showing})</div>
+        <div class="legend-gradient" style="background:linear-gradient(to right, ${lerpHSL(0,210,90,30,210,40,65)}, ${lerpHSL(0.5,210,90,30,210,40,65)}, ${lerpHSL(1,210,90,30,210,40,65)})"></div>
+        <div class="legend-labels"><span>${range.min.toFixed(1)} (closest)</span><span>${range.max.toFixed(1)}</span></div>
+        <div class="legend-item" style="margin-top:6px"><span class="legend-swatch" style="background:${GREY};opacity:0.5"></span> Not shown</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland</div>`;
+    } else if (currentView === 'correlation') {
+      const range = getVisibleRange('corr');
+      el.innerHTML = `
+        <div class="legend-title">Pearson Correlation (${showing})</div>
+        <div class="legend-gradient" style="background:linear-gradient(to right, ${lerpHSL(0,140,45,60,150,80,28)}, ${lerpHSL(0.5,140,45,60,150,80,28)}, ${lerpHSL(1,140,45,60,150,80,28)})"></div>
+        <div class="legend-labels"><span>${range.min.toFixed(3)}</span><span>${range.max.toFixed(3)} (highest)</span></div>
+        <div class="legend-item" style="margin-top:6px"><span class="legend-swatch" style="background:${GREY};opacity:0.5"></span> Not shown</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland</div>`;
+    } else {
+      el.innerHTML = `
+        <div class="legend-title">Combined Similarity (${showing})</div>
+        <div class="legend-gradient" style="background:linear-gradient(to right, hsl(0,30%,68%), hsl(0,55%,49%), hsl(0,80%,30%))"></div>
+        <div class="legend-labels"><span>Least similar</span><span>Most similar</span></div>
+        <div class="legend-item" style="margin-top:6px"><span class="legend-swatch" style="background:${GREY};opacity:0.5"></span> Not shown</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:${ISL_COLOR}"></span> Iceland</div>`;
+    }
   }
 
-  /* ============================================================= */
-  /* METHOD INFO                                                    */
-  /* ============================================================= */
-
-  const METHOD_TEXTS = {
-    knn: 'K-Nearest Neighbors: Euclidean distance on z-score standardized monthly CPI inflation (2000–2024, 300 months). Showing 30 closest countries.',
-    cluster: 'K-Means Clustering (K=3) on standardized CPI. 52 countries share Iceland\'s inflation trajectory cluster.',
-    correlation: 'Pearson correlation of raw monthly CPI inflation (2000–2024). Showing 30 most positively correlated countries.',
-    combined: 'Combined score: average of normalized KNN rank, correlation rank, and cluster membership. Red intensity = overall similarity to Iceland.'
-  };
-
+  /* METHOD INFO */
   function updateMethodInfo() {
-    document.getElementById('method-text').textContent = METHOD_TEXTS[currentView];
+    const n = currentTopN === 0 ? 'all' : currentTopN;
+    const texts = {
+      knn: `K-Nearest Neighbors: Euclidean distance on z-score standardized monthly CPI inflation (${META.window_start}–${META.window_end}, ${META.n_months} months). Showing ${n} closest countries.`,
+      cluster: `K-Means Clustering (K=${META.optimal_k}) on standardized CPI. ${META.isl_cluster_size} countries share Iceland's inflation trajectory cluster. Silhouette score: ${META.silhouette_score}.`,
+      correlation: `Pearson correlation of raw monthly CPI inflation (${META.window_start}–${META.window_end}). Showing ${n} most correlated countries.`,
+      combined: `Combined score: average of normalized KNN rank, correlation rank, and cluster membership. Showing ${n} most similar countries.`
+    };
+    document.getElementById('method-text').textContent = texts[currentView];
   }
 
-  /* ============================================================= */
-  /* TAB SWITCHING                                                  */
-  /* ============================================================= */
+  function refreshMap() {
+    if (geojsonLayer) geojsonLayer.setStyle(f => STYLES[currentView](f));
+    updatePins();
+    updateLegend();
+    updateMethodInfo();
+    clearInfo();
+  }
 
+  function computeCentroid(feature) {
+    const coords = [];
+    function extract(c, type) {
+      if (type === 'Point') coords.push(c);
+      else if (type === 'MultiPoint') c.forEach(p => coords.push(p));
+      else if (type === 'Polygon') c[0].forEach(p => coords.push(p));
+      else if (type === 'MultiPolygon') c.forEach(poly => poly[0].forEach(p => coords.push(p)));
+    }
+    extract(feature.geometry.coordinates, feature.geometry.type);
+    if (coords.length === 0) return null;
+    const lat = coords.reduce((s, c) => s + c[1], 0) / coords.length;
+    const lng = coords.reduce((s, c) => s + c[0], 0) / coords.length;
+    return [lat, lng];
+  }
+
+  function updatePins() {
+    pinLayer.clearLayers();
+    ALL_ISOS.forEach(iso => {
+      if (!isVisible(iso) || iso === 'ISL') return;
+      const c = centroids[iso];
+      if (!c) return;
+      L.circleMarker(c, {
+        radius: 4, fillColor: '#fff', fillOpacity: 0.85,
+        color: 'rgba(0,0,0,0.4)', weight: 1.5, interactive: false
+      }).addTo(pinLayer);
+    });
+  }
+
+  /* TAB SWITCHING */
   document.querySelectorAll('.tab').forEach(btn => {
     btn.addEventListener('click', () => {
       const view = btn.dataset.view;
@@ -768,17 +776,128 @@
       document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentView = view;
-      if (geojsonLayer) geojsonLayer.setStyle(f => STYLES[currentView](f));
-      updateLegend();
-      updateMethodInfo();
-      clearInfo();
+      document.getElementById('top-n-row').style.display = view === 'cluster' ? 'none' : 'flex';
+      refreshMap();
     });
   });
 
-  /* ============================================================= */
-  /* GEOJSON LOADING                                                */
-  /* ============================================================= */
+  /* TOP N TOGGLE */
+  document.querySelectorAll('.top-n-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.top-n-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTopN = parseInt(btn.dataset.n);
+      refreshMap();
+    });
+  });
 
+  /* PAGE TOGGLE */
+  document.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const page = btn.dataset.page;
+      if (page === currentPage) return;
+      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentPage = page;
+
+      document.getElementById('map').style.display = page === 'map' ? 'block' : 'none';
+      document.getElementById('data-page').style.display = page === 'data' ? 'block' : 'none';
+
+      ['info-panel', 'legend', 'method-info'].forEach(id => {
+        document.getElementById(id).style.display = page === 'map' ? '' : 'none';
+      });
+      document.getElementById('view-tabs').style.display = page === 'map' ? 'flex' : 'none';
+      document.getElementById('top-n-row').style.display =
+        (page === 'map' && currentView !== 'cluster') ? 'flex' : 'none';
+
+      if (page === 'data') {
+        document.getElementById('data-page').scrollTop = 0;
+        renderDataTable();
+      }
+    });
+  });
+
+  /* DATA TABLE */
+  let sortCol = 'overall_rank';
+  let sortDir = 'asc';
+  let searchQuery = '';
+
+  function renderDataSummary() {
+    const topCorr = ALL_ISOS.reduce((best, iso) => {
+      const d = COUNTRIES[iso];
+      return (!best || d.corr > best.corr) ? { iso, ...d } : best;
+    }, null);
+    const topName = getName(topCorr.iso);
+
+    document.getElementById('data-summary').innerHTML = `
+      <div class="summary-stat"><div class="value">${totalCountries}</div><div class="label">Countries analyzed</div></div>
+      <div class="summary-stat"><div class="value">${META.n_months}</div><div class="label">Months analyzed</div></div>
+      <div class="summary-stat"><div class="value">K=${META.optimal_k}</div><div class="label">Optimal clusters (sil: ${META.silhouette_score})</div></div>
+      <div class="summary-stat"><div class="value">${META.isl_cluster_size}</div><div class="label">Countries in Iceland's cluster</div></div>
+      <div class="summary-stat"><div class="value">${topName}</div><div class="label">Most correlated (r=${topCorr.corr.toFixed(3)})</div></div>
+    `;
+  }
+
+  function renderDataTable() {
+    renderDataSummary();
+
+    let rows = ALL_ISOS.map(iso => ({
+      iso,
+      name: getName(iso),
+      ...COUNTRIES[iso]
+    }));
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      rows = rows.filter(r => r.iso.toLowerCase().includes(q) || r.name.toLowerCase().includes(q));
+    }
+
+    rows.sort((a, b) => {
+      let va = a[sortCol], vb = b[sortCol];
+      if (sortCol === 'name' || sortCol === 'iso') {
+        return sortDir === 'asc' ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+      }
+      if (typeof va === 'boolean') { va = va ? 0 : 1; vb = vb ? 0 : 1; }
+      return sortDir === 'asc' ? va - vb : vb - va;
+    });
+
+    document.getElementById('data-tbody').innerHTML = rows.map(r => `
+      <tr class="${r.same_cluster ? 'cluster-match' : ''}">
+        <td>${r.overall_rank}</td>
+        <td>${r.name}</td>
+        <td>${r.iso}</td>
+        <td>${r.knn_rank}</td>
+        <td>${r.knn_dist.toFixed(2)}</td>
+        <td>${r.corr_rank}</td>
+        <td>${r.corr.toFixed(4)}</td>
+        <td>${r.same_cluster ? 'Same' : 'Diff'}</td>
+        <td>${r.combined.toFixed(4)}</td>
+        <td>${r.methods_top30}/3</td>
+      </tr>
+    `).join('');
+  }
+
+  document.querySelectorAll('#data-table th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortCol = col;
+        sortDir = (col === 'name' || col === 'iso') ? 'asc' : 'asc';
+      }
+      document.querySelectorAll('#data-table th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+      th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      renderDataTable();
+    });
+  });
+
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchQuery = e.target.value;
+    renderDataTable();
+  });
+
+  /* GEOJSON LOADING */
   fetch(GEOJSON_URL)
     .then(r => r.json())
     .then(data => {
@@ -786,7 +905,7 @@
         style: f => STYLES[currentView](f),
         onEachFeature: (feature, layer) => {
           const iso = feature.id;
-          if (iso) countryLayers[iso] = layer;
+          centroids[iso] = computeCentroid(feature);
 
           layer.on('mouseover', e => {
             const l = e.target;
@@ -804,37 +923,33 @@
             map.fitBounds(e.target.getBounds(), { padding: [60, 60], maxZoom: 6 });
           });
 
-          // Tooltip with country code on the map
           const name = getName(iso, feature.properties.name);
           layer.bindTooltip(name, {
-            sticky: true,
-            className: 'country-tooltip',
-            direction: 'top',
-            offset: [0, -10]
+            sticky: true, className: 'country-tooltip',
+            direction: 'top', offset: [0, -10]
           });
         }
       }).addTo(map);
+
+      pinLayer.addTo(map);
+      updatePins();
 
       // Iceland pulsing marker
       const icelandIcon = L.divIcon({
         className: '',
         html: '<div class="iceland-pin"><div class="ring"></div><div class="ring"></div><div class="core"></div></div>',
-        iconSize: [22, 22],
-        iconAnchor: [11, 11]
+        iconSize: [22, 22], iconAnchor: [11, 11]
       });
       L.marker(ICELAND_COORDS, { icon: icelandIcon, zIndexOffset: 1000, interactive: false }).addTo(map);
 
-      // Initialize UI
       updateLegend();
       updateMethodInfo();
-
-      // Hide loader
       setTimeout(() => document.getElementById('loading').classList.add('hidden'), 300);
     })
     .catch(err => {
       document.getElementById('loading').innerHTML =
         '<div style="color:#ef5350;font-size:1.1rem;font-weight:600;">Failed to load map data</div>' +
-        '<div style="color:rgba(255,255,255,0.4);margin-top:8px;">Please check your internet connection and reload.</div>';
+        '<div style="color:rgba(255,255,255,0.4);margin-top:8px;">Check internet connection and reload.</div>';
       console.error('GeoJSON fetch failed:', err);
     });
 
