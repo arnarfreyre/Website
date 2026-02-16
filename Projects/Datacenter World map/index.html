@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Data Center Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #132240;
+    --navy-light: #1a3058;
+    --blue: #4a9edd;
+    --blue-light: #7ec8f0;
+    --blue-glow: #3b8fd4;
+    --blue-pale: #d0ebfa;
+    --gray-100: #f4f6f9;
+    --gray-200: #e2e6ed;
+    --gray-300: #c5ccd8;
+    --gray-400: #8e99ab;
+    --gray-500: #5c6a7e;
+    --gray-600: #3d4a5c;
+    --shadow: 0 4px 24px rgba(10,22,40,0.18);
+    --shadow-lg: 0 8px 40px rgba(10,22,40,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--gray-100);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #map {
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  /* --- Top Bar --- */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background: linear-gradient(180deg, rgba(10,22,40,0.97) 0%, rgba(10,22,40,0.88) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(74,158,221,0.12);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  .brand-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 12px rgba(74,158,221,0.3);
+  }
+
+  .brand-text {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+    color: var(--gray-100);
+    white-space: nowrap;
+  }
+
+  .brand-text span {
+    color: var(--blue);
+  }
+
+  /* --- Search --- */
+  .search-wrapper {
+    position: relative;
+    width: 340px;
+    flex-shrink: 0;
+  }
+
+  .search-wrapper svg {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    stroke: var(--gray-400);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: var(--navy-mid);
+    border: 1px solid rgba(74,158,221,0.15);
+    border-radius: 10px;
+    color: var(--gray-100);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-input::placeholder { color: var(--gray-400); }
+
+  .search-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(74,158,221,0.12);
+  }
+
+  .search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    background: var(--navy-mid);
+    border: 1px solid rgba(74,158,221,0.18);
+    border-radius: 10px;
+    max-height: 280px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .search-results.active { display: block; }
+
+  .search-result-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(74,158,221,0.06);
+    transition: background 0.15s;
+  }
+
+  .search-result-item:hover { background: var(--navy-light); }
+
+  .search-result-item:last-child { border-bottom: none; }
+
+  .sr-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--gray-100);
+  }
+
+  .sr-meta {
+    font-size: 11.5px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+
+  /* --- Filter Toggles --- */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .filter-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(74,158,221,0.15);
+    background: var(--navy-mid);
+    color: var(--gray-300);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--blue);
+    color: var(--blue-light);
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, rgba(74,158,221,0.18) 0%, rgba(74,158,221,0.08) 100%);
+    border-color: var(--blue);
+    color: var(--blue-light);
+    box-shadow: 0 0 12px rgba(74,158,221,0.1);
+  }
+
+  /* --- Stats Bar --- */
+  .stats-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 2px;
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(74,158,221,0.12);
+    border-radius: 12px;
+    padding: 4px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-chip {
+    padding: 8px 18px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--gray-300);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+
+  .stat-chip .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--blue-light);
+  }
+
+  /* --- Leaflet Overrides --- */
+  .leaflet-popup-content-wrapper {
+    background: var(--navy-mid) !important;
+    border: 1px solid rgba(74,158,221,0.2) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-lg) !important;
+    color: var(--gray-100) !important;
+    padding: 0 !important;
+  }
+
+  .leaflet-popup-tip {
+    background: var(--navy-mid) !important;
+    border: 1px solid rgba(74,158,221,0.2) !important;
+    box-shadow: none !important;
+  }
+
+  .leaflet-popup-content {
+    margin: 0 !important;
+    font-family: 'DM Sans', sans-serif !important;
+    min-width: 220px;
+  }
+
+  .popup-inner {
+    padding: 16px 18px;
+  }
+
+  .popup-name {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--gray-100);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .popup-operator {
+    font-size: 12px;
+    color: var(--blue);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .popup-stats {
+    display: flex;
+    gap: 16px;
+  }
+
+  .popup-stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .popup-stat-label {
+    font-size: 10px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .popup-stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--blue-light);
+  }
+
+  .popup-location {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(74,158,221,0.1);
+    font-size: 12px;
+    color: var(--gray-400);
+  }
+
+  .leaflet-control-zoom a {
+    background: var(--navy-mid) !important;
+    color: var(--blue-light) !important;
+    border-color: rgba(74,158,221,0.15) !important;
+    font-size: 16px !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+
+  .leaflet-control-zoom a:hover {
+    background: var(--navy-light) !important;
+  }
+
+  .leaflet-control-attribution {
+    background: rgba(10,22,40,0.8) !important;
+    color: var(--gray-500) !important;
+    font-size: 10px !important;
+  }
+
+  .leaflet-control-attribution a { color: var(--gray-400) !important; }
+
+  /* --- Scrollbar --- */
+  .search-results::-webkit-scrollbar { width: 6px; }
+  .search-results::-webkit-scrollbar-track { background: transparent; }
+  .search-results::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 3px; }
+
+  /* --- Responsive --- */
+  @media (max-width: 900px) {
+    .top-bar { flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
+    .brand { display: none; }
+    .search-wrapper { width: 100%; order: -1; }
+    .filters { flex-wrap: wrap; justify-content: center; }
+    .filter-btn { padding: 6px 12px; font-size: 11.5px; }
+    .stats-bar { bottom: 12px; }
+    .stat-chip { padding: 6px 12px; font-size: 11px; }
+    .stat-chip .num { font-size: 12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="brand">
+    <div class="brand-icon">⚡</div>
+    <div class="brand-text">Data<span>Center</span> Atlas</div>
+  </div>
+
+  <div class="search-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search datacenters by name, operator, or location…" autocomplete="off">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="small">&lt; 50 MW</button>
+    <button class="filter-btn" data-filter="medium">50–300 MW</button>
+    <button class="filter-btn" data-filter="large">&gt; 300 MW</button>
+  </div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat-chip">Visible <span class="num" id="visibleCount">0</span></div>
+  <div class="stat-chip">Countries <span class="num" id="countryCount">0</span></div>
+  <div class="stat-chip">Total Capacity <span class="num" id="totalCapacity">0</span> GW</div>
+</div>
+
+<div id="map"></div>
+
+<script>
+// ============================================================
+// DATA: Curated global datacenter dataset
+// ============================================================
+const datacenters = [
+  // --- NORTH AMERICA ---
+  {name:"The Citadel Campus",operator:"Switch",lat:39.52,lng:-119.78,capacity:650,location:"Reno, Nevada, USA"},
+  {name:"SUPERNAP Las Vegas",operator:"Switch",lat:36.08,lng:-115.15,capacity:280,location:"Las Vegas, Nevada, USA"},
+  {name:"QTS Atlanta Metro",operator:"QTS Realty",lat:33.63,lng:-84.43,capacity:278,location:"Atlanta, Georgia, USA"},
+  {name:"Lakeside Technology Center",operator:"Digital Realty",lat:41.84,lng:-87.63,capacity:100,location:"Chicago, Illinois, USA"},
+  {name:"QTS Ashburn Mega Data Center",operator:"QTS Realty",lat:39.04,lng:-77.49,capacity:175,location:"Ashburn, Virginia, USA"},
+  {name:"NSA Utah Data Center",operator:"NSA",lat:40.43,lng:-111.93,capacity:65,location:"Bluffdale, Utah, USA"},
+  {name:"Apple Mesa Data Center",operator:"Apple",lat:33.38,lng:-111.72,capacity:50,location:"Mesa, Arizona, USA"},
+  {name:"Microsoft Quincy Campus",operator:"Microsoft",lat:47.23,lng:-119.85,capacity:200,location:"Quincy, Washington, USA"},
+  {name:"Microsoft San Antonio",operator:"Microsoft",lat:29.42,lng:-98.49,capacity:120,location:"San Antonio, Texas, USA"},
+  {name:"Google The Dalles",operator:"Google",lat:45.60,lng:-121.18,capacity:150,location:"The Dalles, Oregon, USA"},
+  {name:"Google Council Bluffs",operator:"Google",lat:41.26,lng:-95.86,capacity:200,location:"Council Bluffs, Iowa, USA"},
+  {name:"Google Lenoir",operator:"Google",lat:35.91,lng:-81.54,capacity:75,location:"Lenoir, North Carolina, USA"},
+  {name:"Meta Prineville",operator:"Meta",lat:44.30,lng:-120.73,capacity:120,location:"Prineville, Oregon, USA"},
+  {name:"Meta Altoona",operator:"Meta",lat:41.64,lng:-99.77,capacity:150,location:"Altoona, Iowa, USA"},
+  {name:"Meta Fort Worth",operator:"Meta",lat:32.75,lng:-97.33,capacity:200,location:"Fort Worth, Texas, USA"},
+  {name:"Meta New Albany",operator:"Meta",lat:39.97,lng:-82.80,capacity:150,location:"New Albany, Ohio, USA"},
+  {name:"AWS US East (IAD)",operator:"Amazon Web Services",lat:39.05,lng:-77.46,capacity:300,location:"Ashburn, Virginia, USA"},
+  {name:"AWS US West (PDX)",operator:"Amazon Web Services",lat:45.84,lng:-119.70,capacity:180,location:"Boardman, Oregon, USA"},
+  {name:"AWS US East (CMH)",operator:"Amazon Web Services",lat:39.96,lng:-82.99,capacity:120,location:"Columbus, Ohio, USA"},
+  {name:"Equinix DC11 (Ashburn)",operator:"Equinix",lat:39.03,lng:-77.47,capacity:42,location:"Ashburn, Virginia, USA"},
+  {name:"Equinix NY5",operator:"Equinix",lat:40.77,lng:-74.07,capacity:35,location:"Secaucus, New Jersey, USA"},
+  {name:"Equinix SV5 (Silicon Valley)",operator:"Equinix",lat:37.39,lng:-121.98,capacity:30,location:"San Jose, California, USA"},
+  {name:"Equinix CH4 (Chicago)",operator:"Equinix",lat:41.85,lng:-87.75,capacity:28,location:"Chicago, Illinois, USA"},
+  {name:"Equinix DA3 (Dallas)",operator:"Equinix",lat:32.90,lng:-96.96,capacity:32,location:"Dallas, Texas, USA"},
+  {name:"CyrusOne Houston West",operator:"CyrusOne",lat:29.82,lng:-95.64,capacity:100,location:"Houston, Texas, USA"},
+  {name:"CyrusOne Chandler",operator:"CyrusOne",lat:33.28,lng:-111.87,capacity:90,location:"Chandler, Arizona, USA"},
+  {name:"Digital Realty DFW (Dallas)",operator:"Digital Realty",lat:32.89,lng:-96.94,capacity:72,location:"Dallas, Texas, USA"},
+  {name:"CoreSite VA1 (Reston)",operator:"CoreSite",lat:38.95,lng:-77.35,capacity:46,location:"Reston, Virginia, USA"},
+  {name:"Vantage Data Centers SV1",operator:"Vantage",lat:37.38,lng:-121.97,capacity:48,location:"Santa Clara, California, USA"},
+  {name:"Stack Infrastructure Ashburn",operator:"STACK",lat:39.06,lng:-77.51,capacity:120,location:"Ashburn, Virginia, USA"},
+  {name:"CloudHQ Ashburn",operator:"CloudHQ",lat:39.02,lng:-77.50,capacity:100,location:"Ashburn, Virginia, USA"},
+  {name:"TerraScale Abilene",operator:"Lancium",lat:32.45,lng:-99.73,capacity:200,location:"Abilene, Texas, USA"},
+  {name:"Stargate (Abilene Phase 1)",operator:"OpenAI / Oracle / SoftBank",lat:32.47,lng:-99.70,capacity:200,location:"Abilene, Texas, USA"},
+  {name:"60 Hudson Street",operator:"Multiple / Carrier Hotel",lat:40.72,lng:-74.01,capacity:40,location:"New York, New York, USA"},
+  {name:"Intergate Seattle",operator:"Sabey Data Centers",lat:47.48,lng:-122.27,capacity:70,location:"Tukwila, Washington, USA"},
+  {name:"T5 Atlanta",operator:"T5 Data Centers",lat:33.81,lng:-84.16,capacity:48,location:"Lithonia, Georgia, USA"},
+  {name:"Stream Data Centers Dallas",operator:"Stream",lat:32.77,lng:-96.80,capacity:55,location:"Dallas, Texas, USA"},
+  {name:"Iron Mountain VA-1",operator:"Iron Mountain",lat:39.10,lng:-77.54,capacity:55,location:"Manassas, Virginia, USA"},
+  {name:"Compass Datacenters Goodyear",operator:"Compass",lat:33.44,lng:-112.36,capacity:60,location:"Goodyear, Arizona, USA"},
+  {name:"Google Mayes County",operator:"Google",lat:36.30,lng:-95.24,capacity:90,location:"Pryor, Oklahoma, USA"},
+  {name:"Apple Maiden Data Center",operator:"Apple",lat:35.56,lng:-81.18,capacity:100,location:"Maiden, North Carolina, USA"},
+  {name:"eStruxture Montreal MTL-1",operator:"eStruxture",lat:45.50,lng:-73.57,capacity:25,location:"Montréal, Québec, Canada"},
+  {name:"Cologix Montreal QC3",operator:"Cologix",lat:45.52,lng:-73.56,capacity:15,location:"Montréal, Québec, Canada"},
+  {name:"AWS Canada Central (YUL)",operator:"Amazon Web Services",lat:45.47,lng:-73.75,capacity:80,location:"Montréal, Québec, Canada"},
+  {name:"Google Montreal",operator:"Google",lat:45.59,lng:-73.51,capacity:50,location:"Beauharnois, Québec, Canada"},
+  // --- EUROPE ---
+  {name:"CWL1 (Europe's Largest)",operator:"Next Generation Data",lat:51.55,lng:-2.98,capacity:90,location:"Newport, Wales, UK"},
+  {name:"Equinix LD8 (Docklands)",operator:"Equinix",lat:51.51,lng:-0.02,capacity:32,location:"London, UK"},
+  {name:"Equinix LD4 (Slough)",operator:"Equinix",lat:51.51,lng:-0.60,capacity:20,location:"Slough, UK"},
+  {name:"Telehouse London North",operator:"Telehouse",lat:51.51,lng:-0.001,capacity:22,location:"London Docklands, UK"},
+  {name:"AWS EU West (Dublin)",operator:"Amazon Web Services",lat:53.35,lng:-6.26,capacity:170,location:"Dublin, Ireland"},
+  {name:"Microsoft Dublin",operator:"Microsoft",lat:53.28,lng:-6.37,capacity:120,location:"Dublin, Ireland"},
+  {name:"Google Dublin",operator:"Google",lat:53.34,lng:-6.36,capacity:80,location:"Dublin, Ireland"},
+  {name:"Equinix AM3 (Amsterdam)",operator:"Equinix",lat:52.30,lng:4.94,capacity:18,location:"Amsterdam, Netherlands"},
+  {name:"Digital Realty AMS1",operator:"Digital Realty",lat:52.34,lng:4.86,capacity:24,location:"Amsterdam, Netherlands"},
+  {name:"Interxion AMS8",operator:"Interxion / Digital Realty",lat:52.28,lng:4.97,capacity:16,location:"Amsterdam, Netherlands"},
+  {name:"NTT Frankfurt FRA1",operator:"NTT",lat:50.12,lng:8.68,capacity:60,location:"Frankfurt, Germany"},
+  {name:"Equinix FR5 (Frankfurt)",operator:"Equinix",lat:50.10,lng:8.72,capacity:28,location:"Frankfurt, Germany"},
+  {name:"Interxion FRA15",operator:"Interxion / Digital Realty",lat:50.08,lng:8.65,capacity:22,location:"Frankfurt, Germany"},
+  {name:"DE-CIX Frankfurt",operator:"DE-CIX",lat:50.11,lng:8.69,capacity:15,location:"Frankfurt, Germany"},
+  {name:"Equinix PA3 (Paris)",operator:"Equinix",lat:48.92,lng:2.36,capacity:20,location:"Paris, France"},
+  {name:"Interxion PAR7",operator:"Interxion / Digital Realty",lat:48.81,lng:2.28,capacity:16,location:"Paris, France"},
+  {name:"Data4 Marcoussis Campus",operator:"Data4",lat:48.64,lng:2.22,capacity:100,location:"Marcoussis, France"},
+  {name:"Green Mountain SVG1",operator:"Green Mountain",lat:59.28,lng:5.68,capacity:40,location:"Stavanger, Norway"},
+  {name:"DigiPlex Oslo OSL2",operator:"DigiPlex",lat:59.94,lng:11.05,capacity:18,location:"Fetsund, Norway"},
+  {name:"Facebook/Meta Luleå",operator:"Meta",lat:65.58,lng:22.15,capacity:120,location:"Luleå, Sweden"},
+  {name:"AWS Stockholm (ARN)",operator:"Amazon Web Services",lat:59.30,lng:17.81,capacity:80,location:"Stockholm, Sweden"},
+  {name:"Google Hamina",operator:"Google",lat:60.57,lng:27.20,capacity:60,location:"Hamina, Finland"},
+  {name:"Hetzner Falkenstein",operator:"Hetzner",lat:50.48,lng:12.36,capacity:25,location:"Falkenstein, Germany"},
+  {name:"OVHcloud Roubaix RBX",operator:"OVHcloud",lat:50.69,lng:3.17,capacity:40,location:"Roubaix, France"},
+  {name:"OVHcloud Gravelines",operator:"OVHcloud",lat:50.99,lng:2.13,capacity:30,location:"Gravelines, France"},
+  {name:"Equinix ML5 (Milan)",operator:"Equinix",lat:45.42,lng:9.12,capacity:14,location:"Milan, Italy"},
+  {name:"Aruba IT3 (Ponte San Pietro)",operator:"Aruba",lat:45.70,lng:9.59,capacity:90,location:"Bergamo, Italy"},
+  {name:"Altice Portugal Covilhã",operator:"Altice Portugal",lat:40.28,lng:-7.50,capacity:12,location:"Covilhã, Portugal"},
+  {name:"Equinix MA3 (Madrid)",operator:"Equinix",lat:40.46,lng:-3.61,capacity:10,location:"Madrid, Spain"},
+  {name:"Interxion MAD1 (Madrid)",operator:"Interxion / Digital Realty",lat:40.40,lng:-3.70,capacity:12,location:"Madrid, Spain"},
+  {name:"Google Eemshaven",operator:"Google",lat:53.44,lng:6.83,capacity:70,location:"Eemshaven, Netherlands"},
+  {name:"Microsoft Middenmeer",operator:"Microsoft",lat:52.81,lng:4.99,capacity:60,location:"Middenmeer, Netherlands"},
+  {name:"Equinix ZH4 (Zürich)",operator:"Equinix",lat:47.39,lng:8.52,capacity:15,location:"Zürich, Switzerland"},
+  {name:"Virtus London LONDON2",operator:"Virtus Data Centres",lat:51.53,lng:0.02,capacity:22,location:"London, UK"},
+  {name:"AtlasEdge Milan",operator:"AtlasEdge",lat:45.47,lng:9.19,capacity:10,location:"Milan, Italy"},
+  {name:"Microsoft Finland",operator:"Microsoft",lat:60.22,lng:24.82,capacity:45,location:"Espoo, Finland"},
+  {name:"AWS Frankfurt (FRA)",operator:"Amazon Web Services",lat:50.05,lng:8.58,capacity:150,location:"Frankfurt, Germany"},
+  // --- ASIA-PACIFIC ---
+  {name:"China Telecom Inner Mongolia",operator:"China Telecom",lat:40.82,lng:111.65,capacity:150,location:"Hohhot, Inner Mongolia, China"},
+  {name:"China Mobile Hohhot",operator:"China Mobile",lat:40.80,lng:111.70,capacity:120,location:"Hohhot, Inner Mongolia, China"},
+  {name:"Alibaba Zhangbei Data Center",operator:"Alibaba Cloud",lat:41.15,lng:114.72,capacity:37,location:"Zhangbei, Hebei, China"},
+  {name:"Tencent Qingyuan Data Center",operator:"Tencent Cloud",lat:23.68,lng:113.06,capacity:100,location:"Qingyuan, Guangdong, China"},
+  {name:"Alibaba Hangzhou Data Center",operator:"Alibaba Cloud",lat:30.27,lng:120.15,capacity:80,location:"Hangzhou, Zhejiang, China"},
+  {name:"GDS Shanghai SH1",operator:"GDS Holdings",lat:31.14,lng:121.81,capacity:50,location:"Shanghai, China"},
+  {name:"Chindata Huailai Cluster",operator:"Chindata Group",lat:40.40,lng:115.50,capacity:90,location:"Huailai, Hebei, China"},
+  {name:"China Mobile Harbin",operator:"China Mobile",lat:45.75,lng:126.65,capacity:100,location:"Harbin, Heilongjiang, China"},
+  {name:"NTT Tokyo TY11",operator:"NTT",lat:35.62,lng:139.73,capacity:40,location:"Tokyo, Japan"},
+  {name:"Equinix TY1 (Tokyo)",operator:"Equinix",lat:35.68,lng:139.77,capacity:18,location:"Tokyo, Japan"},
+  {name:"AWS Tokyo (NRT)",operator:"Amazon Web Services",lat:35.77,lng:140.39,capacity:100,location:"Tokyo, Japan"},
+  {name:"Google Tokyo",operator:"Google",lat:35.63,lng:139.71,capacity:50,location:"Tokyo, Japan"},
+  {name:"Equinix OS1 (Osaka)",operator:"Equinix",lat:34.67,lng:135.50,capacity:12,location:"Osaka, Japan"},
+  {name:"Equinix SG3 (Singapore)",operator:"Equinix",lat:1.32,lng:103.82,capacity:25,location:"Singapore"},
+  {name:"Digital Realty SIN1",operator:"Digital Realty",lat:1.34,lng:103.78,capacity:30,location:"Singapore"},
+  {name:"AWS Singapore (SIN)",operator:"Amazon Web Services",lat:1.35,lng:103.85,capacity:80,location:"Singapore"},
+  {name:"Google Singapore",operator:"Google",lat:1.30,lng:103.79,capacity:40,location:"Singapore"},
+  {name:"Yotta NM1",operator:"Yotta Infrastructure",lat:18.99,lng:73.12,capacity:50,location:"Panvel, Maharashtra, India"},
+  {name:"CtrlS Hyderabad",operator:"CtrlS Datacenters",lat:17.43,lng:78.35,capacity:20,location:"Hyderabad, India"},
+  {name:"NTT Mumbai BOM1",operator:"NTT",lat:19.18,lng:72.96,capacity:30,location:"Mumbai, India"},
+  {name:"AdaniConneX Chennai",operator:"AdaniConneX",lat:12.96,lng:80.15,capacity:50,location:"Chennai, India"},
+  {name:"Tulip Telecom Bangalore",operator:"Tulip Telecom",lat:12.97,lng:77.60,capacity:100,location:"Bangalore, India"},
+  {name:"AWS Mumbai (BOM)",operator:"Amazon Web Services",lat:19.08,lng:72.88,capacity:80,location:"Mumbai, India"},
+  {name:"AWS Seoul (ICN)",operator:"Amazon Web Services",lat:37.47,lng:126.71,capacity:70,location:"Seoul, South Korea"},
+  {name:"KINX Seoul",operator:"KINX",lat:37.53,lng:127.07,capacity:20,location:"Seoul, South Korea"},
+  {name:"Equinix SY4 (Sydney)",operator:"Equinix",lat:-33.93,lng:151.19,capacity:20,location:"Sydney, Australia"},
+  {name:"NEXTDC S3 (Sydney)",operator:"NEXTDC",lat:-33.85,lng:151.07,capacity:30,location:"Sydney, Australia"},
+  {name:"AirTrunk SGP1",operator:"AirTrunk",lat:1.33,lng:103.72,capacity:60,location:"Singapore"},
+  {name:"AirTrunk SYD1",operator:"AirTrunk",lat:-33.92,lng:150.86,capacity:110,location:"Sydney, Australia"},
+  {name:"AWS Sydney (SYD)",operator:"Amazon Web Services",lat:-33.80,lng:151.00,capacity:80,location:"Sydney, Australia"},
+  {name:"Microsoft Campbellfield (Melbourne)",operator:"Microsoft",lat:-37.68,lng:144.96,capacity:40,location:"Melbourne, Australia"},
+  {name:"Google Taiwan (Changhua)",operator:"Google",lat:24.07,lng:120.54,capacity:90,location:"Changhua, Taiwan"},
+  {name:"AWS Hong Kong (HKG)",operator:"Amazon Web Services",lat:22.28,lng:114.16,capacity:50,location:"Hong Kong, China"},
+  {name:"PCCW Solutions Hong Kong",operator:"PCCW Solutions",lat:22.32,lng:114.17,capacity:18,location:"Hong Kong, China"},
+  {name:"SUNeVision MEGA-i",operator:"SUNeVision",lat:22.37,lng:114.12,capacity:25,location:"Hong Kong, China"},
+  {name:"NTT Cyberjaya MY1",operator:"NTT",lat:2.92,lng:101.66,capacity:22,location:"Cyberjaya, Malaysia"},
+  {name:"AWS Jakarta (CGK)",operator:"Amazon Web Services",lat:-6.20,lng:106.82,capacity:50,location:"Jakarta, Indonesia"},
+  {name:"DCI Indonesia JK4",operator:"DCI Indonesia",lat:-6.36,lng:106.96,capacity:30,location:"Jakarta, Indonesia"},
+  // --- MIDDLE EAST ---
+  {name:"AWS Bahrain (BAH)",operator:"Amazon Web Services",lat:26.07,lng:50.56,capacity:40,location:"Manama, Bahrain"},
+  {name:"Equinix DX1 (Dubai)",operator:"Equinix",lat:25.12,lng:55.39,capacity:15,location:"Dubai, UAE"},
+  {name:"Khazna Data Centers (Abu Dhabi)",operator:"Khazna",lat:24.42,lng:54.45,capacity:60,location:"Abu Dhabi, UAE"},
+  {name:"Etisalat SmartHub (Dubai)",operator:"Etisalat",lat:25.06,lng:55.17,capacity:20,location:"Dubai, UAE"},
+  {name:"Oracle Jeddah",operator:"Oracle",lat:21.49,lng:39.19,capacity:30,location:"Jeddah, Saudi Arabia"},
+  {name:"STC Cloud (Riyadh)",operator:"STC",lat:24.71,lng:46.67,capacity:40,location:"Riyadh, Saudi Arabia"},
+  // --- SOUTH AMERICA ---
+  {name:"Equinix SP4 (São Paulo)",operator:"Equinix",lat:-23.52,lng:-46.85,capacity:15,location:"São Paulo, Brazil"},
+  {name:"Ascenty SP4 (Campinas)",operator:"Ascenty",lat:-22.91,lng:-47.06,capacity:36,location:"Campinas, Brazil"},
+  {name:"AWS São Paulo (GRU)",operator:"Amazon Web Services",lat:-23.55,lng:-46.63,capacity:80,location:"São Paulo, Brazil"},
+  {name:"Google Santiago",operator:"Google",lat:-33.44,lng:-70.65,capacity:40,location:"Santiago, Chile"},
+  {name:"Equinix BG1 (Bogotá)",operator:"Equinix",lat:4.71,lng:-74.07,capacity:8,location:"Bogotá, Colombia"},
+  {name:"ODATA SP02 (São Paulo)",operator:"ODATA",lat:-23.47,lng:-46.53,capacity:24,location:"São Paulo, Brazil"},
+  {name:"Edge UIO (Quito)",operator:"EdgeConneX",lat:-0.18,lng:-78.48,capacity:6,location:"Quito, Ecuador"},
+  {name:"KIO Networks QRO1",operator:"KIO Networks",lat:20.59,lng:-100.39,capacity:28,location:"Querétaro, Mexico"},
+  {name:"Equinix MX1 (Mexico City)",operator:"Equinix",lat:19.43,lng:-99.13,capacity:10,location:"Mexico City, Mexico"},
+  // --- AFRICA ---
+  {name:"Teraco JB1 (Johannesburg)",operator:"Teraco",lat:-26.19,lng:28.10,capacity:20,location:"Johannesburg, South Africa"},
+  {name:"Teraco CT1 (Cape Town)",operator:"Teraco",lat:-33.97,lng:18.60,capacity:12,location:"Cape Town, South Africa"},
+  {name:"Africa Data Centres NBO1",operator:"Africa Data Centres",lat:-1.26,lng:36.79,capacity:15,location:"Nairobi, Kenya"},
+  {name:"MainOne MDXi (Lagos)",operator:"MainOne / Equinix",lat:6.43,lng:3.42,capacity:10,location:"Lagos, Nigeria"},
+  {name:"Raxio Kampala",operator:"Raxio Group",lat:0.34,lng:32.60,capacity:4,location:"Kampala, Uganda"},
+  {name:"MTDS Casablanca",operator:"MTDS",lat:33.57,lng:-7.59,capacity:5,location:"Casablanca, Morocco"},
+  // --- NORDICS / ADDITIONAL ---
+  {name:"Google Fredericia (Denmark)",operator:"Google",lat:55.57,lng:9.75,capacity:40,location:"Fredericia, Denmark"},
+  {name:"Apple Viborg Data Center",operator:"Apple",lat:56.46,lng:9.40,capacity:45,location:"Viborg, Denmark"},
+  {name:"Facebook/Meta Odense",operator:"Meta",lat:55.40,lng:10.38,capacity:80,location:"Odense, Denmark"},
+  {name:"Verne Global Iceland",operator:"Verne Global",lat:63.95,lng:-22.57,capacity:24,location:"Keflavík, Iceland"},
+  {name:"atNorth ICE02",operator:"atNorth",lat:64.15,lng:-21.82,capacity:12,location:"Reykjavík, Iceland"},
+  {name:"AWS Cape Town (CPT)",operator:"Amazon Web Services",lat:-33.93,lng:18.42,capacity:40,location:"Cape Town, South Africa"},
+  {name:"Microsoft Qatar",operator:"Microsoft",lat:25.29,lng:51.53,capacity:30,location:"Doha, Qatar"},
+  {name:"Google Cloud Warsaw",operator:"Google",lat:52.23,lng:21.01,capacity:40,location:"Warsaw, Poland"},
+  {name:"AWS Hyderabad (HYD)",operator:"Amazon Web Services",lat:17.39,lng:78.49,capacity:60,location:"Hyderabad, India"},
+  {name:"AWS Melbourne (MEL)",operator:"Amazon Web Services",lat:-37.81,lng:144.96,capacity:50,location:"Melbourne, Australia"},
+  {name:"AWS Osaka (KIX)",operator:"Amazon Web Services",lat:34.69,lng:135.50,capacity:40,location:"Osaka, Japan"},
+  {name:"Equinix HK1 (Hong Kong)",operator:"Equinix",lat:22.30,lng:114.18,capacity:16,location:"Hong Kong, China"},
+  {name:"Digital Realty HKG1",operator:"Digital Realty",lat:22.35,lng:114.10,capacity:20,location:"Hong Kong, China"},
+  {name:"AWS GovCloud (US-West)",operator:"Amazon Web Services",lat:45.59,lng:-122.60,capacity:60,location:"Portland, Oregon, USA"},
+  {name:"Google Belgium (St-Ghislain)",operator:"Google",lat:50.45,lng:3.82,capacity:50,location:"Saint-Ghislain, Belgium"},
+  {name:"Microsoft West Des Moines",operator:"Microsoft",lat:41.57,lng:-93.71,capacity:100,location:"West Des Moines, Iowa, USA"},
+  {name:"Meta DeKalb",operator:"Meta",lat:41.93,lng:-88.75,capacity:200,location:"DeKalb, Illinois, USA"},
+  {name:"Google Papillion (Omaha)",operator:"Google",lat:41.15,lng:-96.04,capacity:120,location:"Papillion, Nebraska, USA"},
+  {name:"AWS Milan (MXP)",operator:"Amazon Web Services",lat:45.63,lng:8.73,capacity:50,location:"Milan, Italy"},
+  {name:"AWS Spain (ZAZ)",operator:"Amazon Web Services",lat:41.65,lng:-0.88,capacity:50,location:"Zaragoza, Spain"},
+  {name:"Microsoft Boydton (Virginia)",operator:"Microsoft",lat:36.67,lng:-78.39,capacity:180,location:"Boydton, Virginia, USA"},
+  {name:"Microsoft Cheyenne",operator:"Microsoft",lat:41.14,lng:-104.82,capacity:80,location:"Cheyenne, Wyoming, USA"},
+  {name:"AWS Ireland (DUB)",operator:"Amazon Web Services",lat:53.42,lng:-6.27,capacity:120,location:"Dublin, Ireland"},
+  {name:"AWS London (LHR)",operator:"Amazon Web Services",lat:51.47,lng:-0.46,capacity:100,location:"London, UK"},
+  {name:"AWS Paris (CDG)",operator:"Amazon Web Services",lat:48.86,lng:2.35,capacity:60,location:"Paris, France"},
+  {name:"AWS Stockholm (ARN)",operator:"Amazon Web Services",lat:59.65,lng:17.95,capacity:60,location:"Stockholm, Sweden"},
+  {name:"Coresite SV7 (Santa Clara)",operator:"CoreSite",lat:37.35,lng:-121.95,capacity:36,location:"Santa Clara, California, USA"},
+  {name:"Aligned Energy Ashburn",operator:"Aligned Energy",lat:39.07,lng:-77.48,capacity:90,location:"Ashburn, Virginia, USA"},
+  {name:"Flexential Portland",operator:"Flexential",lat:45.52,lng:-122.68,capacity:20,location:"Portland, Oregon, USA"},
+];
+
+// ============================================================
+// MAP SETUP
+// ============================================================
+const map = L.map('map', {
+  center: [25, 10],
+  zoom: 3,
+  minZoom: 2,
+  maxZoom: 18,
+  zoomControl: false,
+  attributionControl: true,
+});
+
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+// Dark tile layer
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// ============================================================
+// MARKERS
+// ============================================================
+let markers = [];
+let activeFilter = 'all';
+
+function getRadius(capacity) {
+  if (capacity >= 300) return 10;
+  if (capacity >= 100) return 7.5;
+  if (capacity >= 50) return 6;
+  return 4.5;
+}
+
+function getColor(capacity) {
+  if (capacity >= 300) return '#7ec8f0';
+  if (capacity >= 100) return '#4a9edd';
+  if (capacity >= 50) return '#3b8fd4';
+  return '#2e78b5';
+}
+
+function createPopup(dc) {
+  return `<div class="popup-inner">
+    <div class="popup-name">${dc.name}</div>
+    <div class="popup-operator">${dc.operator}</div>
+    <div class="popup-stats">
+      <div class="popup-stat">
+        <span class="popup-stat-label">Capacity</span>
+        <span class="popup-stat-val">${dc.capacity} MW</span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">Category</span>
+        <span class="popup-stat-val">${dc.capacity >= 300 ? 'Mega' : dc.capacity >= 50 ? 'Large' : 'Standard'}</span>
+      </div>
+    </div>
+    <div class="popup-location">📍 ${dc.location}</div>
+  </div>`;
+}
+
+function filterCategory(dc) {
+  if (activeFilter === 'all') return true;
+  if (activeFilter === 'small') return dc.capacity < 50;
+  if (activeFilter === 'medium') return dc.capacity >= 50 && dc.capacity <= 300;
+  if (activeFilter === 'large') return dc.capacity > 300;
+  return true;
+}
+
+function renderMarkers() {
+  // Remove old
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  let visibleCount = 0;
+  const countries = new Set();
+  let totalCap = 0;
+
+  datacenters.forEach(dc => {
+    if (!filterCategory(dc)) return;
+
+    visibleCount++;
+    const countryPart = dc.location.split(',').pop().trim();
+    countries.add(countryPart);
+    totalCap += dc.capacity;
+
+    const marker = L.circleMarker([dc.lat, dc.lng], {
+      radius: getRadius(dc.capacity),
+      fillColor: getColor(dc.capacity),
+      fillOpacity: 0.85,
+      color: '#7ec8f0',
+      weight: 1.2,
+      opacity: 0.5,
+    }).addTo(map);
+
+    marker.bindPopup(createPopup(dc), { closeButton: false, maxWidth: 280 });
+
+    marker.on('mouseover', function() {
+      this.setStyle({ fillOpacity: 1, weight: 2.5, opacity: 1 });
+      this.setRadius(getRadius(dc.capacity) + 3);
+    });
+    marker.on('mouseout', function() {
+      this.setStyle({ fillOpacity: 0.85, weight: 1.2, opacity: 0.5 });
+      this.setRadius(getRadius(dc.capacity));
+    });
+
+    marker._dcData = dc;
+    markers.push(marker);
+  });
+
+  document.getElementById('visibleCount').textContent = visibleCount;
+  document.getElementById('countryCount').textContent = countries.size;
+  document.getElementById('totalCapacity').textContent = (totalCap / 1000).toFixed(1);
+}
+
+renderMarkers();
+
+// ============================================================
+// FILTERS
+// ============================================================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderMarkers();
+  });
+});
+
+// ============================================================
+// SEARCH
+// ============================================================
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (q.length < 2) {
+    searchResults.classList.remove('active');
+    return;
+  }
+
+  const matched = datacenters.filter(dc =>
+    dc.name.toLowerCase().includes(q) ||
+    dc.operator.toLowerCase().includes(q) ||
+    dc.location.toLowerCase().includes(q)
+  ).slice(0, 8);
+
+  if (matched.length === 0) {
+    searchResults.innerHTML = '<div class="search-result-item" style="color:var(--gray-400);cursor:default;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matched.map(dc => `
+      <div class="search-result-item" data-lat="${dc.lat}" data-lng="${dc.lng}" data-name="${dc.name}">
+        <div class="sr-name">${dc.name}</div>
+        <div class="sr-meta">${dc.operator} · ${dc.capacity} MW · ${dc.location}</div>
+      </div>
+    `).join('');
+  }
+
+  searchResults.classList.add('active');
+});
+
+searchResults.addEventListener('click', (e) => {
+  const item = e.target.closest('.search-result-item');
+  if (!item || !item.dataset.lat) return;
+
+  const lat = parseFloat(item.dataset.lat);
+  const lng = parseFloat(item.dataset.lng);
+  const name = item.dataset.name;
+
+  map.flyTo([lat, lng], 10, { duration: 1.5 });
+
+  // Open the matching marker popup
+  markers.forEach(m => {
+    if (m._dcData && m._dcData.name === name) {
+      setTimeout(() => m.openPopup(), 800);
+    }
+  });
+
+  searchResults.classList.remove('active');
+  searchInput.value = item.querySelector('.sr-name').textContent;
+});
+
+// Close search on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-wrapper')) {
+    searchResults.classList.remove('active');
+  }
+});
+
+// Close search on Escape
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    searchResults.classList.remove('active');
+    searchInput.blur();
+  }
+});
+</script>
+</body>
+</html>

@@ -24,13 +24,13 @@
     },
     "Tree Website": {
       "needs_main": false,
-      "displayed": true,
+      "displayed": false,
       "description": "Single application with its own navigation",
       "main_file": "index.html"
     },
     "Voice to text": {
       "needs_main": false,
-      "displayed": true,
+      "displayed": false,
       "description": "Single application",
       "main_file": "index.html"
     },

@@ -1,0 +1,475 @@
+/* ==========================================================================
+   Mountains of Iceland - Styles
+   ========================================================================== */
+
+/* Custom Properties
+   ========================================================================== */
+
+:root {
+  --color-beige: #F5F0E1;
+  --color-beige-dark: #E8DCC8;
+  --color-beige-light: #FFFDF5;
+  --color-red: #C75B5B;
+  --color-red-dark: #A84444;
+  --color-gray: #6B6B6B;
+  --color-gray-light: #9A9A9A;
+  --color-white: #FFFFFF;
+  --color-text: #3A3A3A;
+  --color-shadow: rgba(0, 0, 0, 0.12);
+  --font-primary: 'Georgia', 'Times New Roman', serif;
+  --radius: 8px;
+  --radius-pill: 20px;
+  --transition: 0.2s ease;
+}
+
+/* Reset & Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-beige);
+}
+
+#app-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+}
+
+/* Controls Overlay
+   ========================================================================== */
+
+.controls-overlay {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.controls-overlay > * {
+  pointer-events: auto;
+}
+
+/* Search Bar
+   ========================================================================== */
+
+.search-container {
+  position: relative;
+  width: 380px;
+  max-width: 90vw;
+}
+
+#search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  box-shadow: 0 2px 12px var(--color-shadow);
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  outline: none;
+  transition: box-shadow var(--transition);
+}
+
+#search-input:focus {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+}
+
+#search-input::placeholder {
+  color: var(--color-gray-light);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-light);
+}
+
+/* Filter Buttons
+   ========================================================================== */
+
+.filter-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-beige-dark);
+  background: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray);
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 1px 4px var(--color-shadow);
+}
+
+.filter-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Inactive dot colors */
+.filter-btn--small .filter-dot {
+  background: #E8DCC8;
+}
+
+.filter-btn--medium .filter-dot {
+  background: #9A9A9A;
+}
+
+.filter-btn--large .filter-dot {
+  background: #C75B5B;
+}
+
+/* Active states */
+.filter-btn--small.active {
+  background: var(--color-beige);
+  border-color: var(--color-beige-dark);
+  color: var(--color-text);
+}
+
+.filter-btn--small.active .filter-dot {
+  background: var(--color-beige-dark);
+}
+
+.filter-btn--medium.active {
+  background: var(--color-gray);
+  border-color: var(--color-gray);
+  color: var(--color-white);
+}
+
+.filter-btn--medium.active .filter-dot {
+  background: var(--color-white);
+}
+
+.filter-btn--large.active {
+  background: var(--color-red);
+  border-color: var(--color-red-dark);
+  color: var(--color-white);
+}
+
+.filter-btn--large.active .filter-dot {
+  background: var(--color-white);
+}
+
+/* Hover on inactive */
+.filter-btn--small:not(.active):hover {
+  background: rgba(245, 240, 225, 0.5);
+}
+
+.filter-btn--medium:not(.active):hover {
+  background: rgba(107, 107, 107, 0.1);
+}
+
+.filter-btn--large:not(.active):hover {
+  background: rgba(199, 91, 91, 0.1);
+}
+
+/* Mountain Count
+   ========================================================================== */
+
+.mountain-count {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  color: var(--color-gray-light);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 3px 10px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+}
+
+/* Mountain Markers
+   ========================================================================== */
+
+.mountain-marker {
+  border-radius: 50%;
+  border: 2px solid var(--color-white);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+  cursor: pointer;
+}
+
+.mountain-marker:hover {
+  transform: scale(1.4);
+  z-index: 1000 !important;
+}
+
+.mountain-marker--small {
+  background: var(--color-beige);
+  border-color: var(--color-beige-dark);
+}
+
+.mountain-marker--medium {
+  background: var(--color-gray);
+}
+
+.mountain-marker--large {
+  background: var(--color-red);
+}
+
+/* Tooltip Override
+   ========================================================================== */
+
+.mountain-tooltip {
+  background: var(--color-beige-light);
+  border: 1px solid var(--color-beige-dark);
+  font-family: var(--font-primary);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.mountain-tooltip::before {
+  border-top-color: var(--color-beige-dark);
+}
+
+/* Popup Override
+   ========================================================================== */
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius);
+  font-family: var(--font-primary);
+  box-shadow: 0 4px 16px var(--color-shadow);
+  padding: 0;
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px;
+  line-height: 1.4;
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.mountain-popup__name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 4px 0;
+}
+
+.mountain-popup__elevation {
+  font-size: 0.9rem;
+  color: var(--color-gray);
+  margin: 0 0 8px 0;
+}
+
+.mountain-popup__badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mountain-popup__badge--small {
+  background: var(--color-beige);
+  color: var(--color-text);
+}
+
+.mountain-popup__badge--medium {
+  background: var(--color-gray);
+  color: var(--color-white);
+}
+
+.mountain-popup__badge--large {
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+/* MarkerCluster Override
+   ========================================================================== */
+
+.marker-cluster-small {
+  background-color: rgba(245, 240, 225, 0.7);
+}
+
+.marker-cluster-small div {
+  background-color: var(--color-beige);
+  color: var(--color-text);
+}
+
+.marker-cluster-medium {
+  background-color: rgba(107, 107, 107, 0.5);
+}
+
+.marker-cluster-medium div {
+  background-color: var(--color-gray);
+  color: var(--color-white);
+}
+
+.marker-cluster-large {
+  background-color: rgba(199, 91, 91, 0.5);
+}
+
+.marker-cluster-large div {
+  background-color: var(--color-red);
+  color: var(--color-white);
+}
+
+.marker-cluster div {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  margin-top: 5px;
+  text-align: center;
+  border-radius: 50%;
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+/* Loading Overlay
+   ========================================================================== */
+
+#loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 240, 225, 0.88);
+  backdrop-filter: blur(4px);
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-beige-dark);
+  border-top-color: var(--color-red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  color: var(--color-gray);
+}
+
+/* Error Overlay
+   ========================================================================== */
+
+#error-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 240, 225, 0.92);
+  backdrop-filter: blur(4px);
+}
+
+.error-content {
+  text-align: center;
+}
+
+#error-message {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 16px;
+}
+
+.retry-btn {
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 24px;
+  border: 2px solid var(--color-red);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-red);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.retry-btn:hover {
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+/* Utilities
+   ========================================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+/* Responsive
+   ========================================================================== */
+
+@media (max-width: 520px) {
+  .controls-overlay {
+    top: 8px;
+    width: 95vw;
+  }
+
+  .search-container {
+    width: 100%;
+  }
+
+  .filter-btn {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+
+  .filter-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
