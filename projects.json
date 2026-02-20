@@ -53,25 +53,6 @@
       "icon": "folder"
     },
     {
-      "id": "derivative-course",
-      "title": "Derivative-course",
-      "description": "Educational materials and interactive tools for Derivative-course.",
-      "tags": [
-        "Math",
-        "Education"
-      ],
-      "categories": [
-        "education"
-      ],
-      "path": "Projects/Derivative-course/Main.html",
-      "featured": false,
-      "technologies": [
-        "Education",
-        "Mathematics"
-      ],
-      "icon": "chart"
-    },
-    {
       "id": "iceland-cpi-analysis",
       "title": "Iceland-cpi-analysis",
       "description": "Explore Iceland-cpi-analysis with interactive features and modern design.",
@@ -178,25 +159,6 @@
         "JavaScript"
       ],
       "icon": "folder"
-    },
-    {
-      "id": "tree-website",
-      "title": "Tree Website",
-      "description": "An interactive visualization of trees and nature with beautiful biome styling. Experience different environmental themes and natural landscapes.",
-      "tags": [
-        "Nature",
-        "Interactive"
-      ],
-      "categories": [
-        "interactive"
-      ],
-      "path": "Projects/Tree Website/index.html",
-      "featured": false,
-      "technologies": [
-        "Nature",
-        "Interactive"
-      ],
-      "icon": "tree"
     }
   ]
 }

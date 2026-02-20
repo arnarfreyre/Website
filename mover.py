@@ -510,10 +510,14 @@ def scan_projects() -> List[Dict]:
         # Check if project should be displayed
         project_settings = config.get("project_settings", {})
         default_settings = config.get("default_settings", {})
-        
+
+        # Build normalized lookup (case-insensitive, stripped) to handle mismatches
+        normalized_settings = {k.lower().strip(): v for k, v in project_settings.items()}
+        normalized_name = folder.name.lower().strip()
+
         # Check if project is configured to be displayed
-        if folder.name in project_settings:
-            displayed = project_settings[folder.name].get("displayed", default_settings.get("displayed", True))
+        if normalized_name in normalized_settings:
+            displayed = normalized_settings[normalized_name].get("displayed", default_settings.get("displayed", True))
         else:
             displayed = default_settings.get("displayed", True)
         
